@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>ApplicationId 与 PackageName | ChaosLeong&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="基于 http://blog.csdn.net/maosidiaoxian/article/details/41719357 校对整理，感谢原文作者 貌似掉线
+
+Android 应用都有自己的包名。包名是设备上每个应用程序的唯一标识，同样也是 Google Play 商店里的唯一标识。就是说，假如你已经使用某个包名来发布应用，就不能再去改变应用的包名，因为这样做会导致你的应用被视为一个全新的应用，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ApplicationId 与 PackageName">
+<meta property="og:url" content="http://chaosleong.github.io/blog/2015/06/04/applicationid-yu-packagename/index.html">
+<meta property="og:site_name" content="ChaosLeong's Blog">
+<meta property="og:description" content="基于 http://blog.csdn.net/maosidiaoxian/article/details/41719357 校对整理，感谢原文作者 貌似掉线
+
+Android 应用都有自己的包名。包名是设备上每个应用程序的唯一标识，同样也是 Google Play 商店里的唯一标识。就是说，假如你已经使用某个包名来发布应用，就不能再去改变应用的包名，因为这样做会导致你的应用被视为一个全新的应用，">
+<meta property="og:updated_time" content="2015-06-04T15:45:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ApplicationId 与 PackageName">
+<meta name="twitter:description" content="基于 http://blog.csdn.net/maosidiaoxian/article/details/41719357 校对整理，感谢原文作者 貌似掉线
+
+Android 应用都有自己的包名。包名是设备上每个应用程序的唯一标识，同样也是 Google Play 商店里的唯一标识。就是说，假如你已经使用某个包名来发布应用，就不能再去改变应用的包名，因为这样做会导致你的应用被视为一个全新的应用，">
+  
+    <link rel="alternative" href="/atom.xml" title="ChaosLeong&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/blog//img/favicon.png">
+  
+  <link rel="stylesheet" href="../../../../css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="/img/favicon.png" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Chaos Leong</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="../../../../blog">主页</a></li>
+				        
+							<li><a href="../../../../blog/archives">归档</a></li>
+				        
+							<li><a href="../../../../blog/about">关于我</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/ChaosLeong" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="http://weibo.com/lgfsise" title="weibo">weibo</a>
+					        
+								<a class="mail" target="_blank" href="mailto:lgf42031@gmail.com" title="mail">mail</a>
+					        
+								<a class="google" target="_blank" href="https://plus.google.com/u/0/+ChaosGLeong" title="google">google</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="../../../../tags/index.html" style="font-size: 20px;">Android</a> <a href="../../../../tags/index.html" style="font-size: 10px;">感言</a> <a href="../../../../tags/index.html" style="font-size: 10px;">技巧</a> <a href="../../../../tags/index.html" style="font-size: 10px;">测试</a> <a href="../../../../tags/index.html" style="font-size: 10px;">灌水</a> <a href="../../../../tags/index.html" style="font-size: 10px;">翻译</a> <a href="../../../../tags/index.html" style="font-size: 10px;">随想</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">我是谁，我从哪里来，我到哪里去？我就是我，是颜色不一样的吃货…</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Chaos Leong</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="/img/favicon.png" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Chaos Leong</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="../../../../blog">主页</a></li>
+		        
+					<li><a href="../../../../blog/archives">归档</a></li>
+		        
+					<li><a href="../../../../blog/about">关于我</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/ChaosLeong" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/lgfsise" title="weibo">weibo</a>
+			        
+						<a class="mail" target="_blank" href="mailto:lgf42031@gmail.com" title="mail">mail</a>
+			        
+						<a class="google" target="_blank" href="https://plus.google.com/u/0/+ChaosGLeong" title="google">google</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-applicationid-yu-packagename" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="" class="article-date">
+  	<time datetime="2015-06-04T15:24:06.000Z" itemprop="datePublished">2015-06-04</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ApplicationId 与 PackageName
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/index.html">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/index.html">翻译</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="../../../../categories/index.html">翻译</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>基于 <a href="http://blog.csdn.net/maosidiaoxian/article/details/41719357" target="_blank" rel="external">http://blog.csdn.net/maosidiaoxian/article/details/41719357</a> 校对整理，感谢原文作者 <a href="http://my.csdn.net/maosidiaoxian" target="_blank" rel="external">貌似掉线</a></p>
+</blockquote>
+<p>Android 应用都有自己的包名。包名是设备上每个应用程序的唯一标识，同样也是 Google Play 商店里的唯一标识。就是说，假如你已经使用某个包名来发布应用，<strong>就不能再去改变应用的包名</strong>，因为这样做会导致你的应用被视为一个全新的应用，你现有的用户也不会收到应用的更新通知。<br><a id="more"></a></p>
+<p>旧版的 Android Gralde 构建系统中，应用的包名由 manifest 中根节点的 package 属性决定：</p>
+<figure class="highlight groovy"><figcaption><span>AndroidManifest.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line">&lt;manifest xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="keyword">package</span>=<span class="string">"com.example.my.app"</span></span><br><span class="line"><span class="label">    android:</span>versionCode=<span class="string">"1"</span></span><br><span class="line"><span class="label">    android:</span>versionName=<span class="string">"1.0"</span> &gt;</span><br></pre></td></tr></table></figure>
+<p>然而，这里所定义的 package 还有另一个作用：用来命名资源类 R（以及用于解析相关的 Activity）。在上面的示例中，最终生成的 R 类为 <strong><font color="green">com.example.my.app.R</font></strong>，所以如果你在其他包中的代码需要引用资源，对应的 .java 文件需要导入 <code>com.example.my.app.R</code>。</p>
+<p>在新的 Android Gradle 构建系统中，你可以轻松地构建多个不同版本的应用。例如，你可以同时构建免费版和专业版的应用（使用 flavor），并且它们在 Google Play 上也应该要有不同的包名，这样它们就能够在同一设备上安装并且能够单独购买使用等等。同样的，你也可以构建 “debug”、“alpha”、“beta” 版的应用（使用 build type），它们也同样可以有唯一的包名。</p>
+<p>同时，代码中引用的 R 类要保持不变；在构建不同版本的应用时，对应的（引用了 R 的） .java 源文件也不能改动。</p>
+<p>因此，我们将包名的两种作用<strong>解耦</strong>：</p>
+<ul>
+<li>“application id” 对应 apk 中 manifest 定义的应用包名，同时用于设备以及 Google Play 的应用唯一标识。</li>
+<li>“package” 用于在源码中引用 R 类以及解析注册相关的 activity/service，对应 Java 的包名概念。</li>
+</ul>
+<p>你可以在 Gradle 文件中指定 application id，如下所示：</p>
+<figure class="highlight groovy"><figcaption><span>app/build.gradle</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">apply <span class="string">plugin:</span> <span class="string">'com.android.application'</span></span><br><span class="line"></span><br><span class="line">android &#123;</span><br><span class="line">    compileSdkVersion <span class="number">19</span></span><br><span class="line">    buildToolsVersion <span class="string">"19.1"</span></span><br><span class="line"></span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        applicationId <span class="string">"com.example.my.app"</span></span><br><span class="line">        minSdkVersion <span class="number">15</span></span><br><span class="line">        targetSdkVersion <span class="number">19</span></span><br><span class="line">        versionCode <span class="number">1</span></span><br><span class="line">        versionName <span class="string">"1.0"</span></span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<p>像以前一样，你需要像前面的 AndroidManifest.xml 示例在 Manifest 中指定给代码用的 “package”。</p>
+<p><strong>关键部分</strong>：参照上面的做法，即能解耦 <strong><font color="green">applicationId</font></strong> 和 <strong><font color="green">package</font></strong>。意思是你能够完全自由地重构你的代码，改变用于 Activity 和 Service 的内部包，改变 Manifest 的 package，重构导入语句。这都不会影响到 app 的最终 id，app 的 id 对应 Gradle 文件中 applicationId 的值。</p>
+<p>你可以通过以下的 Gradle DSL 方法来为不同的 flavor 和 build type 定义不同的 applicationId：</p>
+<figure class="highlight groovy"><figcaption><span>app/build.gradle</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">productFlavors &#123;</span><br><span class="line">    pro &#123;</span><br><span class="line">        applicationId = <span class="string">"com.example.my.pkg.pro"</span></span><br><span class="line">    &#125;</span><br><span class="line">    free &#123;</span><br><span class="line">        applicationId = <span class="string">"com.example.my.pkg.free"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">buildTypes &#123;</span><br><span class="line">    debug &#123;</span><br><span class="line">        applicationIdSuffix <span class="string">".debug"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+<p>(在 Android Studio 中，你可以通过 Project Structure 图形化界面来进行这些配置。)</p>
+<p>注意：出于兼容性考虑，如果<strong>没有</strong>在 build.gradle 文件中定义 applicationId，那么 applicationId 将默认为 AndroidManifest.xml 中所指定的 package 的值。在这种情况下，applicationId 和 package 显然未解耦，此时重构代码也将会更改应用的 id ！在 Android Studio 中，新建的项目会指定这两个值。</p>
+<p>注意：package 始终必须在默认 AndroidManifest.xml 文件中指定。如果存在多个 manifest（例如一个 flavor 有特定的 manifest 或一个 buildType 有特定的 manifest），package 可不指定，但如果被指定，必须和主 manifest 中指定的 package 完全相同。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="../../../08/02/index.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android Studio 使用 Gradle 打包 Jar
+        
+      </div>
+    </a>
+  
+  
+    <a href="../../../03/18/index.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">2015年的一些小想法</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="applicationid-yu-packagename" data-title="ApplicationId 与 PackageName" data-url="http://chaosleong.github.io/blog"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"chaosleong"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 Chaos Leong
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="../../../../fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: /blog/
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="../../../../js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

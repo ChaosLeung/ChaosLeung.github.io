@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>monkeyrunner python API | ChaosLeong&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="简单介绍目前Android自带的Monkey、UiAutomator、MonkeyRunner主要特点如下：
+
+Monkey：准确来说，Monkey并不算自动化测试，它只能产生随机事件流，并不能按照既定的步骤操作（建议别跑日常用的机子，重新改回设置都有的烦）；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="monkeyrunner python API">
+<meta property="og:url" content="http://chaosleong.github.io/blog/2015/02/16/monkeyrunner-python-api/index.html">
+<meta property="og:site_name" content="ChaosLeong's Blog">
+<meta property="og:description" content="简单介绍目前Android自带的Monkey、UiAutomator、MonkeyRunner主要特点如下：
+
+Monkey：准确来说，Monkey并不算自动化测试，它只能产生随机事件流，并不能按照既定的步骤操作（建议别跑日常用的机子，重新改回设置都有的烦）；">
+<meta property="og:updated_time" content="2015-02-17T06:02:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="monkeyrunner python API">
+<meta name="twitter:description" content="简单介绍目前Android自带的Monkey、UiAutomator、MonkeyRunner主要特点如下：
+
+Monkey：准确来说，Monkey并不算自动化测试，它只能产生随机事件流，并不能按照既定的步骤操作（建议别跑日常用的机子，重新改回设置都有的烦）；">
+  
+    <link rel="alternative" href="/atom.xml" title="ChaosLeong&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/blog//img/favicon.png">
+  
+  <link rel="stylesheet" href="../../../../css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="/img/favicon.png" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Chaos Leong</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="../../../../blog">主页</a></li>
+				        
+							<li><a href="../../../../blog/archives">归档</a></li>
+				        
+							<li><a href="../../../../blog/about">关于我</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/ChaosLeong" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="http://weibo.com/lgfsise" title="weibo">weibo</a>
+					        
+								<a class="mail" target="_blank" href="mailto:lgf42031@gmail.com" title="mail">mail</a>
+					        
+								<a class="google" target="_blank" href="https://plus.google.com/u/0/+ChaosGLeong" title="google">google</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="../../../../tags/index.html" style="font-size: 20px;">Android</a> <a href="../../../../tags/index.html" style="font-size: 10px;">感言</a> <a href="../../../../tags/index.html" style="font-size: 10px;">技巧</a> <a href="../../../../tags/index.html" style="font-size: 10px;">测试</a> <a href="../../../../tags/index.html" style="font-size: 10px;">灌水</a> <a href="../../../../tags/index.html" style="font-size: 10px;">翻译</a> <a href="../../../../tags/index.html" style="font-size: 10px;">随想</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">我是谁，我从哪里来，我到哪里去？我就是我，是颜色不一样的吃货…</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Chaos Leong</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="/img/favicon.png" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Chaos Leong</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="../../../../blog">主页</a></li>
+		        
+					<li><a href="../../../../blog/archives">归档</a></li>
+		        
+					<li><a href="../../../../blog/about">关于我</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/ChaosLeong" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/lgfsise" title="weibo">weibo</a>
+			        
+						<a class="mail" target="_blank" href="mailto:lgf42031@gmail.com" title="mail">mail</a>
+			        
+						<a class="google" target="_blank" href="https://plus.google.com/u/0/+ChaosGLeong" title="google">google</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-monkeyrunner-python-api" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="" class="article-date">
+  	<time datetime="2015-02-16T14:27:15.000Z" itemprop="datePublished">2015-02-16</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      monkeyrunner python API
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/index.html">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="../../../../tags/index.html">测试</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="../../../../categories/index.html">测试</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="简单介绍">简单介绍</h2><p>目前Android自带的<code>Monkey</code>、<code>UiAutomator</code>、<code>MonkeyRunner</code>主要特点如下：</p>
+<ul>
+<li>Monkey：准确来说，Monkey并不算自动化测试，它只能产生随机事件流，并不能按照既定的步骤操作（建议别跑日常用的机子，重新改回设置都有的烦）；<a id="more"></a></li>
+<li>UiAutomator：简单实用，可以通过<code>text</code>、<code>hint</code>或<code>contentDescription</code>属性的值获取控件，还有配套的<code>uiautomatorviewer</code>让测试人员读取到控件中上述三个属性的值，可以做到黑盒测试；(不支持id操作或许能算是个缺点，但我认为真正意义上的黑盒测试，测试人员并不需要知道控件的id)；</li>
+<li>MonkeyRunner：操作最为简单，只需使用<code>MonkeyRecorder</code>即可录制脚本。其中<code>MonkeyDevice</code>仅支持坐标操作控件，可移植性不强，但由于可用id操作控件的<code>EasyMonkeyDevice</code>的增补，使得MonkeyRunner更实用。</li>
+</ul>
+<p>本文主要讲述的是<strong>MonkeyRunner</strong>。</p>
+<p>##MonkeyRunner详细用法<br>思前想后觉得这部分还是不写了，网上很多资料，无谓赘述，附上官方文档<a href="https://developer.android.com/tools/help/monkeyrunner_concepts.html" target="_blank" rel="external"><strong>monkeyrunner</strong></a>。顺便提一点，MonkeyRunner的脚本使用<strong><code>Python</code></strong>编写，但也可以使用Java来写，具体做法自行搜索。</p>
+<h2 id="MonkeyRunner_API">MonkeyRunner API</h2><p><a href="https://developer.android.com/tools/help/MonkeyDevice.html" target="_blank" rel="external"><strong>MonkeyDevice</strong></a>、<a href="https://developer.android.com/tools/help/MonkeyImage.html" target="_blank" rel="external"><strong>MonkeyImage</strong></a>、<a href="https://developer.android.com/tools/help/MonkeyRunner.html" target="_blank" rel="external"><strong>MonkeyRunner</strong></a>已有官方文档，所以在这只介绍<strong>EasyMonkeyDevice</strong>的Python API</p>
+<p>约定：因为以下示例常用到id，所以示例代码中<code>id=By.id(&#39;id/view&#39;)</code></p>
+<table>
+<thead>
+<tr>
+<th>返回值</th>
+<th>方法</th>
+<th>描述</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>EasyMonkeyDevice(MonkeyDevice device)</td>
+<td>构造函数</td>
+<td>device = MonkeyRunner.waitForConnection()  eDevice = EasyMonkeyDevice(device)</td>
+</tr>
+<tr>
+<td>void</td>
+<td>touch(By selector, TouchPressType type)</td>
+<td>模拟touch事件</td>
+<td>eDevice.touch(id,eDevice.DOWN_AND_UP)</td>
+</tr>
+<tr>
+<td>void</td>
+<td>type(By selector, String text)</td>
+<td>为控件(selector)输入文字</td>
+<td>eDevice.type(id,’newText’)</td>
+</tr>
+<tr>
+<td>tuple</td>
+<td>locate(By selector)</td>
+<td>获取控件的坐标及宽高，返回结果格式为(x,y,w,h)</td>
+<td>locate = eDevice.locate(id)</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>exists(By selector)</td>
+<td>检查控件是否存在，true为存在</td>
+<td>isExists = eDevice.exists(id)</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>visible(By selector)</td>
+<td>检测控件是否可见，true为可见</td>
+<td>isVisible = eDevice.visible(id)</td>
+</tr>
+<tr>
+<td>String</td>
+<td>getText(By selector)</td>
+<td>获取可输入控件的text</td>
+<td>text = eDevice.getText(id)</td>
+</tr>
+<tr>
+<td>String</td>
+<td>getFocusedWindowId()</td>
+<td>获取焦点所在控件的id</td>
+<td>idStr = getFocusedWindowId()</td>
+</tr>
+</tbody>
+</table>
+<h2 id="最后">最后</h2><p>一个简单的Demo</p>
+<figure class="highlight python"><figcaption><span>demo.py</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> com.android.monkeyrunner <span class="keyword">import</span> MonkeyRunner, MonkeyDevice</span><br><span class="line"><span class="keyword">from</span> com.android.monkeyrunner.easy <span class="keyword">import</span> EasyMonkeyDevice, By</span><br><span class="line"><span class="comment"># from com.android.monkeyrunner.recorder import MonkeyRecorder as recorder</span></span><br><span class="line"></span><br><span class="line">device = MonkeyRunner.waitForConnection()</span><br><span class="line"><span class="comment"># 录制脚本</span></span><br><span class="line"><span class="comment"># recorder.start(device)</span></span><br><span class="line"></span><br><span class="line">package = <span class="string">'chaos.demo'</span></span><br><span class="line">runComponent = package + <span class="string">'/.MainActivity'</span></span><br><span class="line"></span><br><span class="line">device.startActivity(component = runComponent)</span><br><span class="line"></span><br><span class="line">eDevice=EasyMonkeyDevice(device)</span><br><span class="line">eDevice.type(By.id(<span class="string">'id/edittext'</span>),<span class="string">'test'</span>)</span><br><span class="line">MonkeyRunner.sleep(<span class="number">2</span>)</span><br><span class="line">eDevice.touch(By.id(<span class="string">'id/notification'</span>),eDevice.DOWN_AND_UP)</span><br><span class="line">MonkeyRunner.sleep(<span class="number">0.5</span>)</span><br><span class="line">device.press(<span class="string">'KEYCODE_BACK'</span>,<span class="string">'DOWN_AND_UP'</span>)</span><br><span class="line">MonkeyRunner.sleep(<span class="number">0.5</span>)</span><br><span class="line">device.press(<span class="string">'KEYCODE_BACK'</span>,<span class="string">'DOWN_AND_UP'</span>)</span><br></pre></td></tr></table></figure>
+<p>保存后命令行输入：</p>
+<pre><code><span class="tag">monkeyrunner</span> <span class="tag">demo</span><span class="class">.py</span>
+</code></pre>
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="../../../03/18/index.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          2015年的一些小想法
+        
+      </div>
+    </a>
+  
+  
+    <a href="../../01/index.html" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">折腾完Octopress</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="monkeyrunner-python-api" data-title="monkeyrunner python API" data-url="http://chaosleong.github.io/blog"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"chaosleong"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 Chaos Leong
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="../../../../fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: /blog/
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="../../../../js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
