@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>从高德 SDK 学习 Android 动态加载资源 | ChaosLeong&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前不久跑去折腾高德 SDK 中的 HUD 功能，相信用过该功能的用户都知道 HUD 界面上的导航转向图标是动态变化的。从高德官方导航 API 文档中 AMapNaviGuide 类的描述可知，导航转向图标有23种类型。
+诶，等等，23 种？那图标应该是放在 assets 文件夹吧？总不可能是在服务器上下载吧？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从高德 SDK 学习 Android 动态加载资源">
+<meta property="og:url" content="http://chaosleong.github.io/blog/2015/10/25/conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan/index.html">
+<meta property="og:site_name" content="ChaosLeong's Blog">
+<meta property="og:description" content="前不久跑去折腾高德 SDK 中的 HUD 功能，相信用过该功能的用户都知道 HUD 界面上的导航转向图标是动态变化的。从高德官方导航 API 文档中 AMapNaviGuide 类的描述可知，导航转向图标有23种类型。
+诶，等等，23 种？那图标应该是放在 assets 文件夹吧？总不可能是在服务器上下载吧？">
+<meta property="og:updated_time" content="2015-10-27T16:08:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从高德 SDK 学习 Android 动态加载资源">
+<meta name="twitter:description" content="前不久跑去折腾高德 SDK 中的 HUD 功能，相信用过该功能的用户都知道 HUD 界面上的导航转向图标是动态变化的。从高德官方导航 API 文档中 AMapNaviGuide 类的描述可知，导航转向图标有23种类型。
+诶，等等，23 种？那图标应该是放在 assets 文件夹吧？总不可能是在服务器上下载吧？">
+  
+    <link rel="alternative" href="/atom.xml" title="ChaosLeong&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/blog//img/favicon.ico">
+  
+  <link rel="stylesheet" href="/blog/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/blog//img/favicon.png" class="js-avatar" style="width: 100%;height: 100%;opacity: 1;">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Chaos Leong</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">边迷茫边努力，迷茫也不忘前进</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/blog">主页</a></li>
+				        
+							<li><a href="/blog/archives">归档</a></li>
+				        
+							<li><a href="/blog/about">关于我</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/ChaosLeong" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="http://weibo.com/lgfsise" title="weibo">weibo</a>
+					        
+								<a class="mail" target="_blank" href="mailto:lgf42031@gmail.com" title="mail">mail</a>
+					        
+								<a class="google" target="_blank" href="https://plus.google.com/u/0/+ChaosGLeong" title="google">google</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/blog/tags/Android/" style="font-size: 20px;">Android</a> <a href="/blog/tags/Gradle/" style="font-size: 10px;">Gradle</a> <a href="/blog/tags/感言/" style="font-size: 10px;">感言</a> <a href="/blog/tags/技巧/" style="font-size: 10px;">技巧</a> <a href="/blog/tags/插件开发/" style="font-size: 10px;">插件开发</a> <a href="/blog/tags/测试/" style="font-size: 10px;">测试</a> <a href="/blog/tags/灌水/" style="font-size: 10px;">灌水</a> <a href="/blog/tags/翻译/" style="font-size: 10px;">翻译</a> <a href="/blog/tags/随想/" style="font-size: 10px;">随想</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Chaos Leong</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				
+				<img src="/blog//img/favicon.png" class="js-avatar" style="width: 100%;height: 100%;opacity: 1;">
+				
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Chaos Leong</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">边迷茫边努力，迷茫也不忘前进</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/blog">主页</a></li>
+		        
+					<li><a href="/blog/archives">归档</a></li>
+		        
+					<li><a href="/blog/about">关于我</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/ChaosLeong" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/lgfsise" title="weibo">weibo</a>
+			        
+						<a class="mail" target="_blank" href="mailto:lgf42031@gmail.com" title="mail">mail</a>
+			        
+						<a class="google" target="_blank" href="https://plus.google.com/u/0/+ChaosGLeong" title="google">google</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/blog/2015/10/25/conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan/" class="article-date">
+  	<time datetime="2015-10-25T10:04:45.000Z" itemprop="datePublished">2015-10-25</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      从高德 SDK 学习 Android 动态加载资源
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/插件开发/">插件开发</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/blog/categories/Android/">Android</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前不久跑去折腾高德 SDK 中的 HUD 功能，相信用过该功能的用户都知道 HUD 界面上的导航转向图标是动态变化的。从<a href="http://blog.csdn.net/jiangwei0910410003/article/details/47679843" target="_blank" rel="external">高德官方导航 API 文档</a>中 AMapNaviGuide 类的描述可知，导航转向图标有23种类型。</p>
+<p>诶，等等，23 种？那图标应该是放在 assets 文件夹吧？总不可能是在服务器上下载吧？<br><a id="more"></a><br>看下导航 API 的 jar 包结构。</p>
+<pre><code>AMap_ Navi_v1.<span class="number">3.0</span>_20150828.jar
+  <span class="string">|- assets</span>
+    <span class="string">|- autonavi_Resource1_1_0.png</span>
+    <span class="string">|- custtexture*.png (7 张)</span>
+  <span class="string">|- com</span>
+    <span class="string">|- amap.api.navi</span>
+    <span class="string">|- autonavi</span>
+  <span class="string">|- META-INF</span>
+</code></pre><p>纳尼？assets 上的图片总共也只有 8 张，而且图片的内容跟 HUD 毫无关系，莫非真的是从服务器下载资源？<br>用 Android Studio 打开 jar 包中的 AMapHudView.class 来看下 AMapHudView 的逻辑（AS 1.2 就引入了反编译功能）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">import</span> com.autonavi.tbt.g;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AMapHudView</span> <span class="keyword">extends</span> <span class="title">FrameLayout</span> <span class="keyword">implements</span> <span class="title">OnClickListener</span>, <span class="title">OnTouchListener</span>, <span class="title">e</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span>[] hud_imgActions = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">2130837532</span>, <span class="number">2130837532</span>, <span class="number">2130837532</span>, <span class="number">2130837533</span>, <span class="number">2130837534</span>, <span class="number">2130837535</span>, <span class="number">2130837536</span>, <span class="number">2130837537</span>, <span class="number">2130837538</span>, <span class="number">2130837539</span>, <span class="number">2130837522</span>, <span class="number">2130837523</span>, <span class="number">2130837524</span>, <span class="number">2130837525</span>, <span class="number">2130837526</span>, <span class="number">2130837527</span>, <span class="number">2130837528</span>, <span class="number">2130837529</span>, <span class="number">2130837530</span>, <span class="number">2130837531</span>&#125;;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">private</span> ImageView roadsignimg;<span class="comment">// 方向图标对应的 View</span></span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> resId;<span class="comment">// 方向图标的 id，对应 hud_imgActions 的 index，根据高德的文档，该变量值为 0-23</span></span><br><span class="line">	...</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateHudWidgetContent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.roadsignimg != <span class="keyword">null</span> &amp;&amp; <span class="keyword">this</span>.resId != <span class="number">0</span> &amp;&amp; <span class="keyword">this</span>.resId != <span class="number">1</span>) &#123;</span><br><span class="line">            Drawable var1 = g.a().getDrawable(hud_imgActions[<span class="keyword">this</span>.resId]);<span class="comment">// g.a() 返回的是 Resource 对象</span></span><br><span class="line">            <span class="keyword">this</span>.roadsignimg.setBackgroundDrawable(var1);</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先看 <code>hud_imgActions</code>，里面的值是不是很熟悉？转成16进制均为 0x7F02 开头（0x7F 是应用资源，而 0x02 则是 drawable 资源）。再看 <code>updateHudWidgetContent()</code> 方法，逻辑比较简单，通过 <code>resId</code> 获取 <code>hud_imgActions</code> 对应的 drawable id，再通过该 id 获取到对应的 Drawable 对象并将其设置到 ImageView 中。</p>
+<p>看到这，可以肯定高德 SDK 最终是通过本地资源的索引获取到 Drawable。</p>
+<p>然而我们的 apk 中并没有相应的资源，为什么能够正常获取到对应的 Drawable？我们看回上面的第12行代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Drawable var1 = g.a().getDrawable(hud_imgActions[<span class="keyword">this</span>.resId]);<span class="comment">// g.a() 返回的是 Resource 对象</span></span><br></pre></td></tr></table></figure>
+<p>我们将注意力集中到 <code>g.a()</code> 中，找到 <code>com.autonavi.tbt.g#a()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Resources <span class="title">a</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (b == <span class="keyword">null</span>) &#123;</span><br><span class="line">        b = e.getResources();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中变量 <code>e</code> 为上层传递进来的 Activity，而我们前面说过，我们的 apk 中并没有相应的资源，所以将注意力放到变量 <code>b</code> 在其他地方的赋值上。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">a</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    a = b(context.getFilesDir() + <span class="string">"/autonavi_Resource1_1_0.jar"</span>);</span><br><span class="line">    b = a(context, a);<span class="comment">// 变量 a 为 AssetManager</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> AssetManager <span class="title">b</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Class cls = Class.forName(<span class="string">"android.content.res.AssetManager"</span>);</span><br><span class="line">        AssetManager assetManager = (AssetManager) cls.getConstructor().newInstance();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            cls.getDeclaredMethod(<span class="string">"addAssetPath"</span>, String.class).invoke(assetManager, str);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable th) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> assetManager;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable th2) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Resources <span class="title">a</span><span class="params">(Context context, AssetManager assetManager)</span> </span>&#123;</span><br><span class="line">    DisplayMetrics displayMetrics = <span class="keyword">new</span> DisplayMetrics();</span><br><span class="line">    displayMetrics.setToDefaults();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Resources(assetManager, displayMetrics, context.getResources().getConfiguration());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，高德 SDK 中先通过反射实例化 AssetManager，并且调用 `addAssetPath(context.getFilesDir() + “/autonavi_Resource1_1_0.jar”)，接着实例化 Resources 对象。所以事实上是通过这个新的 Resource 来获取到对应资源的 Drawable 对象。<br>但是我们的 apk 对应的 files 目录中并不存在 autonavi_Resource1_1_0.jar，这个文件又是怎么来的？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> String k = <span class="string">"autonavi_Resource1_1_0.png"</span>;</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">b</span><span class="params">(Context var0)</span> </span>&#123;</span><br><span class="line">	String filePath = var0.getFilesDir().getAbsolutePath() + <span class="string">"/autonavi_Resource1_1_0.jar"</span>;</span><br><span class="line">	...</span><br><span class="line">	InputStream var1 = var0.getResources().getAssets().open(k);</span><br><span class="line">	File var3 = <span class="keyword">new</span> File(filePath);</span><br><span class="line">	<span class="keyword">long</span> var21 = var3.length();</span><br><span class="line">	<span class="keyword">int</span> var6 = var1.available();</span><br><span class="line">	<span class="keyword">if</span>(!var3.exists() || var21 != (<span class="keyword">long</span>)var6) &#123;</span><br><span class="line">	    ...</span><br><span class="line">	    File var22 = <span class="keyword">new</span> File(filePath);</span><br><span class="line">	    FileOutputStream var2 = <span class="keyword">new</span> FileOutputStream(var22);</span><br><span class="line">	    <span class="keyword">byte</span>[] var8 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">	</span><br><span class="line">	    <span class="keyword">int</span> var9;</span><br><span class="line">	    <span class="keyword">while</span>((var9 = var1.read(var8)) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">	        var2.write(var8, <span class="number">0</span>, var9);</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>还是 com.autonavi.tbt.g 这个类，可以看到，高德是将 jar 包内 assets 目录中的 autonavi_Resource1_1_0.png 复制到当前 apk 对应的 files 目录中，并将新的文件命名为 autonavi_Resource1_1_0.jar。</p>
+<p>再回到加载资源的问题上，为什么加载 autonavi_Resource1_1_0.jar 能索引资源？<br>因为该文件其实是 apk（高德将后缀名改成了 jar）。AssetManager 加载该 apk 后，Resource 就能通过该 AssetManager 获取到里面的相应资源。</p>
+<blockquote>
+<p>AssetManager 的相关知识请参考老罗的<a href="http://blog.csdn.net/luoshengyang/article/details/8791064" target="_blank" rel="external">《Android应用程序资源管理器（Asset Manager）的创建过程分析》</a></p>
+</blockquote>
+<p>至此，我们就可以清楚知道高德 SDK 是如何实现动态加载资源的：</p>
+<ol>
+<li>将资源 apk 放置在 jar 包的 assets 目录中；</li>
+<li>在 View 组件初始化的过程中将 assets 中的资源 apk 复制到 files 目录中；</li>
+<li>接着实例化 AssetManager，调用 addAssetPath 方法加载 files 目录中的资源 apk；</li>
+<li>然后将 AssetManager 作为参数实例化 Resouce，最后通过 Resource 对象获取资源apk 中相应的资源。</li>
+</ol>
+<h2 id="总结">总结</h2><p>将上述内容再简略，动态加载资源所必需的几个核心步骤：</p>
+<ol>
+<li>实例化 AssetManager 对象，并通过反射调用 addAssetPath(String) 方法加载目标 apk（或与 apk 文件架构一致的目录）</li>
+<li>通过第一步得到的 AssetManager 实例化 Resource 对象</li>
+<li>利用第二步得到的 Resource 对象来动态加载资源</li>
+</ol>
+<p>这里需要注意的是，目标 apk（目录）需要放在 <code>context.getFilesDir()</code> 中，不然会加载失败（addAssetPath 返回 0）。另外，目标 apk 可以不签名，因为 addAssetPath 过程并没有进行签名校验。</p>
+<h3 id="获取资源_id">获取资源 id</h3><p>实际情况中，如果我们需要获取相应的资源，就必须先获得资源对应的 id，而外部 apk 的 R.java 并不属于主 apk，这就导致了获取资源的困难。<br>目前存在的解决方案有：</p>
+<ol>
+<li>通过反射对应的 R 类获取对应的 id（极力不推荐，需要知道 field 的 name，若资源 apk 需要混淆，field name 就更不知道是什么了，再者反射的效率并不理想）</li>
+<li>通过接口获取对应的 id（优点在于灵活性高，主 apk 不需要关心资源。缺点在于若需要的资源较多，处理也较多。更多出现在获取固定资源的场景中，譬如应用换肤）</li>
+<li>直接将资源 apk 的 R.java 放在主 apk 中，通过 R 获取 id（简单粗暴，但若资源 apk 中存在对应的 R.java，会发生冲突。混淆过则不存在这个问题。该方案缺乏灵活性，需要开发人员知道需要的资源名，对应的属性等。）</li>
+</ol>
+<p>最后两种方案各有各的优缺点，至于怎么选择，还得结合自身的场景。</p>
+<h3 id="应用场景">应用场景</h3><p>动态加载资源技术目前的一些应用场景主要有：</p>
+<ol>
+<li>替换应用皮肤（如：QQ 空间）</li>
+<li>减小主 apk 的大小，非重要资源放在服务端</li>
+<li>类似于文中高德 SDK 的做法，使得 jar 包可以加载资源（这种应用可能现在比较少，以前这种做法也只是因为还没 aar）</li>
+</ol>
+<h3 id="后续">后续</h3><p>动态加载资源技术相关文章有很多，但就我目前所看到的文章只涉及如何获取 drawable、string 等资源，并没有发现关于动态加载资源 apk 中的布局文件（我姿势不对？<code>_(:зゝ∠)_</code>）。后续会分享如何动态加载资源 apk 中的布局文件。</p>
+<p>最后特别感谢 <a href="https://github.com/luckyandyzhang" target="_blank" rel="external">Andy Zhang</a>，<a href="https://github.com/MadisonRong" target="_blank" rel="external">MadisonRong</a> 两位朋友帮忙校对并对文章提出了宝贵的意见，谢谢。</p>
+<hr>
+<p>参考文章：</p>
+<p><a href="http://blog.csdn.net/jiangwei0910410003/article/details/47679843" target="_blank" rel="external">《Android中插件开发篇之—-应用换肤原理解析》</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/blog/2015/08/02/android-studio-shi-yong-gradle-da-bao-jar/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android Studio 使用 Gradle 打包 Jar</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan" data-title="从高德 SDK 学习 Android 动态加载资源" data-url="http://chaosleong.github.io/blog/blog/2015/10/25/conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"chaosleong"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 Chaos Leong
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: false,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: /blog/
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/blog/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
