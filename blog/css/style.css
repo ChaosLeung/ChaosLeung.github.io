@@ -617,7 +617,7 @@ a {
   border: 1px solid #aaf;
 }
 #header .header-nav .social a.rss {
-  background: url("/blog//blog/img/rss.png") center no-repeat #ef7522;
+  background: url("/blog//img/rss.png") center no-repeat #ef7522;
   border: 1px solid #ef7522;
 }
 #header .header-nav .social a.rss:hover {
