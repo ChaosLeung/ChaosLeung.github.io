@@ -3,17 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: 技巧 | ChaosLeong&#39;s Blog</title>
+  <title>Android Gradle 获取 APK 签名状态及对齐状态 | ChaosLeong&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="个人博客，技术分享">
-<meta property="og:type" content="website">
-<meta property="og:title" content="ChaosLeong's Blog">
-<meta property="og:url" content="http://chaosleong.github.io/blog/tags/技巧/index.html">
+  <meta name="description" content="最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。
+在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Gradle 获取 APK 签名状态及对齐状态">
+<meta property="og:url" content="http://chaosleong.github.io/blog/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/index.html">
 <meta property="og:site_name" content="ChaosLeong's Blog">
-<meta property="og:description" content="个人博客，技术分享">
+<meta property="og:description" content="最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。
+在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。">
+<meta property="og:updated_time" content="2016-05-07T18:25:40.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ChaosLeong's Blog">
-<meta name="twitter:description" content="个人博客，技术分享">
+<meta name="twitter:title" content="Android Gradle 获取 APK 签名状态及对齐状态">
+<meta name="twitter:description" content="最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。
+在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。">
   
   
     <link rel="icon" href="/blog//img/favicon.ico">
@@ -160,102 +164,112 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap">
+      <div class="body-wrap"><article id="post-Android-Gradle-获取-APK-签名状态及对齐状态" class="article article-type-post" itemscope itemprop="blogPost">
   
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/blog/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/blog/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/" class="archive-article-date">
-  	<time datetime="2016-05-07T17:35:37.000Z" itemprop="datePublished">5月 8</time>
+    <div class="article-meta">
+      <a href="/blog/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/" class="article-date">
+  	<time datetime="2016-05-07T17:35:37.000Z" itemprop="datePublished">2016-05-08</time>
 </a>
-        </div>
-    	 
+    </div>
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/blog/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/">Android Gradle 获取 APK 签名状态及对齐状态</a>
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android Gradle 获取 APK 签名状态及对齐状态
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+      </header>
+      
+      <div class="article-info article-info-post">
+        
 	<div class="article-tag tagcloud">
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Gradle/">Gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/技巧/">技巧</a></li></ul>
 	</div>
 
-          
+        
 	<div class="article-category tagcloud">
 	<a class="article-category-link" href="/blog/categories/Android/">Android</a>
 	</div>
 
 
-        </div>
         <div class="clearfix"></div>
-    </header>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。</p>
+<p>在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。</p>
+<a id="more"></a>
+<p>代码如下：（已在 <code>com.android.tools.build:gradle</code> 1.5.0，2.0.0 及 2.1.0 验证）</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">android.applicationVariants.all &#123; variant -&gt;</span><br><span class="line">    <span class="keyword">if</span> (variant.apkVariantData.signed)&#123;</span><br><span class="line">        println <span class="string">"signed"</span></span><br><span class="line">    &#125;</span><br><span class="line">    variant.outputs.each &#123; output -&gt;</span><br><span class="line">        <span class="keyword">if</span> (output.zipAlign)&#123;</span><br><span class="line">            println <span class="string">"aligned"</span></span><br><span class="line">        &#125;</span><br><span class="line">        println output.outputFile</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>PS: 有没有更简便的方法可以查看 Android Gradle Build Tools 的 API 呢？ Google 给出的 DSL 文档也只有一部分 API……求各位大大科普</p>
+
+      
+    </div>
+    
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/blog/2015/12/03/译-ProGuard-选项/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">[译] ProGuard 选项</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-    
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/blog/archives/2015" class="archive-year">2015</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/blog/2015/08/02/android-studio-shi-yong-gradle-da-bao-jar/" class="archive-article-date">
-  	<time datetime="2015-08-02T15:04:24.000Z" itemprop="datePublished">8月 2</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/blog/2015/08/02/android-studio-shi-yong-gradle-da-bao-jar/">Android Studio 使用 Gradle 打包 Jar</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Gradle/">Gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/技巧/">技巧</a></li></ul>
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
 	</div>
-
-          
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/blog/categories/Android/">Android</a>
-	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
 
-    
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android-Gradle-获取-APK-签名状态及对齐状态" data-title="Android Gradle 获取 APK 签名状态及对齐状态" data-url="http://chaosleong.github.io/blog/blog/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"chaosleong"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
 
 </div>
       <footer id="footer">
@@ -281,9 +295,9 @@
 		mathjax: true,
 		animate: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		root: /blog/

@@ -4,7 +4,7 @@
   <subtitle><![CDATA[边迷茫边努力，迷茫也不忘前进]]></subtitle>
   <link href="/blog/atom.xml" rel="self"/>
   <link href="http://chaosleong.github.io/blog/"/>
-  <updated>2015-12-03T16:22:07.000Z</updated>
+  <updated>2016-05-07T18:25:40.000Z</updated>
   <id>http://chaosleong.github.io/blog/</id>
   
   <author>
@@ -13,6 +13,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Android Gradle 获取 APK 签名状态及对齐状态]]></title>
+    <link href="http://chaosleong.github.io/blog/2016/05/08/Android-Gradle-%E8%8E%B7%E5%8F%96-APK-%E7%AD%BE%E5%90%8D%E7%8A%B6%E6%80%81%E5%8F%8A%E5%AF%B9%E9%BD%90%E7%8A%B6%E6%80%81/"/>
+    <id>http://chaosleong.github.io/blog/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/</id>
+    <published>2016-05-07T17:35:37.000Z</published>
+    <updated>2016-05-07T18:25:40.000Z</updated>
+    <content type="html"><![CDATA[<p>最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。</p>
+<p>在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。</p>
+<a id="more"></a>
+<p>代码如下：（已在 <code>com.android.tools.build:gradle</code> 1.5.0，2.0.0 及 2.1.0 验证）</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">android.applicationVariants.all &#123; variant -&gt;</span><br><span class="line">    <span class="keyword">if</span> (variant.apkVariantData.signed)&#123;</span><br><span class="line">        println <span class="string">"signed"</span></span><br><span class="line">    &#125;</span><br><span class="line">    variant.outputs.each &#123; output -&gt;</span><br><span class="line">        <span class="keyword">if</span> (output.zipAlign)&#123;</span><br><span class="line">            println <span class="string">"aligned"</span></span><br><span class="line">        &#125;</span><br><span class="line">        println output.outputFile</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>PS: 有没有更简便的方法可以查看 Android Gradle Build Tools 的 API 呢？ Google 给出的 DSL 文档也只有一部分 API……求各位大大科普</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。</p>
+<p>在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。</p>]]>
+    
+    </summary>
+    
+      <category term="Android" scheme="http://chaosleong.github.io/blog/tags/Android/"/>
+    
+      <category term="Gradle" scheme="http://chaosleong.github.io/blog/tags/Gradle/"/>
+    
+      <category term="技巧" scheme="http://chaosleong.github.io/blog/tags/%E6%8A%80%E5%B7%A7/"/>
+    
+      <category term="Android" scheme="http://chaosleong.github.io/blog/categories/Android/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[[译] ProGuard 选项]]></title>
