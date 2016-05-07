@@ -25,7 +25,8 @@ Android Studio 打 Jar 包一直是一个麻烦的事，按照网上现有的教
 
 <!-- more -->
 ## 代码
-废话不多说，先上代码（**注**：只在 Gradle Android Plugin 1.2.3 测试过）
+
+废话不多说，先上代码（**注**：只在 Gradle Android Plugin 1.5.0 测试过）
 
 ``` Groovy build.gradle
 import com.android.build.gradle.AppPlugin
@@ -35,12 +36,12 @@ import proguard.gradle.ProGuardTask
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "org.chaos.demo.jar"
-        minSdkVersion 22
+        minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -58,7 +59,7 @@ dependencies {
 }
 
 //dependsOn 可根据实际需要增加或更改
-task buildJar(dependsOn: ['compileReleaseJava'], type: Jar) {
+task buildJar(dependsOn: ['compileReleaseJavaWithJavac'], type: Jar) {
 
     appendix = "demo"
     baseName = "androidJar"
@@ -76,10 +77,12 @@ task buildJar(dependsOn: ['compileReleaseJava'], type: Jar) {
     from srcClassDir
 
     //去除路径集下部分的资源
-    exclude "org/chaos/demo/jar/BuildConfig.class"
-    exclude "org/chaos/demo/jar/BuildConfig\$*.class"
-    exclude "**/R.class"
-    exclude "**/R\$*.class"
+//    exclude "org/chaos/demo/jar/MainActivity.class"
+//    exclude "org/chaos/demo/jar/MainActivity\$*.class"
+//    exclude "org/chaos/demo/jar/BuildConfig.class"
+//    exclude "org/chaos/demo/jar/BuildConfig\$*.class"
+//    exclude "**/R.class"
+//    exclude "**/R\$*.class"
 
     //只导入资源路径集下的部分资源
     include "org/chaos/demo/jar/**/*.class"
@@ -125,6 +128,7 @@ task proguardJar(dependsOn: ['buildJar'], type: ProGuardTask) {
 ```
 
 ### 使用方法
+
 不需要混淆则运行命令
 
 	gradle buildJar
@@ -142,3 +146,6 @@ task proguardJar(dependsOn: ['buildJar'], type: ProGuardTask) {
 **buildJar** 这部分相对比较简单，很多内容网上都有教程。关键在于混淆，由于团队每个人都有自己的安装习惯，JDK、Android SDK 路径不一定一致，并不能直接写死 runtime 的路径，最后直接看 Android Plugin 源码才写出了 **proguardJar** task。
 
 至于想更多个性化的朋友，建议从源码入手。
+
+文章相关代码放置于 [Github](https://github.com/ChaosLeong/AndroidSimples/blob/master/AndroidJarDemo/build.gradle)。
+
