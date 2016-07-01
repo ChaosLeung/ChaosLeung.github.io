@@ -5,7 +5,6 @@ date: 2015-02-01 16:20:45 +0800
 comments: true
 categories: 
 - 其他
-tags:
 ---
 
 昨晚配完 Octopress 就直接砸 Github 上面，一堆默认的东西还真不怎么讨喜，于是早上起来就默默踩坑。

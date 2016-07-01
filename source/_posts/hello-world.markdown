@@ -5,8 +5,6 @@ date: 2015-02-01 10:06:37 +0800
 comments: true
 categories:
 - 其他
-tags: 
-- 灌水
 ---
 
 作为一只`程序猿`，第一篇文章还是 **_Hello World_** 比较好。

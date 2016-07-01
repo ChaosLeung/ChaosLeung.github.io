@@ -1,7 +1,9 @@
 title: '[译] ProGuard 选项'
 date: 2015-12-03 23:15:54
 tags: proguard
-categories: 工具
+categories:
+- 工具
+- 翻译
 ---
 
 > 注：只针对 Android 平台翻译了 ProGuard 选项的相关用法，更多信息请查看[官方原文](http://proguard.sourceforge.net/)。

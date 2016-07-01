@@ -4,10 +4,8 @@ title: "ApplicationId 与 PackageName"
 date: 2015-06-04 23:24:06 +0800
 comments: true
 categories:
-- 翻译
-tags:
-- 翻译
 - Android
+- 翻译
 ---
 
 > 基于 <http://blog.csdn.net/maosidiaoxian/article/details/41719357> 校对整理，感谢原文作者 [貌似掉线](http://my.csdn.net/maosidiaoxian)
