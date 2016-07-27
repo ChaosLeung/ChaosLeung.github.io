@@ -22,7 +22,7 @@
   
     <link rel="icon" href="/blog//img/favicon.ico">
   
-  <link rel="stylesheet" href="/blog/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/blog/css/style.css">
 </head>
 <body>
   <div id="container">
@@ -78,11 +78,11 @@
 					<nav class="header-menu">
 						<ul>
 						
-							<li><a href="/blog">主页</a></li>
+							<li><a href="/blog/blog">主页</a></li>
 				        
-							<li><a href="/blog/archives">归档</a></li>
+							<li><a href="/blog/blog/archives">归档</a></li>
 				        
-							<li><a href="/blog/about">关于我</a></li>
+							<li><a href="/blog/blog/about">关于我</a></li>
 				        
 						</ul>
 					</nav>
@@ -95,7 +95,7 @@
 					        
 								<a class="google" target="_blank" href="https://plus.google.com/u/0/+ChaosGLeong" title="google">google</a>
 					        
-								<a class="rss" target="_blank" href="/blog/atom.xml" title="rss">rss</a>
+								<a class="rss" target="_blank" href="/blog/blog/atom.xml" title="rss">rss</a>
 					        
 						</div>
 					</nav>
@@ -139,11 +139,11 @@
 			<nav class="header-menu">
 				<ul>
 				
-					<li><a href="/blog">主页</a></li>
+					<li><a href="/blog/blog">主页</a></li>
 		        
-					<li><a href="/blog/archives">归档</a></li>
+					<li><a href="/blog/blog/archives">归档</a></li>
 		        
-					<li><a href="/blog/about">关于我</a></li>
+					<li><a href="/blog/blog/about">关于我</a></li>
 		        
 		        <div class="clearfix"></div>
 				</ul>
@@ -157,7 +157,7 @@
 			        
 						<a class="google" target="_blank" href="https://plus.google.com/u/0/+ChaosGLeong" title="google">google</a>
 			        
-						<a class="rss" target="_blank" href="/blog/atom.xml" title="rss">rss</a>
+						<a class="rss" target="_blank" href="/blog/blog/atom.xml" title="rss">rss</a>
 			        
 				</div>
 			</nav>
@@ -209,7 +209,7 @@
 <p>在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。</p>
 <a id="more"></a>
 <p>代码如下：（已在 <code>com.android.tools.build:gradle</code> 1.5.0，2.0.0 及 2.1.0 验证）</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">android.applicationVariants.all &#123; variant -&gt;</span><br><span class="line">    <span class="keyword">if</span> (variant.apkVariantData.signed)&#123;</span><br><span class="line">        println <span class="string">"signed"</span></span><br><span class="line">    &#125;</span><br><span class="line">    variant.outputs.each &#123; output -&gt;</span><br><span class="line">        <span class="keyword">if</span> (output.zipAlign)&#123;</span><br><span class="line">            println <span class="string">"aligned"</span></span><br><span class="line">        &#125;</span><br><span class="line">        println output.outputFile</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">android.applicationVariants.all &#123; variant -&gt;</div><div class="line">    <span class="keyword">if</span> (variant.apkVariantData.signed)&#123;</div><div class="line">        println <span class="string">"signed"</span></div><div class="line">    &#125;</div><div class="line">    variant.outputs.each &#123; output -&gt;</div><div class="line">        <span class="keyword">if</span> (output.zipAlign)&#123;</div><div class="line">            println <span class="string">"aligned"</span></div><div class="line">        &#125;</div><div class="line">        println output.outputFile</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>PS: 有没有更简便的方法可以查看 Android Gradle Build Tools 的 API 呢？ Google 给出的 DSL 文档也只有一部分 API……求各位大大科普</p>
 
       
@@ -295,7 +295,7 @@
 </footer>
     </div>
     
-  <link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" type="text/css">
+  <link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css">
 
 
 <script>
@@ -312,8 +312,8 @@
 		root: /blog/
 	}
 </script>
-<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
-<script src="/blog/js/main.js" type="text/javascript"></script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/blog/js/main.js"></script>
 
 
 

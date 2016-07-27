@@ -3,18 +3,27 @@
 <head>
   <meta charset="utf-8">
   
-  <title>2015年的一些小想法 | ChaosLeong&#39;s Blog</title>
+  <title>Loader 浅析 | ChaosLeong&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="近况新年开始就忙着毕业设计，前天才把论文初稿交了上去，也算是忙完15年第一件事。">
+  <meta name="description" content="文中提及的 Loader 为 support v4 的 Loader。
+简介Loader 机制在 android 3.0 后加入 android framework，其目的主要在于方便在 Activity 和 Fragment 中加载异步数据。
+Loader 本身不具备异步加载的能力，真正赋予了异步加载能力的是 AsyncTaskLoader，而且 Loader 基本会跟 LoaderManage">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2015年的一些小想法">
-<meta property="og:url" content="http://chaosleong.github.io/blog/2015/03/18/2015nian-de-yi-xie-xiao-xiang-fa/index.html">
+<meta property="og:title" content="Loader 浅析">
+<meta property="og:url" content="http://chaosleong.github.io/blog/2016/07/25/Loader-Simple-Analysis/index.html">
 <meta property="og:site_name" content="ChaosLeong's Blog">
-<meta property="og:description" content="近况新年开始就忙着毕业设计，前天才把论文初稿交了上去，也算是忙完15年第一件事。">
-<meta property="og:updated_time" content="2015-10-16T10:28:28.000Z">
+<meta property="og:description" content="文中提及的 Loader 为 support v4 的 Loader。
+简介Loader 机制在 android 3.0 后加入 android framework，其目的主要在于方便在 Activity 和 Fragment 中加载异步数据。
+Loader 本身不具备异步加载的能力，真正赋予了异步加载能力的是 AsyncTaskLoader，而且 Loader 基本会跟 LoaderManage">
+<meta property="og:image" content="https://raw.githubusercontent.com/ChaosLeong/ImageRepository/master/blog/Loader_Source_Analysis/Loader_Structure.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/ChaosLeong/ImageRepository/master/blog/Loader_Source_Analysis/Loader_Simple_Flow.png">
+<meta property="og:updated_time" content="2016-07-27T16:31:53.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="2015年的一些小想法">
-<meta name="twitter:description" content="近况新年开始就忙着毕业设计，前天才把论文初稿交了上去，也算是忙完15年第一件事。">
+<meta name="twitter:title" content="Loader 浅析">
+<meta name="twitter:description" content="文中提及的 Loader 为 support v4 的 Loader。
+简介Loader 机制在 android 3.0 后加入 android framework，其目的主要在于方便在 Activity 和 Fragment 中加载异步数据。
+Loader 本身不具备异步加载的能力，真正赋予了异步加载能力的是 AsyncTaskLoader，而且 Loader 基本会跟 LoaderManage">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/ChaosLeong/ImageRepository/master/blog/Loader_Source_Analysis/Loader_Structure.png">
   
   
     <link rel="icon" href="/blog//img/favicon.ico">
@@ -161,11 +170,11 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-2015nian-de-yi-xie-xiao-xiang-fa" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Loader-Simple-Analysis" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/blog/2015/03/18/2015nian-de-yi-xie-xiao-xiang-fa/" class="article-date">
-  	<time datetime="2015-03-17T16:15:35.000Z" itemprop="datePublished">2015-03-18</time>
+      <a href="/blog/2016/07/25/Loader-Simple-Analysis/" class="article-date">
+  	<time datetime="2016-07-25T09:48:31.000Z" itemprop="datePublished">2016-07-25</time>
 </a>
     </div>
   
@@ -178,7 +187,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      2015年的一些小想法
+      Loader 浅析
     </h1>
   
 
@@ -186,13 +195,9 @@
       
       <div class="article-info article-info-post">
         
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/感言/">感言</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/随想/">随想</a></li></ul>
-	</div>
-
         
 	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/blog/categories/思考/">思考</a>
+	<a class="article-category-link" href="/blog/categories/Android/">Android</a>
 	</div>
 
 
@@ -202,40 +207,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="近况">近况</h2><p>新年开始就忙着毕业设计，前天才把论文初稿交了上去，也算是忙完15年第一件事。<br><a id="more"></a></p>
-<h2 id="回顾">回顾</h2><p>最近进行了一次自我检索，半年多的实习，视野开阔了不少，技术上也是有所增长的，但是欠缺的仍然很多。特别是自从跟一位很有想法的朋友走的比较近后，越来越明白到自己走的有多慢，于是又进行了一轮回顾、反思。</p>
-<p>虽说14年并没自己预期过得那么好，但也有不少收获：</p>
-<ul>
-<li>学了 Ruby</li>
-<li>Java 的基础更加巩固</li>
-<li>Android 开发有更深的了解</li>
-<li>逆向工程方面的能力有所提升</li>
-<li>相对以前更加稳重</li>
-<li>有了自己的 Mac Pro</li>
-</ul>
-<p>同时也有些遗憾：</p>
-<ul>
-<li>有些事情半路而废</li>
-<li>未能合理管理自己的时间</li>
-</ul>
-<h2 id="15年的小想法">15年的小想法</h2><p>有计划才能明晰自己的方向，见步走步虽然也是一种策略，但效率始终比事先计划好低得多。</p>
-<h3 id="技术">技术</h3><ul>
-<li>继续深入研究 Java &amp; Android</li>
-<li>搞定 Gradle</li>
-<li>学习 Ruby On Rails</li>
-<li>学习 Shell 编程</li>
-<li>将缺失的算法基础补回来</li>
-</ul>
-<h3 id="辅助">辅助</h3><ul>
-<li>培养艺术感官</li>
-<li>锻炼身体</li>
-<li>学习管理时间</li>
-<li>坚持2-3周更新一次 Blog</li>
-</ul>
-<h3 id="外语">外语</h3><ul>
-<li>恶补英语</li>
-<li>学习日语</li>
-</ul>
+        <p>文中提及的 Loader 为 support v4 的 Loader。</p>
+<h2 id="简介">简介</h2><p>Loader 机制在 android 3.0 后加入 android framework，其目的主要在于方便在 Activity 和 Fragment 中加载异步数据。</p>
+<p>Loader 本身不具备异步加载的能力，真正赋予了异步加载能力的是 <strong>AsyncTaskLoader</strong>，而且 Loader 基本会跟 LoaderManager 绑定一起使用，如独立使用 Loader，意义并不大，因为真正将 Loader 和 Activtiy、Fragment 的生命周期关联的是 LoaderManager。所以说，Loader 本身不具备太多能力，基本是负责对 Loader 状态标记的修改以及调用部分相关的回调。</p>
+<a id="more"></a>
+<p>Loader 的简单用法可以查看此链接：<a href="https://developer.android.com/guide/components/loaders.html" target="_blank" rel="external">Loaders</a>（请自备梯子）</p>
+<h2 id="Loader_的结构">Loader 的结构</h2><p>列一张 Loader 的类结构图，权当了解 Loader 中有哪些方法。</p>
+<p><img src="https://raw.githubusercontent.com/ChaosLeong/ImageRepository/master/blog/Loader_Source_Analysis/Loader_Structure.png" alt="Loader Structure"></p>
+<p><strong>ForceLoadContentObserver</strong> 继承于 <strong>ContentObserver</strong>，主要用于 <strong>CursorLoader</strong> 监听 Cursor 的数据变化，一般来说不需要用到它。</p>
+<p><strong>OnLoadCompleteListener</strong>，Loader 完成加载时会回调 onLoadComplete(Loader<d>, D) 方法。一般情况下我们不需要关心这个接口，该接口主要是给 <strong>LoaderManager</strong> 使用。</d></p>
+<p><strong>OnLoadCanceledListener</strong>，Loader 完成加载前被取消了会回调 onLoadCanceled(Loader<d>) 方法，同 <strong>OnLoadCompleteListener</strong> 一样，我们也不需要关心这个接口。</d></p>
+<p>原本打算介绍部分方法的用法，但是单从 Loader 来说并无太大意义，这里不进行叙述，之后的 LoaderManager、AsyncTaskLoader、CursorLoader 相关文章再带入相关知识。</p>
+<h2 id="Loader_的流程">Loader 的流程</h2><p>结合 AsyncTaskLoader、LoaderManager 的源码，画了一个最简单的 Loader 应有的流程，这里只需了解一下。</p>
+<p><img src="https://raw.githubusercontent.com/ChaosLeong/ImageRepository/master/blog/Loader_Source_Analysis/Loader_Simple_Flow.png" alt="Loader Simple Flow"></p>
+<h2 id="总结">总结</h2><p>_(:зゝ∠)_ Loader 还真的没什么内容可写，不过可以帮助我们后面理解及分析 LoaderManager、AsyncTaskLoader、CursorLoader，所以还是有点必要了解的。</p>
 
       
     </div>
@@ -245,18 +230,9 @@
     
 <nav id="article-nav">
   
-    <a href="/blog/2015/06/04/applicationid-yu-packagename/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          ApplicationId 与 PackageName
-        
-      </div>
-    </a>
   
-  
-    <a href="/blog/2015/02/16/monkeyrunner-python-api/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">monkeyrunner python API</div>
+    <a href="/blog/2016/05/14/Activity-数据恢复时移除-Fragment-数据/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Activity 数据恢复时移除 Fragment 数据</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -285,7 +261,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="2015nian-de-yi-xie-xiao-xiang-fa" data-title="2015年的一些小想法" data-url="http://chaosleong.github.io/blog/blog/2015/03/18/2015nian-de-yi-xie-xiao-xiang-fa/"></div>
+	<div class="ds-thread" data-thread-key="Loader-Simple-Analysis" data-title="Loader 浅析" data-url="http://chaosleong.github.io/blog/blog/2016/07/25/Loader-Simple-Analysis/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">

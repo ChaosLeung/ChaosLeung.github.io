@@ -19,7 +19,7 @@
   
     <link rel="icon" href="/blog//img/favicon.ico">
   
-  <link rel="stylesheet" href="/blog/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/blog/css/style.css">
 </head>
 <body>
   <div id="container">
@@ -75,11 +75,11 @@
 					<nav class="header-menu">
 						<ul>
 						
-							<li><a href="/blog">主页</a></li>
+							<li><a href="/blog/blog">主页</a></li>
 				        
-							<li><a href="/blog/archives">归档</a></li>
+							<li><a href="/blog/blog/archives">归档</a></li>
 				        
-							<li><a href="/blog/about">关于我</a></li>
+							<li><a href="/blog/blog/about">关于我</a></li>
 				        
 						</ul>
 					</nav>
@@ -92,7 +92,7 @@
 					        
 								<a class="google" target="_blank" href="https://plus.google.com/u/0/+ChaosGLeong" title="google">google</a>
 					        
-								<a class="rss" target="_blank" href="/blog/atom.xml" title="rss">rss</a>
+								<a class="rss" target="_blank" href="/blog/blog/atom.xml" title="rss">rss</a>
 					        
 						</div>
 					</nav>
@@ -136,11 +136,11 @@
 			<nav class="header-menu">
 				<ul>
 				
-					<li><a href="/blog">主页</a></li>
+					<li><a href="/blog/blog">主页</a></li>
 		        
-					<li><a href="/blog/archives">归档</a></li>
+					<li><a href="/blog/blog/archives">归档</a></li>
 		        
-					<li><a href="/blog/about">关于我</a></li>
+					<li><a href="/blog/blog/about">关于我</a></li>
 		        
 		        <div class="clearfix"></div>
 				</ul>
@@ -154,7 +154,7 @@
 			        
 						<a class="google" target="_blank" href="https://plus.google.com/u/0/+ChaosGLeong" title="google">google</a>
 			        
-						<a class="rss" target="_blank" href="/blog/atom.xml" title="rss">rss</a>
+						<a class="rss" target="_blank" href="/blog/blog/atom.xml" title="rss">rss</a>
 			        
 				</div>
 			</nav>
@@ -204,13 +204,13 @@
       
         <p>某些场景下（如内存不足），系统销毁 Activity 时会调用 <strong>onSaveInstanceState()</strong>，而 Fragment 也会在此方法中保存自身的状态。之后用户重新打开对应的 Activity 时，系统则会通过 <strong>onCreate(Bundle)</strong> 或者 <strong>onRestoreInstanceState(Bundle)</strong> 恢复 Activity 的状态，而 Fragment 的状态会在 <strong>onCreate(Bundle)</strong> 中恢复。</p>
 <p>某些特殊需求下，我们并不需要 Fragment 恢复之前的状态，那么就需要在 Fragment 数据恢复前移除 Fragment 的数据。首先我们来看一下 Activity 中是如何恢复 Fragment 数据的：<a id="more"></a></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> String FRAGMENTS_TAG = <span class="string">"android:fragments"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">if</span> (savedInstanceState != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Parcelable p = savedInstanceState.getParcelable(FRAGMENTS_TAG);</span><br><span class="line">        mFragments.restoreAllState(p, mLastNonConfigurationInstances != <span class="keyword">null</span></span><br><span class="line">                ? mLastNonConfigurationInstances.fragments : <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    mFragments.dispatchCreate();</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> String FRAGMENTS_TAG = <span class="string">"android:fragments"</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">    ...</div><div class="line">    <span class="keyword">if</span> (savedInstanceState != <span class="keyword">null</span>) &#123;</div><div class="line">        Parcelable p = savedInstanceState.getParcelable(FRAGMENTS_TAG);</div><div class="line">        mFragments.restoreAllState(p, mLastNonConfigurationInstances != <span class="keyword">null</span></div><div class="line">                ? mLastNonConfigurationInstances.fragments : <span class="keyword">null</span>);</div><div class="line">    &#125;</div><div class="line">    mFragments.dispatchCreate();</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>从代码中可以看到，Activity 通过读取 <strong>savedInstanceState</strong> 中对应 key 为 <strong>FRAGMENTS_TAG</strong> 的 Parcelable 对象的值来恢复 Fragment 的状态。</p>
 <p>所以我们可以通过这点入手来阻止 Fragment 状态恢复，代码如下：</p>
 <p>原生：</p>
-<figure class="highlight java"><figcaption><span>原生 Fragment</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">savedInstanceState.remove(<span class="string">"android:fragments"</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><figcaption><span>原生 Fragment</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">savedInstanceState.remove(<span class="string">"android:fragments"</span>);</div></pre></td></tr></table></figure>
 <p>Support 包：</p>
-<figure class="highlight java"><figcaption><span>Support 包的 Fragment</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">savedInstanceState.remove(<span class="string">"android:support:fragments"</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><figcaption><span>Support 包的 Fragment</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">savedInstanceState.remove(<span class="string">"android:support:fragments"</span>);</div></pre></td></tr></table></figure>
 <h2 id="总结">总结</h2><p>实际环境下这种方法用的不多，只要不是奇葩需求的情况下，一般都希望恢复 Fragment 的状态。假设某个 Activity 中有两个 Fragment，B Fragment 显示时覆盖 A。如果某个时刻显示的是 B，并且此时 Activity 因为内存不足被销毁，恢复的时候我们当然也希望显示的仍是 B。<br>但如果真遇到恢复数据时需要移除 Fragment 数据的场景，上面的方法比较实用。</p>
 <p>最后，衷心祝福正在看这篇文章你永远不会遇到这样的需求。</p>
 
@@ -221,6 +221,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/blog/2016/07/25/Loader-Simple-Analysis/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Loader 浅析
+        
+      </div>
+    </a>
   
   
     <a href="/blog/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/" id="article-nav-older" class="article-nav-link-wrap">
@@ -288,7 +297,7 @@
 </footer>
     </div>
     
-  <link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" type="text/css">
+  <link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css">
 
 
 <script>
@@ -305,8 +314,8 @@
 		root: /blog/
 	}
 </script>
-<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
-<script src="/blog/js/main.js" type="text/javascript"></script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/blog/js/main.js"></script>
 
 
 
