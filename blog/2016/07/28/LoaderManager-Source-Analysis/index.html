@@ -3,17 +3,23 @@
 <head>
   <meta charset="utf-8">
   
-  <title>ChaosLeong&#39;s Blog</title>
+  <title>LoaderManager 源码分析 | ChaosLeong&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="个人博客，技术分享">
-<meta property="og:type" content="website">
-<meta property="og:title" content="ChaosLeong's Blog">
-<meta property="og:url" content="http://chaosleong.github.io/blog/index.html">
+  <meta name="description" content="文中提及的 Loader 相关知识基于 supprot.v4 24.0.0 中的 Loader 相关源码，android framework 的基本大同小异。
+简介关于 LoaderManager，Android Developer 上写道：LoaderManager 是与 Activity 或 Fragment 相关联的抽象类，用于管理一个或多个 Loader 实例。LoaderManager">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LoaderManager 源码分析">
+<meta property="og:url" content="http://chaosleong.github.io/blog/2016/07/28/LoaderManager-Source-Analysis/index.html">
 <meta property="og:site_name" content="ChaosLeong's Blog">
-<meta property="og:description" content="个人博客，技术分享">
+<meta property="og:description" content="文中提及的 Loader 相关知识基于 supprot.v4 24.0.0 中的 Loader 相关源码，android framework 的基本大同小异。
+简介关于 LoaderManager，Android Developer 上写道：LoaderManager 是与 Activity 或 Fragment 相关联的抽象类，用于管理一个或多个 Loader 实例。LoaderManager">
+<meta property="og:image" content="https://github.com/ChaosLeong/ImageRepository/blob/master/blog/LoaderManager_Source_Analysis/LoaderManager_Structure.png">
+<meta property="og:updated_time" content="2016-08-29T10:58:38.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ChaosLeong's Blog">
-<meta name="twitter:description" content="个人博客，技术分享">
+<meta name="twitter:title" content="LoaderManager 源码分析">
+<meta name="twitter:description" content="文中提及的 Loader 相关知识基于 supprot.v4 24.0.0 中的 Loader 相关源码，android framework 的基本大同小异。
+简介关于 LoaderManager，Android Developer 上写道：LoaderManager 是与 Activity 或 Fragment 相关联的抽象类，用于管理一个或多个 Loader 实例。LoaderManager">
+<meta name="twitter:image" content="https://github.com/ChaosLeong/ImageRepository/blob/master/blog/LoaderManager_Source_Analysis/LoaderManager_Structure.png">
   
   
     <link rel="icon" href="/blog//img/favicon.ico">
@@ -160,9 +166,7 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap">
-  
-    <article id="post-LoaderManager-Source-Analysis" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-LoaderManager-Source-Analysis" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/blog/2016/07/28/LoaderManager-Source-Analysis/" class="article-date">
@@ -178,12 +182,23 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2016/07/28/LoaderManager-Source-Analysis/">LoaderManager 源码分析</a>
+    <h1 class="article-title" itemprop="name">
+      LoaderManager 源码分析
     </h1>
   
 
       </header>
+      
+      <div class="article-info article-info-post">
+        
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/blog/categories/Android/">Android</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
       
     
     <div class="article-entry" itemprop="articleBody">
@@ -224,609 +239,62 @@
       
     </div>
     
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/blog/categories/Android/">Android</a>
-	</div>
-
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/blog/2016/07/25/Loader-Simple-Analysis/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Loader 浅析</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
   
 </article>
 
 
-
-
-
-
-
-  
-    <article id="post-Loader-Simple-Analysis" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/blog/2016/07/25/Loader-Simple-Analysis/" class="article-date">
-  	<time datetime="2016-07-25T09:48:31.000Z" itemprop="datePublished">2016-07-25</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2016/07/25/Loader-Simple-Analysis/">Loader 浅析</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>文中提及的 Loader 为 support v4 的 Loader。</p>
-<h2 id="简介">简介</h2><p>Loader 机制在 android 3.0 后加入 android framework，其目的主要在于方便在 Activity 和 Fragment 中加载异步数据。</p>
-<p>Loader 本身不具备异步加载的能力，真正赋予了异步加载能力的是 <strong>AsyncTaskLoader</strong>，而且 Loader 基本会跟 LoaderManager 绑定一起使用，如独立使用 Loader，意义并不大，因为真正将 Loader 和 Activtiy、Fragment 的生命周期关联的是 LoaderManager。所以说，Loader 本身不具备太多能力，基本是负责对 Loader 状态标记的修改以及调用部分相关的回调。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/blog/categories/Android/">Android</a>
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
 	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
 
 
-      
-        <p class="article-more-link">
-          <a  href="/blog/2016/07/25/Loader-Simple-Analysis/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
 
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="LoaderManager-Source-Analysis" data-title="LoaderManager 源码分析" data-url="http://chaosleong.github.io/blog/blog/2016/07/28/LoaderManager-Source-Analysis/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"chaosleong"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
 
 
 
 
-
-
-  
-    <article id="post-Activity-数据恢复时移除-Fragment-数据" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/blog/2016/05/14/Activity-数据恢复时移除-Fragment-数据/" class="article-date">
-  	<time datetime="2016-05-14T13:55:53.000Z" itemprop="datePublished">2016-05-14</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2016/05/14/Activity-数据恢复时移除-Fragment-数据/">Activity 数据恢复时移除 Fragment 数据</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>某些场景下（如内存不足），系统销毁 Activity 时会调用 <strong>onSaveInstanceState()</strong>，而 Fragment 也会在此方法中保存自身的状态。之后用户重新打开对应的 Activity 时，系统则会通过 <strong>onCreate(Bundle)</strong> 或者 <strong>onRestoreInstanceState(Bundle)</strong> 恢复 Activity 的状态，而 Fragment 的状态会在 <strong>onCreate(Bundle)</strong> 中恢复。</p>
-<p>某些特殊需求下，我们并不需要 Fragment 恢复之前的状态，那么就需要在 Fragment 数据恢复前移除 Fragment 的数据。首先我们来看一下 Activity 中是如何恢复 Fragment 数据的：
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/小知识/">小知识</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/blog/categories/Android/">Android</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/blog/2016/05/14/Activity-数据恢复时移除-Fragment-数据/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Android-Gradle-获取-APK-签名状态及对齐状态" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/blog/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/" class="article-date">
-  	<time datetime="2016-05-07T17:35:37.000Z" itemprop="datePublished">2016-05-08</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/">Android Gradle 获取 APK 签名状态及对齐状态</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。</p>
-<p>在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Gradle/">Gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/技巧/">技巧</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/blog/categories/Android/">Android</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/blog/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-译-ProGuard-选项" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/blog/2015/12/03/译-ProGuard-选项/" class="article-date">
-  	<time datetime="2015-12-03T15:15:54.000Z" itemprop="datePublished">2015-12-03</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/12/03/译-ProGuard-选项/">[译] ProGuard 选项</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>注：只针对 Android 平台翻译了 ProGuard 选项的相关用法，更多信息请查看<a href="http://proguard.sourceforge.net/">官方原文</a>。</p>
-</blockquote>
-<h2 id="Input/Output_Options">Input/Output Options</h2><p><strong>@filename</strong><br>简短版 <code>-include filename</code></p>
-<p><strong>-include</strong> <em>filename</em><br>读取指定文件的配置参数</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/proguard/">proguard</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/blog/categories/工具/">工具</a><a class="article-category-link" href="/blog/categories/工具/翻译/">翻译</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/blog/2015/12/03/译-ProGuard-选项/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Android-动态加载-layout-资源" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/blog/2015/11/28/Android-动态加载-layout-资源/" class="article-date">
-  	<time datetime="2015-11-28T07:24:11.000Z" itemprop="datePublished">2015-11-28</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/11/28/Android-动态加载-layout-资源/">Android 动态加载 layout 资源</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>在阅读前，请确保你已经了解动态加载资源的基本知识，相关知识请阅读 <a href="http://chaosleong.github.io/blog/2015/10/25/conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan/#summary">《从高德 SDK 学习 Android 动态加载资源》</a></p>
-</blockquote>
-<p>由于 LayoutInflater 在 inflate 的过程中会调用 Context 的 <strong>getResources()</strong>、<strong>getTheme()</strong> 方法，所以在进行动态加载 layout 资源前，我们需要修改上述方法的返回值。根据不同的情况，存在两种修改方法。
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/插件开发/">插件开发</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/blog/categories/Android/">Android</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/blog/2015/11/28/Android-动态加载-layout-资源/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/blog/2015/10/25/conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan/" class="article-date">
-  	<time datetime="2015-10-25T10:04:45.000Z" itemprop="datePublished">2015-10-25</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/10/25/conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan/">从高德 SDK 学习 Android 动态加载资源</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前不久跑去折腾高德 SDK 中的 HUD 功能，相信用过该功能的用户都知道 HUD 界面上的导航转向图标是动态变化的。从<a href="http://blog.csdn.net/jiangwei0910410003/article/details/47679843">高德官方导航 API 文档</a>中 AMapNaviGuide 类的描述可知，导航转向图标有23种类型。</p>
-<p>诶，等等，23 种？那图标应该是放在 assets 文件夹吧？总不可能是在服务器上下载吧？<br>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/插件开发/">插件开发</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/blog/categories/Android/">Android</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/blog/2015/10/25/conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-android-studio-shi-yong-gradle-da-bao-jar" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/blog/2015/08/02/android-studio-shi-yong-gradle-da-bao-jar/" class="article-date">
-  	<time datetime="2015-08-02T15:04:24.000Z" itemprop="datePublished">2015-08-02</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/08/02/android-studio-shi-yong-gradle-da-bao-jar/">Android Studio 使用 Gradle 打包 Jar</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p><strong><em>注：</em></strong>该文章只适用于对 Application Plugin 的 module 进行打包 Jar 或 Library 析出的 Jar 有多余的 class</p>
-</blockquote>
-<p>Android Studio 打 Jar 包一直是一个麻烦的事，按照网上现有的教程，打包一个混淆的 jar 需要完成下列步骤：</p>
-<ol>
-<li>将 plugin 修改为 <code>library</code>（有指定 applicationId 情况下还需要注释对应代码），运行命令 <code>gradle bundleRelease</code>，等待完成</li>
-<li>找到对应 module 的 <code>build/intermediates/bundles/debug or release/classes.jar</code>（感谢 <a href="http://weibo.com/xiezefan">@ZefanXie</a> 指出）</li>
-<li>使用 jarjar 等工具剔除多余的 class</li>
-</ol>
-<p>这一个过程要改的东西比较多，于是花了些时间研究了下 Gradle 打 Jar 包。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Gradle/">Gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/技巧/">技巧</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/blog/categories/Android/">Android</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/blog/2015/08/02/android-studio-shi-yong-gradle-da-bao-jar/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-applicationid-yu-packagename" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/blog/2015/06/04/applicationid-yu-packagename/" class="article-date">
-  	<time datetime="2015-06-04T15:24:06.000Z" itemprop="datePublished">2015-06-04</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/06/04/applicationid-yu-packagename/">ApplicationId 与 PackageName</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>基于 <a href="http://blog.csdn.net/maosidiaoxian/article/details/41719357">http://blog.csdn.net/maosidiaoxian/article/details/41719357</a> 校对整理，感谢原文作者 <a href="http://my.csdn.net/maosidiaoxian">貌似掉线</a></p>
-</blockquote>
-<p>Android 应用都有自己的包名。包名是设备上每个应用程序的唯一标识，同样也是 Google Play 商店里的唯一标识。就是说，假如你已经使用某个包名来发布应用，<strong>就不能再去改变应用的包名</strong>，因为这样做会导致你的应用被视为一个全新的应用，你现有的用户也不会收到应用的更新通知。<br>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/blog/categories/Android/">Android</a><a class="article-category-link" href="/blog/categories/Android/翻译/">翻译</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/blog/2015/06/04/applicationid-yu-packagename/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-2015nian-de-yi-xie-xiao-xiang-fa" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/blog/2015/03/18/2015nian-de-yi-xie-xiao-xiang-fa/" class="article-date">
-  	<time datetime="2015-03-17T16:15:35.000Z" itemprop="datePublished">2015-03-18</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/03/18/2015nian-de-yi-xie-xiao-xiang-fa/">2015年的一些小想法</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="近况">近况</h2><p>新年开始就忙着毕业设计，前天才把论文初稿交了上去，也算是忙完15年第一件事。<br>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/感言/">感言</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/随想/">随想</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/blog/categories/思考/">思考</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/blog/2015/03/18/2015nian-de-yi-xie-xiao-xiang-fa/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-  
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/blog/page/2/">2</a><a class="extend next" rel="next" href="/blog/page/2/">Next &raquo;</a>
-    </nav>
-  
 </div>
       <footer id="footer">
   <div class="outer">
@@ -850,8 +318,8 @@
 		fancybox: true,
 		mathjax: true,
 		animate: false,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
