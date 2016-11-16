@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="技巧,Gradle," />
+  <meta name="keywords" content="翻译," />
 
 
 
@@ -86,19 +86,25 @@
 
 
 
-<meta name="description" content="最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。
-在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。">
+<meta name="description" content="原文地址：Fast Android asset theming with ColorFilter
+
+从 Android L 开始，Material Theme 能够借助某些属性主题化 APP（图标及其他） 
+12345&amp;lt;style name=&quot;AppTheme&quot; parent=&quot;android:Theme.Material&quot;&amp;gt;  &amp;lt;item name=&quot;android:colo">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android Gradle 获取 APK 签名状态及对齐状态">
-<meta property="og:url" content="http://chaosleong.github.io/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/index.html">
+<meta property="og:title" content="[译] 使用 ColorFilter 快速地主题化">
+<meta property="og:url" content="http://chaosleong.github.io/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/index.html">
 <meta property="og:site_name" content="ChaosLeong's Blog">
-<meta property="og:description" content="最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。
-在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。">
-<meta property="og:updated_time" content="2016-08-29T11:19:00.000Z">
+<meta property="og:description" content="原文地址：Fast Android asset theming with ColorFilter
+
+从 Android L 开始，Material Theme 能够借助某些属性主题化 APP（图标及其他） 
+12345&amp;lt;style name=&quot;AppTheme&quot; parent=&quot;android:Theme.Material&quot;&amp;gt;  &amp;lt;item name=&quot;android:colo">
+<meta property="og:updated_time" content="2016-11-16T04:01:27.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android Gradle 获取 APK 签名状态及对齐状态">
-<meta name="twitter:description" content="最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。
-在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。">
+<meta name="twitter:title" content="[译] 使用 ColorFilter 快速地主题化">
+<meta name="twitter:description" content="原文地址：Fast Android asset theming with ColorFilter
+
+从 Android L 开始，Material Theme 能够借助某些属性主题化 APP（图标及其他） 
+12345&amp;lt;style name=&quot;AppTheme&quot; parent=&quot;android:Theme.Material&quot;&amp;gt;  &amp;lt;item name=&quot;android:colo">
 
 
 
@@ -119,9 +125,9 @@
 
 
 
-  <link rel="canonical" href="http://chaosleong.github.io/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/"/>
+  <link rel="canonical" href="http://chaosleong.github.io/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/"/>
 
-  <title> Android Gradle 获取 APK 签名状态及对齐状态 | ChaosLeong's Blog </title>
+  <title> [译] 使用 ColorFilter 快速地主题化 | ChaosLeong's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -261,7 +267,7 @@
             
             
               
-                Android Gradle 获取 APK 签名状态及对齐状态
+                [译] 使用 ColorFilter 快速地主题化
               
             
           </h1>
@@ -273,8 +279,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-08T01:35:37+08:00" content="2016-05-08">
-              2016-05-08
+            <time itemprop="dateCreated" datetime="2016-11-16T09:44:55+08:00" content="2016-11-16">
+              2016-11-16
             </time>
           </span>
 
@@ -303,8 +309,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/" itemprop="commentsCount"></span>
+                <a href="/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/16/Fast-Android-asset-theming-with-ColorFilter/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -327,12 +333,33 @@
       
 
       
-        <p>最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。</p>
-<p>在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。</p>
+        <blockquote>
+<p>原文地址：<a href="http://blog.danlew.net/2014/08/18/fast-android-asset-theming-with-colorfilter/" target="_blank" rel="external">Fast Android asset theming with ColorFilter</a></p>
+</blockquote>
+<p>从 Android L 开始，<a href="2">Material Theme</a> 能够借助某些属性主题化 APP（图标及其他） </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"AppTheme"</span> <span class="attr">parent</span>=<span class="string">"android:Theme.Material"</span>&gt;</span><span class="xml"></span></div><div class="line">  <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:colorPrimary"</span>&gt;</span>@color/primary<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:colorPrimaryDark"</span>&gt;</span>@color/primary_dark<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:colorAccent"</span>&gt;</span>@color/accent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
 <a id="more"></a>
-<p>代码如下：（已在 <code>com.android.tools.build:gradle</code> 1.5.0，2.0.0 及 2.1.0 验证）</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">android.applicationVariants.all &#123; variant -&gt;</div><div class="line">    <span class="keyword">if</span> (variant.apkVariantData.signed)&#123;</div><div class="line">        println <span class="string">"signed"</span></div><div class="line">    &#125;</div><div class="line">    variant.outputs.each &#123; output -&gt;</div><div class="line">        <span class="keyword">if</span> (output.zipAlign)&#123;</div><div class="line">            println <span class="string">"aligned"</span></div><div class="line">        &#125;</div><div class="line">        println output.outputFile</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>PS: 有没有更简便的方法可以查看 Android Gradle Build Tools 的 API 呢？ Google 给出的 DSL 文档也只有一部分 API……求各位大大科普</p>
+<p>这种方式能够节省很多时间。只需修改一次就能改变整个 APP 的颜色，或调整单个 drawable 的颜色，而不需要找设计师拿新的资源。</p>
+<p>我们可以通过查看 ImageView 的 <a href="https://developer.android.com/reference/android/widget/ImageView.html#attr_android:tint" target="_blank" rel="external"><code>android:tint</code></a> 属性来了解这种方式是如何执行的。你可以在 xml 中设置一个 tint color，噢！资源的颜色已经不一样了！</p>
+<p>对于 ImageView 的 tint 属性，应当注意两点：</p>
+<ul>
+<li><p>ImageView 的 tint 会混合 tint color 以及原来的资源。你希望 tint color 为主，而不是将 tint 叠加于现有颜色的上方。例如，如果原来资源是黑色的（#FF000000），而你希望它变成 #77FFFFFF（半透白色阴影），最终你得到的是白色阴影叠加在黑色背景之上。</p>
+</li>
+<li><p><code>android:tint</code> 仅限于 ImageView，但你想全部有 Drawable 的 View 也能实现这种效果。</p>
+</li>
+</ul>
+<p>通过阅读 ImageView 中 tint 相关的实现，可以知道通过 <a href="https://developer.android.com/reference/android/graphics/ColorFilter.html" target="_blank" rel="external">ColorFilter</a> 即能轻易地解决上述两个问题。更详细地，ImageView 使用了 <a href="http://ssp.impulsetrain.com/porterduff.html" target="_blank" rel="external">Porter/Duff</a> 将相应颜色应用到图片的上层来合成而达到 tint 的效果。</p>
+<p>为了解决第一个问题，我们只需要使用不同的 Porter/Duff 模式。ImageView 使用的是 <code>PorterDuff.Mode.SRC_ATOP</code>，该模式将 tint color 叠加于图片的上层中（但仍然将原图绘制在下方）。对于主题化，我们实际需要的是 <code>PorterDuff.Mode.SRC_IN</code>，该模式只会绘制 tint color。</p>
+<p>第二个问题也能轻易地避免，因为所有 Drawable 对象都有 <code>setColorFilter()</code> 方法。</p>
+<p>利用该方法将相应主题颜色应用到 View 的背景中的简单实例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Resources res = getResources();</div><div class="line">Drawable background = res.getDrawable(R.drawable.background);</div><div class="line"><span class="keyword">int</span> primaryColor = res.getColor(R.color.primary);</div><div class="line">background.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN);</div><div class="line">View view = findViewById(R.id.my_view);</div><div class="line">view.setBackgroundDrawable(background);</div></pre></td></tr></table></figure>
+<p>你也可以封装一个可复用的用于创建不同颜色 Drawable 的方法： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Drawable <span class="title">getTintedDrawable</span><span class="params">(Resources res,</span></span></div><div class="line">  @DrawableRes <span class="keyword">int</span> drawableResId, @ColorRes <span class="keyword">int</span> colorResId) &#123;</div><div class="line">    Drawable drawable = res.getDrawable(drawableResId);</div><div class="line">    <span class="keyword">int</span> color = res.getColor(colorResId);</div><div class="line">    drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);</div><div class="line">    <span class="keyword">return</span> drawable;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>（附注：使用 <code>@DrawableRes</code>、<code>@ColorRes</code> 注解可以帮助我们避免调用方法时传入错误的参数。）</p>
+<p>虽然这种方式不如 Android L 那么方便地主题化，但该方法可向下兼容，所以你也可以考虑使用。</p>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="Added-July-24-2015"><a href="#Added-July-24-2015" class="headerlink" title="Added July 24, 2015"></a>Added July 24, 2015</h3><p>提醒一句：使用 <code>ColorFilter</code> 时会影响到 <code>Drawable</code> 的状态共享。</p>
+<p>作为优化，Drawable 会在应用内共享。例如，在不同的 <code>Toolbar</code> 中使用相同的 Action Bar 图标实际上只会产生一个 Drawable。同样地，如果你使用 <code>ColorFilter</code>，你可能会发现所有的 Drawable 都会发生变化即使你希望只改变其中一个。</p>
+<p><a href="http://android-developers.blogspot.com/2009/05/drawable-mutations.html" target="_blank" rel="external">这篇文章</a>更深入地介绍了这种优化策略。如果你正在使用 <code>ColorFilter</code> 并且不希望改变所有的 Drawable，确保先调用 <code>Drawable.mutate()</code> 再执行其他操作。</p>
 
       
     </div>
@@ -355,9 +382,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/技巧/" rel="tag">#技巧</a>
-          
-            <a href="/tags/Gradle/" rel="tag">#Gradle</a>
+            <a href="/tags/翻译/" rel="tag">#翻译</a>
           
         </div>
       
@@ -366,17 +391,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/12/03/译-ProGuard-选项/" rel="next" title="[译] ProGuard 选项">
-                <i class="fa fa-chevron-left"></i> [译] ProGuard 选项
+              <a href="/2016/07/28/LoaderManager-Source-Analysis/" rel="next" title="LoaderManager 源码分析">
+                <i class="fa fa-chevron-left"></i> LoaderManager 源码分析
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/05/14/Activity-数据恢复时移除-Fragment-数据/" rel="prev" title="Activity 数据恢复时移除 Fragment 数据">
-                Activity 数据恢复时移除 Fragment 数据 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -402,8 +423,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/"
-           data-title="Android Gradle 获取 APK 签名状态及对齐状态" data-url="http://chaosleong.github.io/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/">
+      <div class="ds-thread" data-thread-key="2016/11/16/Fast-Android-asset-theming-with-ColorFilter/"
+           data-title="[译] 使用 ColorFilter 快速地主题化" data-url="http://chaosleong.github.io/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/">
       </div>
     
   </div>
@@ -521,7 +542,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">1.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Added-July-24-2015"><span class="nav-number">1.1.</span> <span class="nav-text">Added July 24, 2015</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
