@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="翻译," />
+  <meta name="keywords" content="技巧," />
 
 
 
@@ -86,25 +86,16 @@
 
 
 
-<meta name="description" content="原文地址：Fast Android asset theming with ColorFilter
-
-从 Android L 开始，Material Theme 能够借助某些属性主题化 APP（图标及其他） 
-12345&amp;lt;style name=&quot;AppTheme&quot; parent=&quot;android:Theme.Material&quot;&amp;gt;  &amp;lt;item name=&quot;android:colo">
+<meta name="description" content="某些场景下，我们需要基于某个仓库的 tag、branch 或者 commit 来进行二次开发。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="[译] 使用 ColorFilter 快速地主题化">
-<meta property="og:url" content="http://chaosleong.github.io/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/index.html">
+<meta property="og:title" content="Forking a Repository">
+<meta property="og:url" content="http://chaosleong.github.io/2016/11/18/Forking-a-Repository/index.html">
 <meta property="og:site_name" content="ChaosLeong's Blog">
-<meta property="og:description" content="原文地址：Fast Android asset theming with ColorFilter
-
-从 Android L 开始，Material Theme 能够借助某些属性主题化 APP（图标及其他） 
-12345&amp;lt;style name=&quot;AppTheme&quot; parent=&quot;android:Theme.Material&quot;&amp;gt;  &amp;lt;item name=&quot;android:colo">
-<meta property="og:updated_time" content="2016-11-16T04:01:27.000Z">
+<meta property="og:description" content="某些场景下，我们需要基于某个仓库的 tag、branch 或者 commit 来进行二次开发。">
+<meta property="og:updated_time" content="2016-11-19T03:12:02.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="[译] 使用 ColorFilter 快速地主题化">
-<meta name="twitter:description" content="原文地址：Fast Android asset theming with ColorFilter
-
-从 Android L 开始，Material Theme 能够借助某些属性主题化 APP（图标及其他） 
-12345&amp;lt;style name=&quot;AppTheme&quot; parent=&quot;android:Theme.Material&quot;&amp;gt;  &amp;lt;item name=&quot;android:colo">
+<meta name="twitter:title" content="Forking a Repository">
+<meta name="twitter:description" content="某些场景下，我们需要基于某个仓库的 tag、branch 或者 commit 来进行二次开发。">
 
 
 
@@ -132,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://chaosleong.github.io/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/"/>
+  <link rel="canonical" href="http://chaosleong.github.io/2016/11/18/Forking-a-Repository/"/>
 
 
 
 
 
-  <title> [译] 使用 ColorFilter 快速地主题化 | ChaosLeong's Blog </title>
+  <title> Forking a Repository | ChaosLeong's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -269,7 +260,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/">
+  <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2016/11/18/Forking-a-Repository/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Chaos Leong">
@@ -293,7 +284,7 @@
             
             
               
-                [译] 使用 ColorFilter 快速地主题化
+                Forking a Repository
               
             
           </h1>
@@ -306,8 +297,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-16T09:44:55+08:00">
-                2016-11-16
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-18T10:45:19+08:00">
+                2016-11-18
               </time>
             
 
@@ -325,8 +316,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/Git/" itemprop="url" rel="index">
+                    <span itemprop="name">Git</span>
                   </a>
                 </span>
 
@@ -340,8 +331,8 @@
             
               <span class="post-comments-count">
                 <span class="post-meta-divider">|</span>
-                <a href="/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/16/Fast-Android-asset-theming-with-ColorFilter/" itemprop="commentCount"></span>
+                <a href="/2016/11/18/Forking-a-Repository/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/18/Forking-a-Repository/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -367,33 +358,67 @@
       
 
       
-        <blockquote>
-<p>原文地址：<a href="http://blog.danlew.net/2014/08/18/fast-android-asset-theming-with-colorfilter/" target="_blank" rel="external">Fast Android asset theming with ColorFilter</a></p>
-</blockquote>
-<p>从 Android L 开始，<a href="2">Material Theme</a> 能够借助某些属性主题化 APP（图标及其他） </p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"AppTheme"</span> <span class="attr">parent</span>=<span class="string">"android:Theme.Material"</span>&gt;</span><span class="xml"></span></div><div class="line">  <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:colorPrimary"</span>&gt;</span>@color/primary<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:colorPrimaryDark"</span>&gt;</span>@color/primary_dark<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:colorAccent"</span>&gt;</span>@color/accent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+        <p>某些场景下，我们需要基于某个仓库的 <code>tag</code>、<code>branch</code> 或者 <code>commit</code> 来进行二次开发。</p>
 <a id="more"></a>
-<p>这种方式能够节省很多时间。只需修改一次就能改变整个 APP 的颜色，或调整单个 drawable 的颜色，而不需要找设计师拿新的资源。</p>
-<p>我们可以通过查看 ImageView 的 <a href="https://developer.android.com/reference/android/widget/ImageView.html#attr_android:tint" target="_blank" rel="external"><code>android:tint</code></a> 属性来了解这种方式是如何执行的。你可以在 xml 中设置一个 tint color，噢！资源的颜色已经不一样了！</p>
-<p>对于 ImageView 的 tint 属性，应当注意两点：</p>
+<p>例如，我们打算基于 <code>CyanogenMod/android_packages_apps_Launcher3</code> 进行二次功能开发，一般情况下我们需要 fork 一份源码到自己的 Github 上进行开发（当然也有其他途径），并且在 CM 更新 Launcher3 后我们还能通过 rebase 或 merge 更新 CM 的代码。</p>
+<p>又如，直接在「Source」上 checkout 一条新的分支进行开发，并且如果 master 上有做什么更新，也可以通过 rebase 或 merge 同步更新。</p>
+<h2 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h2><p>熟悉 Git 的朋友们，日常中对于 Fork 和 Branch 也不会陌生。稍有留意的，就能明白这两者之间不同方面的优劣。</p>
+<h3 id="Fork"><a href="#Fork" class="headerlink" title="Fork"></a>Fork</h3><p>使用 fork 方式进行「分叉」，优点有：</p>
 <ul>
-<li><p>ImageView 的 tint 会混合 tint color 以及原来的资源。你希望 tint color 为主，而不是将 tint 叠加于现有颜色的上方。例如，如果原来资源是黑色的（#FF000000），而你希望它变成 #77FFFFFF（半透白色阴影），最终你得到的是白色阴影叠加在黑色背景之上。</p>
-</li>
-<li><p><code>android:tint</code> 仅限于 ImageView，但你想全部有 Drawable 的 View 也能实现这种效果。</p>
-</li>
+<li>能独立于「Source」进行开发</li>
+<li>「Source」仓库的更新、优化我们能够比较方便地同步更新</li>
 </ul>
-<p>通过阅读 ImageView 中 tint 相关的实现，可以知道通过 <a href="https://developer.android.com/reference/android/graphics/ColorFilter.html" target="_blank" rel="external">ColorFilter</a> 即能轻易地解决上述两个问题。更详细地，ImageView 使用了 <a href="http://ssp.impulsetrain.com/porterduff.html" target="_blank" rel="external">Porter/Duff</a> 将相应颜色应用到图片的上层来合成而达到 tint 的效果。</p>
-<p>为了解决第一个问题，我们只需要使用不同的 Porter/Duff 模式。ImageView 使用的是 <code>PorterDuff.Mode.SRC_ATOP</code>，该模式将 tint color 叠加于图片的上层中（但仍然将原图绘制在下方）。对于主题化，我们实际需要的是 <code>PorterDuff.Mode.SRC_IN</code>，该模式只会绘制 tint color。</p>
-<p>第二个问题也能轻易地避免，因为所有 Drawable 对象都有 <code>setColorFilter()</code> 方法。</p>
-<p>利用该方法将相应主题颜色应用到 View 的背景中的简单实例：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Resources res = getResources();</div><div class="line">Drawable background = res.getDrawable(R.drawable.background);</div><div class="line"><span class="keyword">int</span> primaryColor = res.getColor(R.color.primary);</div><div class="line">background.setColorFilter(primaryColor, PorterDuff.Mode.SRC_IN);</div><div class="line">View view = findViewById(R.id.my_view);</div><div class="line">view.setBackgroundDrawable(background);</div></pre></td></tr></table></figure>
-<p>你也可以封装一个可复用的用于创建不同颜色 Drawable 的方法： </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Drawable <span class="title">getTintedDrawable</span><span class="params">(Resources res,</span></span></div><div class="line">  @DrawableRes <span class="keyword">int</span> drawableResId, @ColorRes <span class="keyword">int</span> colorResId) &#123;</div><div class="line">    Drawable drawable = res.getDrawable(drawableResId);</div><div class="line">    <span class="keyword">int</span> color = res.getColor(colorResId);</div><div class="line">    drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);</div><div class="line">    <span class="keyword">return</span> drawable;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>（附注：使用 <code>@DrawableRes</code>、<code>@ColorRes</code> 注解可以帮助我们避免调用方法时传入错误的参数。）</p>
-<p>虽然这种方式不如 Android L 那么方便地主题化，但该方法可向下兼容，所以你也可以考虑使用。</p>
-<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="Added-July-24-2015"><a href="#Added-July-24-2015" class="headerlink" title="Added July 24, 2015"></a>Added July 24, 2015</h3><p>提醒一句：使用 <code>ColorFilter</code> 时会影响到 <code>Drawable</code> 的状态共享。</p>
-<p>作为优化，Drawable 会在应用内共享。例如，在不同的 <code>Toolbar</code> 中使用相同的 Action Bar 图标实际上只会产生一个 Drawable。同样地，如果你使用 <code>ColorFilter</code>，你可能会发现所有的 Drawable 都会发生变化即使你希望只改变其中一个。</p>
-<p><a href="http://android-developers.blogspot.com/2009/05/drawable-mutations.html" target="_blank" rel="external">这篇文章</a>更深入地介绍了这种优化策略。如果你正在使用 <code>ColorFilter</code> 并且不希望改变所有的 Drawable，确保先调用 <code>Drawable.mutate()</code> 再执行其他操作。</p>
+<p>缺点在于：</p>
+<ul>
+<li>同步「Source」的代码时相对 branch 会比较麻烦，需要 fetch「Source」或者 add 一个 new remote 后再 merge</li>
+<li>更多的仓库</li>
+</ul>
+<h3 id="Branch"><a href="#Branch" class="headerlink" title="Branch"></a>Branch</h3><p>而使用 branch 进行「分叉」，优点在于：</p>
+<ul>
+<li>能直接对 source branch 进行 rebase 或 merge</li>
+</ul>
+<p>而缺点在于：</p>
+<ul>
+<li>（可能）会导致仓库存在过多的 branches 或 tags</li>
+<li>更大的仓库</li>
+</ul>
+<h2 id="选择"><a href="#选择" class="headerlink" title="选择"></a>选择</h2><p>「Fork」和「Branch」的选择，个人更倾向于「Fork」。虽然「Branch」在更新的时候会更快捷，但是「Fork」避免了一堆 Branches 和 Tags，相比之下看着更舒服点（略鸡肋的理由）。</p>
+<p>另一个更重要的理由是，考虑以下场景：</p>
+<p>我们需要基于 AOSP 6.0 进行不同的产品开发，而不同产品间的 APPs 以及系统 UI 不同。另有一个团队根据 Google 的修改维护这个 AOSP 6.0 的镜像，该镜像只会更新 framework 或者 firmware 等同享的内容（也可以当作该镜像只有除 APPs 及 UI 相关外的代码）。</p>
+<p>当我们有新的产品需要开发时，只需要 frok 一份最新的 master 镜像进行开发即可，而且最新的镜像也不会有 UI 相关的 commit。这样做则避免了在 AOSP 的 commit log 上看到负责 APPs 开发的人员的 commit，而作为 APPs 开发的人员也可以忽略底层开发人员的 commit（题外话：偶尔也需要找底层的锅_(:зゝ∠)_）。</p>
+<p>这样的情况下当然是用「Fork」更好，不是吗？</p>
+<h2 id="Forking-a-Repository"><a href="#Forking-a-Repository" class="headerlink" title="Forking a Repository"></a>Forking a Repository</h2><p>用 Github 的同学，请注意 Github 不支持 fork 自己的仓库（所有权属于自己）且需自己手动同步。而 Bitbucket 则既可以 fork 别人的仓库，又可以 fork 自己的仓库，并且在无冲突的情况下能直接同步 source 的代码。</p>
+<h3 id="Forking"><a href="#Forking" class="headerlink" title="Forking"></a>Forking</h3><p>如果不借助 Github、Bitbucket 等平台的 fork 功能，如何 fork 仓库？</p>
+<p>主要思路如下：</p>
+<ol>
+<li>Clone source 仓库，<code>git clone https://github.com/whoever/whatever.git</code></li>
+<li>选择基点（<code>tag</code>，<code>branch</code> or <code>commit</code>）并以此作为 master，<code>git checkout tag</code>，<code>git branch -d master</code>，<code>git checkout -b master</code></li>
+<li>修改 remote URLs 为新仓库的 URLs，<code>git remote set-url origin https://github.com/whoever/new-whatever.git</code></li>
+</ol>
+<p>或者</p>
+<ol>
+<li>初始化本地仓库，<code>git init</code></li>
+<li>添加 source 仓库，<code>git remote add source https://github.com/whoever/whatever.git</code></li>
+<li>Fetch source 仓库的代码，<code>git fetch source</code> 或 <code>git fetch source branch_name</code></li>
+<li>合并特定的 commit，<code>git merge commit</code></li>
+</ol>
+<h3 id="Syncing"><a href="#Syncing" class="headerlink" title="Syncing"></a>Syncing</h3><p>如果需要同步 source 仓库的更新，有两种方法：</p>
+<h4 id="添加-Remote"><a href="#添加-Remote" class="headerlink" title="添加 Remote"></a>添加 Remote</h4><ol>
+<li>添加 source remote，命名为 “source”: <code>git remote add source https://github.com/whoever/whatever.git</code></li>
+<li>Fetch source remote: <code>git fetch source</code></li>
+<li>确保你的仓库在 master 分支: <code>git checkout master</code></li>
+<li>合并 source/master 上的 commit: <code>git merge source/master</code>，或者 <code>git merge commit</code> 其中 commit 是 source 上的某一个 commit hash</li>
+</ol>
+<h4 id="不添加-Remote"><a href="#不添加-Remote" class="headerlink" title="不添加 Remote"></a>不添加 Remote</h4><ol>
+<li><code>git fetch https://github.com/whoever/whatever.git</code> 或者 <code>git fetch https://github.com/whoever/whatever.git branch_name</code></li>
+<li><code>git merge commit</code>，如果是最后一个 commit，可以直接 <code>git merge FETCH_HEAD</code></li>
+</ol>
+<p>相对来说，更建议添加一个 Remote，避免每次都要输入 URLs 以及 git <code>Counting objects</code> 过多。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>无论「Fork」或者「Branch」，本质上是为了提高我们的效率，不至于被各种信息分离关注点。如果其中一种方式导致工作量增加，不就是本末倒置？所以在使用「分叉」之前，请先考虑自己的场景该使用哪种方式。</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
+<li><a href="http://stackoverflow.com/a/31460870/3351990" target="_blank" rel="external">Retrieve specific commit from a remote Git repository</a></li>
+<li><a href="http://stackoverflow.com/a/7244456/3351990" target="_blank" rel="external">How do I update a GitHub forked repository?</a></li>
+</ul>
 
       
     </div>
@@ -417,7 +442,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/翻译/" rel="tag"># 翻译</a>
+            <a href="/tags/技巧/" rel="tag"># 技巧</a>
           
         </div>
       
@@ -426,8 +451,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/07/28/LoaderManager-Source-Analysis/" rel="next" title="LoaderManager 源码分析">
-                <i class="fa fa-chevron-left"></i> LoaderManager 源码分析
+              <a href="/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/" rel="next" title="[译] 使用 ColorFilter 快速地主题化">
+                <i class="fa fa-chevron-left"></i> [译] 使用 ColorFilter 快速地主题化
               </a>
             
           </div>
@@ -435,10 +460,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/11/18/Forking-a-Repository/" rel="prev" title="Forking a Repository">
-                Forking a Repository <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -464,8 +485,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/11/16/Fast-Android-asset-theming-with-ColorFilter/"
-           data-title="[译] 使用 ColorFilter 快速地主题化" data-url="http://chaosleong.github.io/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/">
+      <div class="ds-thread" data-thread-key="2016/11/18/Forking-a-Repository/"
+           data-title="Forking a Repository" data-url="http://chaosleong.github.io/2016/11/18/Forking-a-Repository/">
       </div>
     
   </div>
@@ -569,7 +590,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">1.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Added-July-24-2015"><span class="nav-number">1.1.</span> <span class="nav-text">Added July 24, 2015</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#比较"><span class="nav-number">1.</span> <span class="nav-text">比较</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Fork"><span class="nav-number">1.1.</span> <span class="nav-text">Fork</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Branch"><span class="nav-number">1.2.</span> <span class="nav-text">Branch</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选择"><span class="nav-number">2.</span> <span class="nav-text">选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Forking-a-Repository"><span class="nav-number">3.</span> <span class="nav-text">Forking a Repository</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Forking"><span class="nav-number">3.1.</span> <span class="nav-text">Forking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Syncing"><span class="nav-number">3.2.</span> <span class="nav-text">Syncing</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#添加-Remote"><span class="nav-number">3.2.1.</span> <span class="nav-text">添加 Remote</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不添加-Remote"><span class="nav-number">3.2.2.</span> <span class="nav-text">不添加 Remote</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">5.</span> <span class="nav-text">References</span></a></li></ol></div>
             
 
           </div>
