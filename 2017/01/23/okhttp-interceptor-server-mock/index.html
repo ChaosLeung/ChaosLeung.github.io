@@ -86,16 +86,27 @@
 
 
 
-<meta name="description" content="某些场景下，我们需要基于某个仓库的 tag、branch 或者 commit 来进行二次开发。">
+<meta name="description" content="背景客户端开发过程中，偶尔我们会碰到服务端 API 尚未部署，而客户端又需要数据调试的情况。这时我们就可以根据与服务端协商定好的接口模拟数据的返回。
+思路主要思路是通过拦截网络请求，返回模拟数据。而根据所处的环境不同，拦截方式可分为两种：
+
+由接受网络请求的 PC 使用抓包工具进行拦截； 优点：不依赖客户端平台，无需变更客户端代码 缺点：客户端与拦截工具需处于同一网络环境下，一旦 PC 的 IP">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Forking a Repository">
-<meta property="og:url" content="http://chaosleong.github.io/2016/11/18/Forking-a-Repository/index.html">
+<meta property="og:title" content="利用 OkHttp Interceptor 模拟数据">
+<meta property="og:url" content="http://chaosleong.github.io/2017/01/23/okhttp-interceptor-server-mock/index.html">
 <meta property="og:site_name" content="ChaosLeong's Blog">
-<meta property="og:description" content="某些场景下，我们需要基于某个仓库的 tag、branch 或者 commit 来进行二次开发。">
-<meta property="og:updated_time" content="2016-11-19T03:12:02.000Z">
+<meta property="og:description" content="背景客户端开发过程中，偶尔我们会碰到服务端 API 尚未部署，而客户端又需要数据调试的情况。这时我们就可以根据与服务端协商定好的接口模拟数据的返回。
+思路主要思路是通过拦截网络请求，返回模拟数据。而根据所处的环境不同，拦截方式可分为两种：
+
+由接受网络请求的 PC 使用抓包工具进行拦截； 优点：不依赖客户端平台，无需变更客户端代码 缺点：客户端与拦截工具需处于同一网络环境下，一旦 PC 的 IP">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/square/okhttp/interceptors@2x.png">
+<meta property="og:updated_time" content="2017-01-23T08:41:04.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Forking a Repository">
-<meta name="twitter:description" content="某些场景下，我们需要基于某个仓库的 tag、branch 或者 commit 来进行二次开发。">
+<meta name="twitter:title" content="利用 OkHttp Interceptor 模拟数据">
+<meta name="twitter:description" content="背景客户端开发过程中，偶尔我们会碰到服务端 API 尚未部署，而客户端又需要数据调试的情况。这时我们就可以根据与服务端协商定好的接口模拟数据的返回。
+思路主要思路是通过拦截网络请求，返回模拟数据。而根据所处的环境不同，拦截方式可分为两种：
+
+由接受网络请求的 PC 使用抓包工具进行拦截； 优点：不依赖客户端平台，无需变更客户端代码 缺点：客户端与拦截工具需处于同一网络环境下，一旦 PC 的 IP">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wiki/square/okhttp/interceptors@2x.png">
 
 
 
@@ -123,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="http://chaosleong.github.io/2016/11/18/Forking-a-Repository/"/>
+  <link rel="canonical" href="http://chaosleong.github.io/2017/01/23/okhttp-interceptor-server-mock/"/>
 
 
 
 
 
-  <title> Forking a Repository | ChaosLeong's Blog </title>
+  <title> 利用 OkHttp Interceptor 模拟数据 | ChaosLeong's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -260,7 +271,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2016/11/18/Forking-a-Repository/">
+  <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2017/01/23/okhttp-interceptor-server-mock/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Chaos Leong">
@@ -284,7 +295,7 @@
             
             
               
-                Forking a Repository
+                利用 OkHttp Interceptor 模拟数据
               
             
           </h1>
@@ -297,8 +308,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-18T10:45:19+08:00">
-                2016-11-18
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-23T11:05:15+08:00">
+                2017-01-23
               </time>
             
 
@@ -316,8 +327,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Git/" itemprop="url" rel="index">
-                    <span itemprop="name">Git</span>
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
                   </a>
                 </span>
 
@@ -331,8 +342,8 @@
             
               <span class="post-comments-count">
                 <span class="post-meta-divider">|</span>
-                <a href="/2016/11/18/Forking-a-Repository/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/18/Forking-a-Repository/" itemprop="commentCount"></span>
+                <a href="/2017/01/23/okhttp-interceptor-server-mock/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/23/okhttp-interceptor-server-mock/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -358,67 +369,21 @@
       
 
       
-        <p>某些场景下，我们需要基于某个仓库的 <code>tag</code>、<code>branch</code> 或者 <code>commit</code> 来进行二次开发。</p>
-<a id="more"></a>
-<p>例如，我们打算基于 <code>CyanogenMod/android_packages_apps_Launcher3</code> 进行二次功能开发，一般情况下我们需要 fork 一份源码到自己的 Github 上进行开发（当然也有其他途径），并且在 CM 更新 Launcher3 后我们还能通过 rebase 或 merge 更新 CM 的代码。</p>
-<p>又如，直接在「Source」上 checkout 一条新的分支进行开发，并且如果 master 上有做什么更新，也可以通过 rebase 或 merge 同步更新。</p>
-<h2 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h2><p>熟悉 Git 的朋友们，日常中对于 Fork 和 Branch 也不会陌生。稍有留意的，就能明白这两者之间不同方面的优劣。</p>
-<h3 id="Fork"><a href="#Fork" class="headerlink" title="Fork"></a>Fork</h3><p>使用 fork 方式进行「分叉」，优点有：</p>
-<ul>
-<li>能独立于「Source」进行开发</li>
-<li>「Source」仓库的更新、优化我们能够比较方便地同步更新</li>
-</ul>
-<p>缺点在于：</p>
-<ul>
-<li>同步「Source」的代码时相对 branch 会比较麻烦，需要 fetch「Source」或者 add 一个 new remote 后再 merge</li>
-<li>更多的仓库</li>
-</ul>
-<h3 id="Branch"><a href="#Branch" class="headerlink" title="Branch"></a>Branch</h3><p>而使用 branch 进行「分叉」，优点在于：</p>
-<ul>
-<li>能直接对 source branch 进行 rebase 或 merge</li>
-</ul>
-<p>而缺点在于：</p>
-<ul>
-<li>（可能）会导致仓库存在过多的 branches 或 tags</li>
-<li>更大的仓库</li>
-</ul>
-<h2 id="选择"><a href="#选择" class="headerlink" title="选择"></a>选择</h2><p>「Fork」和「Branch」的选择，个人更倾向于「Fork」。虽然「Branch」在更新的时候会更快捷，但是「Fork」避免了一堆 Branches 和 Tags，相比之下看着更舒服点（略鸡肋的理由）。</p>
-<p>另一个更重要的理由是，考虑以下场景：</p>
-<p>我们需要基于 AOSP 6.0 进行不同的产品开发，而不同产品间的 APPs 以及系统 UI 不同。另有一个团队根据 Google 的修改维护这个 AOSP 6.0 的镜像，该镜像只会更新 framework 或者 firmware 等同享的内容（也可以当作该镜像只有除 APPs 及 UI 相关外的代码）。</p>
-<p>当我们有新的产品需要开发时，只需要 frok 一份最新的 master 镜像进行开发即可，而且最新的镜像也不会有 UI 相关的 commit。这样做则避免了在 AOSP 的 commit log 上看到负责 APPs 开发的人员的 commit，而作为 APPs 开发的人员也可以忽略底层开发人员的 commit（题外话：偶尔也需要找底层的锅_(:зゝ∠)_）。</p>
-<p>这样的情况下当然是用「Fork」更好，不是吗？</p>
-<h2 id="Forking-a-Repository"><a href="#Forking-a-Repository" class="headerlink" title="Forking a Repository"></a>Forking a Repository</h2><p>用 Github 的同学，请注意 Github 不支持 fork 自己的仓库（所有权属于自己）且需自己手动同步。而 Bitbucket 则既可以 fork 别人的仓库，又可以 fork 自己的仓库，并且在无冲突的情况下能直接同步 source 的代码。</p>
-<h3 id="Forking"><a href="#Forking" class="headerlink" title="Forking"></a>Forking</h3><p>如果不借助 Github、Bitbucket 等平台的 fork 功能，如何 fork 仓库？</p>
-<p>主要思路如下：</p>
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>客户端开发过程中，偶尔我们会碰到服务端 API 尚未部署，而客户端又需要数据调试的情况。这时我们就可以根据与服务端协商定好的接口模拟数据的返回。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>主要思路是通过拦截网络请求，返回模拟数据。而根据所处的环境不同，拦截方式可分为两种：</p>
 <ol>
-<li>Clone source 仓库，<code>git clone https://github.com/whoever/whatever.git</code></li>
-<li>选择基点（<code>tag</code>，<code>branch</code> or <code>commit</code>）并以此作为 master，<code>git checkout tag</code>，<code>git branch -d master</code>，<code>git checkout -b master</code></li>
-<li>修改 remote URLs 为新仓库的 URLs，<code>git remote set-url origin https://github.com/whoever/new-whatever.git</code></li>
+<li>由接受网络请求的 PC 使用抓包工具进行拦截；<br> 优点：不依赖客户端平台，无需变更客户端代码<br> 缺点：客户端与拦截工具需处于同一网络环境下，一旦 PC 的 IP 发生变化，需要重新设定</li>
+<li>客户端自身产生网络请求时直接拦截。<br> 优点：灵活、易于调试<br> 缺点：需要修改客户端代码，不同平台间可能各需修改一次</li>
 </ol>
-<p>或者</p>
-<ol>
-<li>初始化本地仓库，<code>git init</code></li>
-<li>添加 source 仓库，<code>git remote add source https://github.com/whoever/whatever.git</code></li>
-<li>Fetch source 仓库的代码，<code>git fetch source</code> 或 <code>git fetch source branch_name</code></li>
-<li>合并特定的 commit，<code>git merge commit</code></li>
-</ol>
-<h3 id="Syncing"><a href="#Syncing" class="headerlink" title="Syncing"></a>Syncing</h3><p>如果需要同步 source 仓库的更新，有两种方法：</p>
-<h4 id="添加-Remote"><a href="#添加-Remote" class="headerlink" title="添加 Remote"></a>添加 Remote</h4><ol>
-<li>添加 source remote，命名为 “source”: <code>git remote add source https://github.com/whoever/whatever.git</code></li>
-<li>Fetch source remote: <code>git fetch source</code></li>
-<li>确保你的仓库在 master 分支: <code>git checkout master</code></li>
-<li>合并 source/master 上的 commit: <code>git merge source/master</code>，或者 <code>git merge commit</code> 其中 commit 是 source 上的某一个 commit hash</li>
-</ol>
-<h4 id="不添加-Remote"><a href="#不添加-Remote" class="headerlink" title="不添加 Remote"></a>不添加 Remote</h4><ol>
-<li><code>git fetch https://github.com/whoever/whatever.git</code> 或者 <code>git fetch https://github.com/whoever/whatever.git branch_name</code></li>
-<li><code>git merge commit</code>，如果是最后一个 commit，可以直接 <code>git merge FETCH_HEAD</code></li>
-</ol>
-<p>相对来说，更建议添加一个 Remote，避免每次都要输入 URLs 以及 git <code>Counting objects</code> 过多。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>无论「Fork」或者「Branch」，本质上是为了提高我们的效率，不至于被各种信息分离关注点。如果其中一种方式导致工作量增加，不就是本末倒置？所以在使用「分叉」之前，请先考虑自己的场景该使用哪种方式。</p>
-<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
-<li><a href="http://stackoverflow.com/a/31460870/3351990" target="_blank" rel="external">Retrieve specific commit from a remote Git repository</a></li>
-<li><a href="http://stackoverflow.com/a/7244456/3351990" target="_blank" rel="external">How do I update a GitHub forked repository?</a></li>
-</ul>
+<p>第一种方法主要是使用 Charles 等抓包工具进行拦截并伪造数据，网上教程较多，本文不再累述。第二种方法中，主要是利用 OkHttp 框架中的 <code>Interceptor</code>（OkHttp 中 <code>Interceptor</code> 分为 <code>Application Interceptor</code> 以及 <code>Network Interceptor</code>，本文中 <code>Interceptor</code> 均指 <code>Application Interceptor</code>。）对网络请求进行拦截，并返回模拟数据。</p>
+<h3 id="OkHttp-Interceptor"><a href="#OkHttp-Interceptor" class="headerlink" title="OkHttp Interceptor"></a>OkHttp Interceptor</h3><p><img src="https://raw.githubusercontent.com/wiki/square/okhttp/interceptors@2x.png" alt="OkHttp Interceptor"></p>
+<p>如图，OkHttp Interceptor 可以对 Request 和 Response 进行处理。</p>
+<p>利用这一机制，我们可以对 Request 进行拦截并将模拟数据填充于 Response 中并返回上层，从而达到模拟数据的目的。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight java"><figcaption><span>FakeApiInterceptor.java</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FakeApiInterceptor</span> <span class="keyword">implements</span> <span class="title">Interceptor</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        Response response;</div><div class="line">        <span class="keyword">if</span> (BuildConfig.DEBUG &amp;&amp; chain.request().url().toString().equals(API_URL)) &#123;</div><div class="line">            String json = <span class="string">"&#123;\"code\": 200, \"message\": \"success\"&#125;"</span>;</div><div class="line">            response = <span class="keyword">new</span> Response.Builder()</div><div class="line">                    .code(<span class="number">200</span>)</div><div class="line">                    .addHeader(<span class="string">"Content-Type"</span>, <span class="string">"application/json"</span>)</div><div class="line">                    .body(ResponseBody.create(MediaType.parse(<span class="string">"application/json"</span>), json))</div><div class="line">                    .message(json)</div><div class="line">                    .request(chain.request())</div><div class="line">                    .protocol(Protocol.HTTP_2)</div><div class="line">                    .build();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            response = chain.proceed(chain.request());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> response;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Debug 版且 url 对应的 API 需要模拟服务端数据返回时对请求进行拦截处理，直接创建  Response 返回模拟数据。</p>
+<h4 id="配合-Retrofit-使用"><a href="#配合-Retrofit-使用" class="headerlink" title="配合 Retrofit 使用"></a>配合 Retrofit 使用</h4><p>搭配 Retrofit 时，需要先创建  OkHttpClient 并且调用 addInterceptor() 方法注册 Interceptor。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">OkHttpClient okHttpClient = <span class="keyword">new</span> OkHttpClient().newBuilder()</div><div class="line">           .addInterceptor(<span class="keyword">new</span> FakeInterceptor())</div><div class="line">       .build();</div><div class="line"></div><div class="line">Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</div><div class="line">       .baseUrl(BASE_URL)</div><div class="line">       .addConverterFactory(GsonConverterFactory.create())</div><div class="line">       .addCallAdapterFactory(RxJava2CallAdapterFactory.create())</div><div class="line">       .client(okHttpClient)</div><div class="line">       .build();</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>利用 OkHttp Interceptor，我们只需在初始化 OkHttpClient 时添加一个提供模拟数据的 Interceptor 即可，而不需要改动网络请求的相关代码。当服务端 API 部署后，只需移除 <code>.addInterceptor(new FakeInterceptor())</code> 就能正常访问 API，相对比较灵活方便。</p>
 
       
     </div>
@@ -451,8 +416,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/" rel="next" title="[译] 使用 ColorFilter 快速地主题化">
-                <i class="fa fa-chevron-left"></i> [译] 使用 ColorFilter 快速地主题化
+              <a href="/2016/11/23/Change-default-compile-sdk-version-of-Android-Studio/" rel="next" title="修改 Android Studio 创建 module 时默认的 compileSdkVersion">
+                <i class="fa fa-chevron-left"></i> 修改 Android Studio 创建 module 时默认的 compileSdkVersion
               </a>
             
           </div>
@@ -460,10 +425,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/11/23/Change-default-compile-sdk-version-of-Android-Studio/" rel="prev" title="修改 Android Studio 创建 module 时默认的 compileSdkVersion">
-                修改 Android Studio 创建 module 时默认的 compileSdkVersion <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -489,8 +450,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/11/18/Forking-a-Repository/"
-           data-title="Forking a Repository" data-url="http://chaosleong.github.io/2016/11/18/Forking-a-Repository/">
+      <div class="ds-thread" data-thread-key="2017/01/23/okhttp-interceptor-server-mock/"
+           data-title="利用 OkHttp Interceptor 模拟数据" data-url="http://chaosleong.github.io/2017/01/23/okhttp-interceptor-server-mock/">
       </div>
     
   </div>
@@ -594,7 +555,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#比较"><span class="nav-number">1.</span> <span class="nav-text">比较</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Fork"><span class="nav-number">1.1.</span> <span class="nav-text">Fork</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Branch"><span class="nav-number">1.2.</span> <span class="nav-text">Branch</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选择"><span class="nav-number">2.</span> <span class="nav-text">选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Forking-a-Repository"><span class="nav-number">3.</span> <span class="nav-text">Forking a Repository</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Forking"><span class="nav-number">3.1.</span> <span class="nav-text">Forking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Syncing"><span class="nav-number">3.2.</span> <span class="nav-text">Syncing</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#添加-Remote"><span class="nav-number">3.2.1.</span> <span class="nav-text">添加 Remote</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不添加-Remote"><span class="nav-number">3.2.2.</span> <span class="nav-text">不添加 Remote</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">5.</span> <span class="nav-text">References</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思路"><span class="nav-number">2.</span> <span class="nav-text">思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OkHttp-Interceptor"><span class="nav-number">2.1.</span> <span class="nav-text">OkHttp Interceptor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现"><span class="nav-number">3.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配合-Retrofit-使用"><span class="nav-number">3.0.1.</span> <span class="nav-text">配合 Retrofit 使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>

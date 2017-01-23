@@ -261,6 +261,162 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2017/01/23/okhttp-interceptor-server-mock/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Chaos Leong">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="ChaosLeong's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="ChaosLeong's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/01/23/okhttp-interceptor-server-mock/" itemprop="url">
+                  利用 OkHttp Interceptor 模拟数据
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-23T11:05:15+08:00">
+                2017-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2017/01/23/okhttp-interceptor-server-mock/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/23/okhttp-interceptor-server-mock/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>客户端开发过程中，偶尔我们会碰到服务端 API 尚未部署，而客户端又需要数据调试的情况。这时我们就可以根据与服务端协商定好的接口模拟数据的返回。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>主要思路是通过拦截网络请求，返回模拟数据。而根据所处的环境不同，拦截方式可分为两种：</p>
+<ol>
+<li>由接受网络请求的 PC 使用抓包工具进行拦截；<br> 优点：不依赖客户端平台，无需变更客户端代码<br> 缺点：客户端与拦截工具需处于同一网络环境下，一旦 PC 的 IP 发生变化，需要重新设定</li>
+<li>客户端自身产生网络请求时直接拦截。<br> 优点：灵活、易于调试<br> 缺点：需要修改客户端代码，不同平台间可能各需修改一次</li>
+</ol>
+<p>第一种方法主要是使用 Charles 等抓包工具进行拦截并伪造数据，网上教程较多，本文不再累述。第二种方法中，主要是利用 OkHttp 框架中的 <code>Interceptor</code>（OkHttp 中 <code>Interceptor</code> 分为 <code>Application Interceptor</code> 以及 <code>Network Interceptor</code>，本文中 <code>Interceptor</code> 均指 <code>Application Interceptor</code>。）对网络请求进行拦截，并返回模拟数据。</p>
+<h3 id="OkHttp-Interceptor"><a href="#OkHttp-Interceptor" class="headerlink" title="OkHttp Interceptor"></a>OkHttp Interceptor</h3><p><img src="https://raw.githubusercontent.com/wiki/square/okhttp/interceptors@2x.png" alt="OkHttp Interceptor"></p>
+<p>如图，OkHttp Interceptor 可以对 Request 和 Response 进行处理。</p>
+<p>利用这一机制，我们可以对 Request 进行拦截并将模拟数据填充于 Response 中并返回上层，从而达到模拟数据的目的。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight java"><figcaption><span>FakeApiInterceptor.java</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FakeApiInterceptor</span> <span class="keyword">implements</span> <span class="title">Interceptor</span> </span>&#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        Response response;</div><div class="line">        <span class="keyword">if</span> (BuildConfig.DEBUG &amp;&amp; chain.request().url().toString().equals(API_URL)) &#123;</div><div class="line">            String json = <span class="string">"&#123;\"code\": 200, \"message\": \"success\"&#125;"</span>;</div><div class="line">            response = <span class="keyword">new</span> Response.Builder()</div><div class="line">                    .code(<span class="number">200</span>)</div><div class="line">                    .addHeader(<span class="string">"Content-Type"</span>, <span class="string">"application/json"</span>)</div><div class="line">                    .body(ResponseBody.create(MediaType.parse(<span class="string">"application/json"</span>), json))</div><div class="line">                    .message(json)</div><div class="line">                    .request(chain.request())</div><div class="line">                    .protocol(Protocol.HTTP_2)</div><div class="line">                    .build();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            response = chain.proceed(chain.request());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> response;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Debug 版且 url 对应的 API 需要模拟服务端数据返回时对请求进行拦截处理，直接创建  Response 返回模拟数据。</p>
+<h4 id="配合-Retrofit-使用"><a href="#配合-Retrofit-使用" class="headerlink" title="配合 Retrofit 使用"></a>配合 Retrofit 使用</h4><p>搭配 Retrofit 时，需要先创建  OkHttpClient 并且调用 addInterceptor() 方法注册 Interceptor。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">OkHttpClient okHttpClient = <span class="keyword">new</span> OkHttpClient().newBuilder()</div><div class="line">           .addInterceptor(<span class="keyword">new</span> FakeInterceptor())</div><div class="line">       .build();</div><div class="line"></div><div class="line">Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</div><div class="line">       .baseUrl(BASE_URL)</div><div class="line">       .addConverterFactory(GsonConverterFactory.create())</div><div class="line">       .addCallAdapterFactory(RxJava2CallAdapterFactory.create())</div><div class="line">       .client(okHttpClient)</div><div class="line">       .build();</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>利用 OkHttp Interceptor，我们只需在初始化 OkHttpClient 时添加一个提供模拟数据的 Interceptor 即可，而不需要改动网络请求的相关代码。当服务端 API 部署后，只需移除 <code>.addInterceptor(new FakeInterceptor())</code> 就能正常访问 API，相对比较灵活方便。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2016/11/23/Change-default-compile-sdk-version-of-Android-Studio/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1587,153 +1743,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2015/10/25/conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="Chaos Leong">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.png">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="ChaosLeong's Blog">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="ChaosLeong's Blog" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/10/25/conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan/" itemprop="url">
-                  从高德 SDK 学习 Android 动态加载资源
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-10-25T18:04:45+08:00">
-                2015-10-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <a href="/2015/10/25/conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/25/conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>前不久跑去折腾高德 SDK 中的 HUD 功能，相信用过该功能的用户都知道 HUD 界面上的导航转向图标是动态变化的。从<a href="http://blog.csdn.net/jiangwei0910410003/article/details/47679843">高德官方导航 API 文档</a>中 AMapNaviGuide 类的描述可知，导航转向图标有23种类型。</p>
-<p>诶，等等，23 种？那图标应该是放在 assets 文件夹吧？总不可能是在服务器上下载吧？<br>
-          <!--noindex-->
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/10/25/conggaode-SDK-xuexi-Android-dongtaijiazaiziyuan/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1779,7 +1788,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1843,7 +1852,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2016</span>
+  <span itemprop="copyrightYear">2017</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
