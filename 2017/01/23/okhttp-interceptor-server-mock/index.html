@@ -86,26 +86,17 @@
 
 
 
-<meta name="description" content="背景客户端开发过程中，偶尔我们会碰到服务端 API 尚未部署，而客户端又需要数据调试的情况。这时我们就可以根据与服务端协商定好的接口模拟数据的返回。
-思路主要思路是通过拦截网络请求，返回模拟数据。而根据所处的环境不同，拦截方式可分为两种：
-
-由接受网络请求的 PC 使用抓包工具进行拦截； 优点：不依赖客户端平台，无需变更客户端代码 缺点：客户端与拦截工具需处于同一网络环境下，一旦 PC 的 IP">
+<meta name="description" content="背景客户端开发过程中，偶尔我们会碰到服务端 API 尚未部署，而客户端又需要数据调试的情况。这时我们就可以根据与服务端协商定好的接口模拟数据的返回。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="利用 OkHttp Interceptor 模拟数据">
 <meta property="og:url" content="http://chaosleong.github.io/2017/01/23/okhttp-interceptor-server-mock/index.html">
 <meta property="og:site_name" content="ChaosLeong's Blog">
-<meta property="og:description" content="背景客户端开发过程中，偶尔我们会碰到服务端 API 尚未部署，而客户端又需要数据调试的情况。这时我们就可以根据与服务端协商定好的接口模拟数据的返回。
-思路主要思路是通过拦截网络请求，返回模拟数据。而根据所处的环境不同，拦截方式可分为两种：
-
-由接受网络请求的 PC 使用抓包工具进行拦截； 优点：不依赖客户端平台，无需变更客户端代码 缺点：客户端与拦截工具需处于同一网络环境下，一旦 PC 的 IP">
+<meta property="og:description" content="背景客户端开发过程中，偶尔我们会碰到服务端 API 尚未部署，而客户端又需要数据调试的情况。这时我们就可以根据与服务端协商定好的接口模拟数据的返回。">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/square/okhttp/interceptors@2x.png">
-<meta property="og:updated_time" content="2017-01-23T08:41:04.000Z">
+<meta property="og:updated_time" content="2017-01-23T09:06:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="利用 OkHttp Interceptor 模拟数据">
-<meta name="twitter:description" content="背景客户端开发过程中，偶尔我们会碰到服务端 API 尚未部署，而客户端又需要数据调试的情况。这时我们就可以根据与服务端协商定好的接口模拟数据的返回。
-思路主要思路是通过拦截网络请求，返回模拟数据。而根据所处的环境不同，拦截方式可分为两种：
-
-由接受网络请求的 PC 使用抓包工具进行拦截； 优点：不依赖客户端平台，无需变更客户端代码 缺点：客户端与拦截工具需处于同一网络环境下，一旦 PC 的 IP">
+<meta name="twitter:description" content="背景客户端开发过程中，偶尔我们会碰到服务端 API 尚未部署，而客户端又需要数据调试的情况。这时我们就可以根据与服务端协商定好的接口模拟数据的返回。">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/wiki/square/okhttp/interceptors@2x.png">
 
 
@@ -370,6 +361,7 @@
 
       
         <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>客户端开发过程中，偶尔我们会碰到服务端 API 尚未部署，而客户端又需要数据调试的情况。这时我们就可以根据与服务端协商定好的接口模拟数据的返回。</p>
+<a id="more"></a>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>主要思路是通过拦截网络请求，返回模拟数据。而根据所处的环境不同，拦截方式可分为两种：</p>
 <ol>
 <li>由接受网络请求的 PC 使用抓包工具进行拦截；<br> 优点：不依赖客户端平台，无需变更客户端代码<br> 缺点：客户端与拦截工具需处于同一网络环境下，一旦 PC 的 IP 发生变化，需要重新设定</li>
