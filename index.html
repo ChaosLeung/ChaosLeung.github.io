@@ -261,6 +261,211 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2017/03/19/Why-Activities-in-Android-are-not-UI-Elements/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Chaos Leong">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="ChaosLeong's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="ChaosLeong's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/19/Why-Activities-in-Android-are-not-UI-Elements/" itemprop="url">
+                  为什么 Activity 不应有 UI 逻辑
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-19T11:14:33+08:00">
+                2017-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2017/03/19/Why-Activities-in-Android-are-not-UI-Elements/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/19/Why-Activities-in-Android-are-not-UI-Elements/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>原文地址：<a href="http://www.techyourchance.com/activities-android/" target="_blank" rel="external">Why Activities in Android are not UI Elements</a><br>已获得原作者授权，译文有删减</p>
+</blockquote>
+<p>这篇文章中我们将通过面向对象设计中的单一职责原则来观察 Activity，并试图了解如何更好地在 Activity 中实施单一职责原则。</p>
+<h2 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h2><p>下面是<a href="https://developer.android.com/guide/components/activities.html" target="_blank" rel="external">官方对 Activity 的一个简短描述</a>：</p>
+<blockquote>
+<p>Activity 是一个应用组件，用户可与其提供的屏幕进行交互，以执行拨打电话、拍摄照片、发送电子邮件或查看地图等操作。</p>
+</blockquote>
+<p>依照上述内容我们自然会想到 Activity 是应用程序的 UI。模块化设计变得特别流行并且许多缩写（如：MVP）成为 “热门词语” 的今天，对 Activity 作为 UI 元素这点尤其值得关注。</p>
+<p>当我带着这些概念进行了一段时间的 Android 开发后，我开始怀疑、质疑，最终得出一个想法：UI 实现细节不应属于 Activity？这不是一个容易接受的概念，但当我把它应用到实际的开发过程之后，我再也没有疑惑。</p>
+<h2 id="单一职责原则"><a href="#单一职责原则" class="headerlink" title="单一职责原则"></a>单一职责原则</h2><p>单一职责原则是由罗伯特·C·马丁（Robert C. Martin）提出的，定义为：</p>
+<blockquote>
+<p>一个类或者模块应该有且只有一个改变的原因。（维基百科）</p>
+</blockquote>
+<p>为了当前讨论的内容，我们将 “改变的原因” 缩小为两点：</p>
+<ol>
+<li>重新设计那些不会改变应用基本功能的 UI（整容）</li>
+<li>修改那些不需要变动 UI 的功能</li>
+</ol>
+<p>我们将指定由于原因 #1（UI 变化）可能修改的逻辑为 <strong>“UI 逻辑”</strong>，由于原因 #2（功能变化）可能修改的逻辑为 <strong>“业务逻辑”</strong>。</p>
+<p>为了遵循 “狭义的” 单一职责原则，所有的类不能同时包含 “UI 逻辑” 和 “业务逻辑”。</p>
+<h2 id="为什么要分离-UI-逻辑和业务逻辑"><a href="#为什么要分离-UI-逻辑和业务逻辑" class="headerlink" title="为什么要分离 UI 逻辑和业务逻辑"></a>为什么要分离 UI 逻辑和业务逻辑</h2><p>你可能会好奇为什么我们要遵循单一职责原则。虽然 UI 逻辑和业务逻辑可以共存，但分离有明显的好处：</p>
+<ul>
+<li>修改 UI 更容易。更新，甚至替换 UI 的同时保持业务逻辑（几乎）不变</li>
+<li>更高的可读性及可维护性。避免 UI 逻辑 “污染”、“混淆” 业务逻辑</li>
+<li>更高的可测试性。如果 UI 实现不是 “抽象的”，测试业务逻辑的同时就需要兼顾 UI 方面的逻辑，这就是 UI 对于单元测试来说比较棘手的原因（以及 UI 变化时所有的 tests 都需要修改）。</li>
+</ul>
+<p>虽然上面并没有列出所有的点，但足以表明为什么要分离 UI 逻辑和业务逻辑。</p>
+<h2 id="Activity-的-“标准”-实践"><a href="#Activity-的-“标准”-实践" class="headerlink" title="Activity 的 “标准” 实践"></a>Activity 的 “标准” 实践</h2><p>当我们认同 UI 逻辑和业务逻辑分离是一个理想系统的特性时，我们就可以回到 Activity 上。我们平常使用 Activity 的方式已经做到了这点吗？</p>
+<p>在大多数应用中，我们都可以在某个 Activity 找到以下两个职责：</p>
+<ol>
+<li>为用户与 UI 的交互注册监听器</li>
+<li>执行相应的操作以响应用户与 UI 的交互</li>
+</ol>
+<p>Activity 既注册监听器又处理用户的交互不是很正常吗？让我们换个角度来看待这个问题。</p>
+<p>为了给 UI 组件注册监听器，Activity 必须知道它们的 ID（R.id.*）。这是明确的 UI 实现细节，Activity “知道” UI 组件的名称（通常也会知道它们的类型：TextView，Button 等）。因此，上述的职责 #1 归属于 “UI 逻辑”。</p>
+<p>响应用户与 UI 的交互时，Activity 会处理许多的 UI 操作（例如改变颜色和形状），通常情况下还会执行一些额外的操作（例如在笔记应用中点击按钮后会保存笔记）。这部分操作并不属于 UI 操作，而且不以任何形式依赖于 UI。它们属于应用的功能，即应用的 “业务规则”。因此，一般情况下职责 #2 归属于 “业务逻辑”。</p>
+<p>我们现在注意到的是：即使在同一个类中注册监听器及处理这些组件的交互也会导致 UI 逻辑和业务逻辑纠缠在一起。每个开发者都曾试过调试 500 多行的 Activity 代码，并且其中大部分的代码都是 UI 操作混杂几行业务逻辑。他们也懂得试图找到症结所在及如何解决问题（不影响其他逻辑）的痛楚。</p>
+<h2 id="为什么-Activity-不是-UI-元素"><a href="#为什么-Activity-不是-UI-元素" class="headerlink" title="为什么 Activity 不是 UI 元素"></a>为什么 Activity 不是 UI 元素</h2><p>为了遵循我们 “狭义的” 单一职责原则，Activity 应该只包含 UI 逻辑或业务逻辑。哪种更好？</p>
+<p>实际上 Android 团队已经为我们给出了答案。Activity 的依赖足以证明将业务逻辑从 Activity 中分离是不可能的：</p>
+<ul>
+<li>Activity extends Context</li>
+</ul>
+<p>虽然有更多的点使得 Activity 与业务逻辑不可分离（例如：<a href="https://developer.android.com/training/permissions/requesting.html" target="_blank" rel="external">运行时权限</a>，<a href="https://developer.android.com/reference/android/app/LoaderManager.html" target="_blank" rel="external">LoaderManager</a> 的集成等），但这点已经足以证明。可能令人意想不到的是，所有人都习以为常的一个基本事实竟如此重要，但事实往往就这么简单。为了支持上述观点，让我对 Android 中的 Context 做一个简短的描述。</p>
+<p>在功能上，Context 对象能为第三方应用提供大多数 Android 平台的功能。（值得注意的是，从面向对象编程的角度来看，Android 中 Context 是 <a href="https://en.wikipedia.org/wiki/God_object" target="_blank" rel="external">God Object</a>，违反所有 <a href="https://en.wikipedia.org/wiki/SOLID_(object-oriented_design" target="_blank" rel="external">SOLID</a>) 原则）</p>
+<p>上述意思是 Android 的 Activity（其他与 Context 相关的类）是第三方应用与平台集成的主要区域。换句话说：我们使用 Activity 来控制平台的功能及资源以支持应用的功能。而这些功能及资源的相关逻辑即是我们的业务逻辑。因此，无论我们多么努力尝试，都无法将业务逻辑完全从 Activity 中分离。</p>
+<p>由于我们不能从 Activity 中分离业务逻辑，所以必须从中分离所有 UI 逻辑。这不是一项简单的任务，但从长远来看，这样做是很有价值的。</p>
+<h2 id="脏度测试"><a href="#脏度测试" class="headerlink" title="脏度测试"></a>脏度测试</h2><p>为了方便讨论 UI 逻辑与业务逻辑的分离程度，我们应当定义某种 “脏度指标” —— 一个可作为指示逻辑 “脏” 的度量。我们将定义两个指标：一个用于业务逻辑，一个用于 UI 逻辑。</p>
+<h3 id="业务逻辑脏度测试（针对-Activitiy）"><a href="#业务逻辑脏度测试（针对-Activitiy）" class="headerlink" title="业务逻辑脏度测试（针对 Activitiy）"></a>业务逻辑脏度测试（针对 Activitiy）</h3><p>在 Activity 中出现以下任一情况算作一个 “脏点”：</p>
+<ol>
+<li>查找 R.layout.* （布局文件）</li>
+<li>查找 R.id.* (View 的 ID)</li>
+<li>对上述两点的类或接口存在依赖</li>
+</ol>
+<p>注意这个测试是 “可传递的” —— 不仅 Activity 不应了解 UI 细节，Activity 中引用的类也不能了解这些细节。因此，你不能简单地将所有 “脏代码” 放置于需要在 Activity 实例化的 “helper” 中（除非你不以 0 分为目标）。</p>
+<h3 id="UI-逻辑脏度测试（针对封装-UI-逻辑的类）"><a href="#UI-逻辑脏度测试（针对封装-UI-逻辑的类）" class="headerlink" title="UI 逻辑脏度测试（针对封装 UI 逻辑的类）"></a>UI 逻辑脏度测试（针对封装 UI 逻辑的类）</h3><p>在封装 UI 逻辑的类中出现以下任一情况算作一个 “脏点”:</p>
+<ol>
+<li>对 Activity 依赖</li>
+<li>对第一点的类或接口存在依赖</li>
+</ol>
+<p>注意这个测试也是 “可传递的” —— 从封装 UI 逻辑的类到 Activity 之间必须没有 “依赖链”。我不能将 Context 定义为 “脏点” —— 你需要提供 Context 给封装 UI 的类，因为没办法不借助 Context 来创建 View（毕竟 Context 是 God Object，对不？）。</p>
+<p>上述的测试中，我们应以 0 分作为目标。实际上并不能一直达到 0 分，但我们应明确应用中有哪些 “脏点”，并且有充分的理由证明不能清除它们。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在这篇文章中，我们讨论了为什么 Activity 不应包含 UI 逻辑，了解到将 UI 逻辑和业务逻辑分离是一个值得拥有的特性。然后表明由于 Activity 与 Android 框架各个部分之间非常紧密的耦合，将业务逻辑与 Activity 分离几乎是不可能的。我们还定义了业务逻辑和 UI 逻辑的 “脏度指标”，以便测量我们应用中的 “脏度”。</p>
+<p>这篇文章中讨论的概念是非常 “高层面” 的，可能我们并不那么清楚得出的结论如何在实际中应用。因此，我还写了<a href="http://www.techyourchance.com/mvp-mvc-android-1/" target="_blank" rel="external">一系列的文章</a>展示一个基于这篇文章中讨论的想法并且可用于实际开发的架构模式。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2017/02/10/Configuring-Gradle-Proxy/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1562,156 +1767,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2015/12/03/译-ProGuard-选项/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="Chaos Leong">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.png">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="ChaosLeong's Blog">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="ChaosLeong's Blog" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/12/03/译-ProGuard-选项/" itemprop="url">
-                  [译] ProGuard 选项
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-12-03T23:15:54+08:00">
-                2015-12-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <a href="/2015/12/03/译-ProGuard-选项/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/12/03/译-ProGuard-选项/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <blockquote>
-<p>注：只针对 Android 平台翻译了 ProGuard 选项的相关用法，更多信息请查看<a href="http://proguard.sourceforge.net/">官方原文</a>。</p>
-</blockquote>
-<h2 id="Input-Output-Options"><a href="#Input-Output-Options" class="headerlink" title="Input/Output Options"></a>Input/Output Options</h2><p><strong>@filename</strong><br>简短版 <code>-include filename</code></p>
-<p><strong>-include</strong> <em>filename</em><br>读取指定文件的配置参数</p>
-          <!--noindex-->
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/12/03/译-ProGuard-选项/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1757,7 +1812,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-count">18</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1774,7 +1829,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
