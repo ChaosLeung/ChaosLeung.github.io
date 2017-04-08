@@ -27,6 +27,9 @@
 
 
 
+
+
+
   
   
   <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
@@ -116,7 +119,7 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
   var CONFIG = {
     root: '/',
     scheme: 'Pisces',
-    sidebar: {"position":"right","display":"post"},
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
     fancybox: true,
     motion: true,
     duoshuo: {
@@ -157,34 +160,42 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
 
 
 
+
+
+
+
   
   
     
   
 
-  <div class="container one-collumn sidebar-position-right page-post-detail ">
+  <div class="container sidebar-position-right page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-meta ">
-  
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
 
-  <div class="custom-logo-site-title">
-    <a href="/"  class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <span class="site-title">ChaosLeong's Blog</span>
-      <span class="logo-line-after"><i></i></span>
-    </a>
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ChaosLeong's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">边迷茫边努力，迷茫也不忘前进</p>
+      
   </div>
-  <p class="site-subtitle">边迷茫边努力，迷茫也不忘前进</p>
-</div>
 
-<div class="site-nav-toggle">
-  <button>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-    <span class="btn-bar"></span>
-  </button>
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
 </div>
 
 <nav class="site-nav">
@@ -272,20 +283,17 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2016/07/25/Loader-Simple-Analysis/">
+    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2016/07/25/Loader-Simple-Analysis/">
 
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="Chaos Leong">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/avatar.png">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="ChaosLeong's Blog">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="ChaosLeong's Blog" src="">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chaos Leong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
     </span>
-  </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ChaosLeong's Blog">
+    </span>
 
     
       <header class="post-header">
@@ -308,8 +316,10 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              <span class="post-meta-item-text">发表于</span>
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-07-25T17:48:31+08:00">
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-25T17:48:31+08:00">
                 2016-07-25
               </time>
             
@@ -321,11 +331,15 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
 
           
             <span class="post-category" >
+            
               <span class="post-meta-divider">|</span>
+            
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
-              <span class="post-meta-item-text">分类于</span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Android/" itemprop="url" rel="index">
@@ -343,16 +357,20 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
             
               <span class="post-comments-count">
                 <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
                 <a href="/2016/07/25/Loader-Simple-Analysis/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/25/Loader-Simple-Analysis/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/07/25/Loader-Simple-Analysis/" itemprop="commentCount"></span>
                 </a>
               </span>
             
           
 
           
-
           
+
           
 
           
@@ -404,8 +422,18 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
       
     </div>
 
+    <div>
+      
+        
+
+      
+    </div>
 
     <footer class="post-footer">
+      
+
+      
+        
       
 
       
@@ -450,8 +478,11 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/07/25/Loader-Simple-Analysis/"
-           data-title="Loader 浅析" data-url="http://chaosleong.github.io/2016/07/25/Loader-Simple-Analysis/">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
       </div>
     
   </div>
@@ -491,19 +522,26 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
                src="/images/avatar.png"
                alt="Chaos Leong" />
           <p class="site-author-name" itemprop="name">Chaos Leong</p>
-          <p class="site-description motion-element" itemprop="description">个人博客，技术分享</p>
+           
+              <p class="site-description motion-element" itemprop="description">个人博客，技术分享</p>
+          
         </div>
         <nav class="site-state motion-element">
-          <div class="site-state-item site-state-posts">
-            <a href="/archives">
-              <span class="site-state-item-count">18</span>
-              <span class="site-state-item-name">日志</span>
-            </a>
-          </div>
 
           
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
             <div class="site-state-item site-state-categories">
-              <a href="/categories">
+              <a href="/categories/index.html">
                 <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">分类</span>
               </a>
@@ -511,8 +549,10 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
           
 
           
+            
+            
             <div class="site-state-item site-state-tags">
-              <a href="/tags">
+              <a href="/tags/index.html">
                 <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">标签</span>
               </a>
@@ -563,6 +603,8 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
       <!--/noindex-->
       
 
+      
+
     </div>
   </aside>
 
@@ -602,9 +644,13 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
       </div>
     </footer>
 
-    <div class="back-to-top">
-      <i class="fa fa-arrow-up"></i>
-    </div>
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
   </div>
 
   
@@ -624,6 +670,9 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
 
 
   
+
+
+
 
 
 
@@ -680,28 +729,50 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
 
   
 
+
   
+
     
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"chaosleong"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
+      <script id="dsq-count-scr" src="https://chaosleongs-blog.disqus.com/count.js" async></script>
     
+
     
-    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
-    <script src="/js/src/hook-duoshuo.js"></script>
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://chaosleong.github.io/2016/07/25/Loader-Simple-Analysis/';
+          this.page.identifier = '2016/07/25/Loader-Simple-Analysis/';
+          this.page.title = 'Loader 浅析';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://chaosleongs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
   
 
 
@@ -709,19 +780,19 @@ Loader 本身不具备异步加载的能力，真正赋予了异步加载能力�
 
 
 
-
-
-  
   
 
-  
 
-  
+
+
 
   
 
   
 
+  
+
+  
 
 </body>
 </html>
