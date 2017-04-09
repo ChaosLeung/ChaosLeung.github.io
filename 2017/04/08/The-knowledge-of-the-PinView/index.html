@@ -1,0 +1,806 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="View," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ChaosLeong's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言最近因为某个项目需要添加“验证码”功能，设计上区别于原生 EditText，需要将四个数字分离（类似于微信、支付宝支付密码输入框）。在 Github 上查找了一遍，发现大多数现有的控件都比较 dirty —— 使用多个 EditText 达到字符分离的效果。
+唯一一个比较有意思的项目是 PasswordInput，该控件直接继承于 EditText，通过重写 onDraw 来实现每个文本对应一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PinView 的一些知识点">
+<meta property="og:url" content="http://chaosleong.github.io/2017/04/08/The-knowledge-of-the-PinView/index.html">
+<meta property="og:site_name" content="ChaosLeong's Blog">
+<meta property="og:description" content="前言最近因为某个项目需要添加“验证码”功能，设计上区别于原生 EditText，需要将四个数字分离（类似于微信、支付宝支付密码输入框）。在 Github 上查找了一遍，发现大多数现有的控件都比较 dirty —— 使用多个 EditText 达到字符分离的效果。
+唯一一个比较有意思的项目是 PasswordInput，该控件直接继承于 EditText，通过重写 onDraw 来实现每个文本对应一">
+<meta property="og:image" content="https://raw.githubusercontent.com/ChaosLeong/ImageRepository/master/blog/The_knowledge_of_the_PinView/input.gif">
+<meta property="og:updated_time" content="2017-04-09T16:24:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PinView 的一些知识点">
+<meta name="twitter:description" content="前言最近因为某个项目需要添加“验证码”功能，设计上区别于原生 EditText，需要将四个数字分离（类似于微信、支付宝支付密码输入框）。在 Github 上查找了一遍，发现大多数现有的控件都比较 dirty —— 使用多个 EditText 达到字符分离的效果。
+唯一一个比较有意思的项目是 PasswordInput，该控件直接继承于 EditText，通过重写 onDraw 来实现每个文本对应一">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/ChaosLeong/ImageRepository/master/blog/The_knowledge_of_the_PinView/input.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chaosleong.github.io/2017/04/08/The-knowledge-of-the-PinView/"/>
+
+
+
+
+
+  <title> PinView 的一些知识点 | ChaosLeong's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ChaosLeong's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">边迷茫边努力，迷茫也不忘前进</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2017/04/08/The-knowledge-of-the-PinView/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chaos Leong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ChaosLeong's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                PinView 的一些知识点
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-08T17:44:56+08:00">
+                2017-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/04/08/The-knowledge-of-the-PinView/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/04/08/The-knowledge-of-the-PinView/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近因为某个项目需要添加“验证码”功能，设计上区别于原生 EditText，需要将四个数字分离（类似于微信、支付宝支付密码输入框）。在 Github 上查找了一遍，发现大多数现有的控件都比较 dirty —— 使用多个 EditText 达到字符分离的效果。</p>
+<p>唯一一个比较有意思的项目是 <a href="https://github.com/EthanCo/PasswordInput" target="_blank" rel="external">PasswordInput</a>，该控件直接继承于 EditText，通过重写 onDraw 来实现每个文本对应一个方框，并通过重写 onTextChanged 方法监听文本变化以绘制对应的圆点。</p>
+<p>然而，某些情况下我们需要直接显示输入的验证码（PIN 码、短信验证码等），但 <a href="https://github.com/EthanCo/PasswordInput" target="_blank" rel="external">PasswordInput</a> 并没有提供相应的方法达到这种效果。于是抽空根据 <a href="https://github.com/EthanCo/PasswordInput" target="_blank" rel="external">PasswordInput</a> 的思路实现了 <a href="https://github.com/ChaosLeong/PinView" target="_blank" rel="external">PinView</a> 并开源于 Github。</p>
+<p>此文主要为记录编码过程中的一些思路以及所遇到的一些问题与对应的解决方案。</p>
+<a id="more"></a>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p><a href="https://github.com/ChaosLeong/PinView" target="_blank" rel="external">PinView</a> 主要特点是：</p>
+<ul>
+<li>根据 inputType 绘制不同的内容，为 password 时绘制原点，其他的直接绘制文本</li>
+<li>分离的输入框</li>
+<li>可变的方框颜色</li>
+<li>输入文字时带动画效果</li>
+</ul>
+<h3 id="最终效果图"><a href="#最终效果图" class="headerlink" title="最终效果图"></a>最终效果图</h3><p><img src="https://raw.githubusercontent.com/ChaosLeong/ImageRepository/master/blog/The_knowledge_of_the_PinView/input.gif" width="50%"></p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>主要根据 <a href="https://github.com/EthanCo/PasswordInput" target="_blank" rel="external">PasswordInput</a> 的思路，继承于 AppCompatEditText。由于 EditText 本身在文字变化时会触发 onDraw 方法，而文本长度也可以通过 getText().length() 获得，所以无需重写 onTextChanged 方法。</p>
+<h3 id="issue-1"><a href="#issue-1" class="headerlink" title="issue 1"></a>issue 1</h3><p>设置了方框的总数后，我们需要根据方框数量限制文字最大长度，然而 EditText 并没对应的方法让开发者动态修改文字最大长度。</p>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>翻了一下 TextView 的源码，主要是使用 InputFilter.LengthFilter(maxLength) 达到目的:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> InputFilter[] NO_FILTERS = <span class="keyword">new</span> InputFilter[<span class="number">0</span>];</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setMaxLength</span><span class="params">(<span class="keyword">int</span> maxLength)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (maxLength &gt;= <span class="number">0</span>) &#123;</div><div class="line">        setFilters(<span class="keyword">new</span> InputFilter[]&#123;<span class="keyword">new</span> InputFilter.LengthFilter(maxLength)&#125;);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        setFilters(NO_FILTERS);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="issue-2"><a href="#issue-2" class="headerlink" title="issue 2"></a>issue 2</h3><p>inputType 为 password 时，我们需要绘制圆形。同样的，TextView 也没提供相应的方法判断。</p>
+<h4 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h4><p>直接在 TextView 中翻了一个完整的判断方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isPasswordInputType</span><span class="params">(<span class="keyword">int</span> inputType)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> variation =</div><div class="line">            inputType &amp; (EditorInfo.TYPE_MASK_CLASS | EditorInfo.TYPE_MASK_VARIATION);</div><div class="line">    <span class="keyword">return</span> variation</div><div class="line">            == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)</div><div class="line">            || variation</div><div class="line">            == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD)</div><div class="line">            || variation</div><div class="line">            == (EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="issue-3"><a href="#issue-3" class="headerlink" title="issue 3"></a>issue 3</h3><p>绘制文字时，由于每个字符是独立绘制的，所以 baseline 并不一样。这就造成了文字绘制出来一部分正常，而另一部分可能偏高或者偏低。</p>
+<h4 id="解决方案-2"><a href="#解决方案-2" class="headerlink" title="解决方案"></a>解决方案</h4><p>这里选择了一种折中的办法，所有的字符都直接绘制于正中位置（即使是上标下标都会居中显示）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">drawText</span><span class="params">(Canvas canvas, <span class="keyword">int</span> i)</span> </span>&#123;</div><div class="line">    Paint paint = getPaintByIndex(i);</div><div class="line">    paint.getTextBounds(getText().toString(), i, i + <span class="number">1</span>, mTextRect);</div><div class="line">    <span class="keyword">float</span> cx = mBoxCenterPoint.x;</div><div class="line">    <span class="keyword">float</span> cy = mBoxCenterPoint.y;</div><div class="line">    <span class="keyword">float</span> x = cx - Math.abs(mTextRect.width()) / <span class="number">2</span> - mTextRect.left;</div><div class="line">    <span class="keyword">float</span> y = cy + Math.abs(mTextRect.height()) / <span class="number">2</span> - mTextRect.bottom;<span class="comment">// always center vertical</span></div><div class="line">    canvas.drawText(getText(), i, i + <span class="number">1</span>, x, y, paint);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="issue-4"><a href="#issue-4" class="headerlink" title="issue 4"></a>issue 4</h3><p>由于继承于 EditText，当长按文字区域会弹出复制、粘贴、剪切菜单，而这功能是 PinView 所不需要的。</p>
+<h4 id="解决方案-3"><a href="#解决方案-3" class="headerlink" title="解决方案"></a>解决方案</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">setTextIsSelectable(<span class="keyword">false</span>);</div><div class="line">setLongClickable(<span class="keyword">false</span>);</div></pre></td></tr></table></figure>
+<p>如果同时不需要键盘的左右移动键，可以用下面的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">setTextIsSelectable(<span class="keyword">false</span>);</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> MovementMethod <span class="title">getDefaultMovementMethod</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这是第一次写控件库，写完下来发觉真的需要很细心。而且很多方面都需要考虑，如何让控件更加容易使用，如何利用已有的属性，哪些属性可以提供给开发者自定义，诸如此类。同时又要在功能上进行取舍，精简逻辑的同时实现该有的功能，不做多余的事。</p>
+<p>整个过程下来，学习的东西也不少，特别是了解到如何将自己的库放到 jcenter 中供其他人下载。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/View/" rel="tag"># View</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/19/Why-Activities-in-Android-are-not-UI-Elements/" rel="next" title="[译] 为什么 Activity 不应包含 UI 逻辑">
+                <i class="fa fa-chevron-left"></i> [译] 为什么 Activity 不应包含 UI 逻辑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Chaos Leong" />
+          <p class="site-author-name" itemprop="name">Chaos Leong</p>
+           
+              <p class="site-description motion-element" itemprop="description">个人博客，技术分享</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能"><span class="nav-number">2.</span> <span class="nav-text">功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#最终效果图"><span class="nav-number">2.1.</span> <span class="nav-text">最终效果图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思路"><span class="nav-number">3.</span> <span class="nav-text">思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#issue-1"><span class="nav-number">3.1.</span> <span class="nav-text">issue 1</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案"><span class="nav-number">3.1.1.</span> <span class="nav-text">解决方案</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#issue-2"><span class="nav-number">3.2.</span> <span class="nav-text">issue 2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">解决方案</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#issue-3"><span class="nav-number">3.3.</span> <span class="nav-text">issue 3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案-2"><span class="nav-number">3.3.1.</span> <span class="nav-text">解决方案</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#issue-4"><span class="nav-number">3.4.</span> <span class="nav-text">issue 4</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案-3"><span class="nav-number">3.4.1.</span> <span class="nav-text">解决方案</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chaos Leong</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://chaosleongs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://chaosleong.github.io/2017/04/08/The-knowledge-of-the-PinView/';
+          this.page.identifier = '2017/04/08/The-knowledge-of-the-PinView/';
+          this.page.title = 'PinView 的一些知识点';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://chaosleongs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
