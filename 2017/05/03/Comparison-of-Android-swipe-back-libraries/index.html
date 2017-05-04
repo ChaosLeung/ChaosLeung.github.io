@@ -1,0 +1,809 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT, Chaos, Chaos Leong, Android, Java" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ChaosLeong's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Github 上滑动返回库比较多，由于实现思路甚至代码一部分库都差不多，所以只挑选了两个实现思路比较不同的库作为研究，分别是 SwipeBackLayout 和 and_swipeback。
+除滑动返回功能外，本文还会围绕滑动过程中呈现前一个界面的方案对上述两个库展开分析，其他部分源码细节不予分析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 平台滑动返回库对比">
+<meta property="og:url" content="http://chaosleong.github.io/2017/05/03/Comparison-of-Android-swipe-back-libraries/index.html">
+<meta property="og:site_name" content="ChaosLeong's Blog">
+<meta property="og:description" content="Github 上滑动返回库比较多，由于实现思路甚至代码一部分库都差不多，所以只挑选了两个实现思路比较不同的库作为研究，分别是 SwipeBackLayout 和 and_swipeback。
+除滑动返回功能外，本文还会围绕滑动过程中呈现前一个界面的方案对上述两个库展开分析，其他部分源码细节不予分析。">
+<meta property="og:updated_time" content="2017-05-04T16:45:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 平台滑动返回库对比">
+<meta name="twitter:description" content="Github 上滑动返回库比较多，由于实现思路甚至代码一部分库都差不多，所以只挑选了两个实现思路比较不同的库作为研究，分别是 SwipeBackLayout 和 and_swipeback。
+除滑动返回功能外，本文还会围绕滑动过程中呈现前一个界面的方案对上述两个库展开分析，其他部分源码细节不予分析。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chaosleong.github.io/2017/05/03/Comparison-of-Android-swipe-back-libraries/"/>
+
+
+
+
+
+  <title> Android 平台滑动返回库对比 | ChaosLeong's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ChaosLeong's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">边迷茫边努力，迷茫也不忘前进</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2017/05/03/Comparison-of-Android-swipe-back-libraries/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chaos Leong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ChaosLeong's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android 平台滑动返回库对比
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-03T11:41:13+08:00">
+                2017-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/03/Comparison-of-Android-swipe-back-libraries/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/05/03/Comparison-of-Android-swipe-back-libraries/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Github 上滑动返回库比较多，由于实现思路甚至代码一部分库都差不多，所以只挑选了两个实现思路比较不同的库作为研究，分别是 <strong><a href="https://github.com/ikew0ng/SwipeBackLayout" target="_blank" rel="external">SwipeBackLayout</a></strong> 和 <strong><a href="https://github.com/XBeats/and_swipeback" target="_blank" rel="external">and_swipeback</a></strong>。</p>
+<p>除滑动返回功能外，本文还会围绕滑动过程中呈现前一个界面的方案对上述两个库展开分析，其他部分源码细节不予分析。</p>
+<a id="more"></a>
+<h2 id="SwipeBackLayout"><a href="#SwipeBackLayout" class="headerlink" title="SwipeBackLayout"></a><a href="https://github.com/ikew0ng/SwipeBackLayout" target="_blank" rel="external">SwipeBackLayout</a></h2><p>由于使用 <strong>SwipeBackLayout</strong> 库提供的滑动返回能力需要继承于 <code>SwipeBackActivity</code>，所以我们直接从 <code>SwipeBackActivity</code> 开始研究。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SwipeBackActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> <span class="keyword">implements</span> <span class="title">SwipeBackActivityBase</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> SwipeBackActivityHelper mHelper;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        mHelper = <span class="keyword">new</span> SwipeBackActivityHelper(<span class="keyword">this</span>);</div><div class="line">        mHelper.onActivityCreate();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onPostCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onPostCreate(savedInstanceState);</div><div class="line">        mHelper.onPostCreate();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> SwipeBackLayout <span class="title">getSwipeBackLayout</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mHelper.getSwipeBackLayout();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSwipeBackEnable</span><span class="params">(<span class="keyword">boolean</span> enable)</span> </span>&#123;</div><div class="line">        getSwipeBackLayout().setEnableGesture(enable);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollToFinishActivity</span><span class="params">()</span> </span>&#123;</div><div class="line">        Utils.convertActivityToTranslucent(<span class="keyword">this</span>);</div><div class="line">        getSwipeBackLayout().scrollToFinishActivity();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看出 <code>SwipeBackActivity</code> 实际上只是 <code>SwipeBackActivityHelper</code> 的代理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SwipeBackActivityHelper</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> Activity mActivity;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> SwipeBackLayout mSwipeBackLayout;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SwipeBackActivityHelper</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">        mActivity = activity;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"deprecation"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onActivityCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">        mActivity.getWindow().setBackgroundDrawable(<span class="keyword">new</span> ColorDrawable(Color.TRANSPARENT));</div><div class="line">        mActivity.getWindow().getDecorView().setBackgroundDrawable(<span class="keyword">null</span>);</div><div class="line">        mSwipeBackLayout = (SwipeBackLayout) LayoutInflater.from(mActivity).inflate(</div><div class="line">                me.imid.swipebacklayout.lib.R.layout.swipeback_layout, <span class="keyword">null</span>);</div><div class="line">        <span class="comment">// 先记住这里</span></div><div class="line">        mSwipeBackLayout.addSwipeListener(<span class="keyword">new</span> SwipeBackLayout.SwipeListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScrollStateChange</span><span class="params">(<span class="keyword">int</span> state, <span class="keyword">float</span> scrollPercent)</span> </span>&#123;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEdgeTouch</span><span class="params">(<span class="keyword">int</span> edgeFlag)</span> </span>&#123;</div><div class="line">                Utils.convertActivityToTranslucent(mActivity);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScrollOverThreshold</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPostCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">        mSwipeBackLayout.attachToActivity(mActivity);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    ...</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> SwipeBackLayout <span class="title">getSwipeBackLayout</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mSwipeBackLayout;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从 <code>SwipeBackActivityHelper</code> 的代码不难看出它主要的工作是在 Activity 创建的时候将 Activity 的背景修改为透明以及创建 <code>SwipeBackLayout</code> 并将其与 Activity 关联。再来看一下 <code>mSwipeBackLayout.attachToActivity(mActivity)</code> 的逻辑：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">attachToActivity</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">    mActivity = activity;</div><div class="line">    TypedArray a = activity.getTheme().obtainStyledAttributes(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;</div><div class="line">            android.R.attr.windowBackground</div><div class="line">    &#125;);</div><div class="line">    <span class="keyword">int</span> background = a.getResourceId(<span class="number">0</span>, <span class="number">0</span>);</div><div class="line">    a.recycle();</div><div class="line"></div><div class="line">    ViewGroup decor = (ViewGroup) activity.getWindow().getDecorView();</div><div class="line">    ViewGroup decorChild = (ViewGroup) decor.getChildAt(<span class="number">0</span>);</div><div class="line">    decorChild.setBackgroundResource(background);</div><div class="line">    decor.removeView(decorChild);</div><div class="line">    addView(decorChild);</div><div class="line">    setContentView(decorChild);</div><div class="line">    decor.addView(<span class="keyword">this</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>SwipeBackLayout</code> 首先通过 Activity 实例获取当前主题下 <code>windowBackground</code> 的色值，并将其设置为 ContentView 的背景色，然后将 ContentView 添加至 <code>SwipeBackLayout</code> 中并将 <code>SwipeBackLayout</code> 设为当前 Activity 的 ContentView。至此便完成了与 Activity 关联的工作。</p>
+<h3 id="滑动处理"><a href="#滑动处理" class="headerlink" title="滑动处理"></a>滑动处理</h3><p>开始滑动时，<code>SwipeBackLayout</code> 将滑动事件全部转发至 <code>ViewDragHelper</code> 处理，等待 <code>SwipeBackLayout.ViewDragCallback</code> 中接收到相应回调后执行相关逻辑。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</div><div class="line">    ...</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">return</span> mDragHelper.shouldInterceptTouchEvent(event);</div><div class="line">    &#125; <span class="keyword">catch</span> (ArrayIndexOutOfBoundsException e) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</div><div class="line">    ...</div><div class="line">    mDragHelper.processTouchEvent(event);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当 <code>ViewDragHelper</code> 将当前状态修改为 <code>STATE_DRAGGING</code> 后，<code>ViewDragHelper</code> 通过调用 <code>ViewDragCallback</code> 的 <code>clampViewPositionHorizontal</code> 或 <code>clampViewPositionVertical</code> 回调方法设定当前页面的 ContentView 应移动的距离。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">clampViewPositionHorizontal</span><span class="params">(View child, <span class="keyword">int</span> left, <span class="keyword">int</span> dx)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span> ((mTrackingEdge &amp; EDGE_LEFT) != <span class="number">0</span>) &#123;</div><div class="line">        ret = Math.min(child.getWidth(), Math.max(left, <span class="number">0</span>));</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((mTrackingEdge &amp; EDGE_RIGHT) != <span class="number">0</span>) &#123;</div><div class="line">        ret = Math.min(<span class="number">0</span>, Math.max(left, -child.getWidth()));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> ret;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">clampViewPositionVertical</span><span class="params">(View child, <span class="keyword">int</span> top, <span class="keyword">int</span> dy)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span> ((mTrackingEdge &amp; EDGE_BOTTOM) != <span class="number">0</span>) &#123;</div><div class="line">        ret = Math.min(<span class="number">0</span>, Math.max(top, -child.getHeight()));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> ret;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当滑动事件结束后（<code>onViewReleased</code>），<code>SwipeBackLayout</code> 通过判断此前在 <code>onViewPositionChanged</code> 中计算好的滑动率是否达到阈值以执行回弹或退出动画，这样就完成了一次完整的滑动过程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onViewPositionChanged</span><span class="params">(View changedView, <span class="keyword">int</span> left, <span class="keyword">int</span> top, <span class="keyword">int</span> dx, <span class="keyword">int</span> dy)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> ((mTrackingEdge &amp; EDGE_LEFT) != <span class="number">0</span>) &#123;</div><div class="line">        mScrollPercent = Math.abs((<span class="keyword">float</span>) left</div><div class="line">                / (mContentView.getWidth() + mShadowLeft.getIntrinsicWidth()));</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((mTrackingEdge &amp; EDGE_RIGHT) != <span class="number">0</span>) &#123;</div><div class="line">        mScrollPercent = Math.abs((<span class="keyword">float</span>) left</div><div class="line">                / (mContentView.getWidth() + mShadowRight.getIntrinsicWidth()));</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((mTrackingEdge &amp; EDGE_BOTTOM) != <span class="number">0</span>) &#123;</div><div class="line">        mScrollPercent = Math.abs((<span class="keyword">float</span>) top</div><div class="line">                / (mContentView.getHeight() + mShadowBottom.getIntrinsicHeight()));</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onViewReleased</span><span class="params">(View releasedChild, <span class="keyword">float</span> xvel, <span class="keyword">float</span> yvel)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> childWidth = releasedChild.getWidth();</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> childHeight = releasedChild.getHeight();</div><div class="line"></div><div class="line">    <span class="keyword">int</span> left = <span class="number">0</span>, top = <span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span> ((mTrackingEdge &amp; EDGE_LEFT) != <span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">// 是否达到阈值</span></div><div class="line">        left = xvel &gt; <span class="number">0</span> || xvel == <span class="number">0</span> &amp;&amp; mScrollPercent &gt; mScrollThreshold ? childWidth</div><div class="line">                + mShadowLeft.getIntrinsicWidth() + OVERSCROLL_DISTANCE : <span class="number">0</span>;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((mTrackingEdge &amp; EDGE_RIGHT) != <span class="number">0</span>) &#123;</div><div class="line">        left = xvel &lt; <span class="number">0</span> || xvel == <span class="number">0</span> &amp;&amp; mScrollPercent &gt; mScrollThreshold ? -(childWidth</div><div class="line">                + mShadowLeft.getIntrinsicWidth() + OVERSCROLL_DISTANCE) : <span class="number">0</span>;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((mTrackingEdge &amp; EDGE_BOTTOM) != <span class="number">0</span>) &#123;</div><div class="line">        top = yvel &lt; <span class="number">0</span> || yvel == <span class="number">0</span> &amp;&amp; mScrollPercent &gt; mScrollThreshold ? -(childHeight</div><div class="line">                + mShadowBottom.getIntrinsicHeight() + OVERSCROLL_DISTANCE) : <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 回弹或滑到最后</span></div><div class="line">    mDragHelper.settleCapturedViewAt(left, top);</div><div class="line">    invalidate();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="显示前一个页面"><a href="#显示前一个页面" class="headerlink" title="显示前一个页面"></a>显示前一个页面</h3><p>为了显示前一个 Activity 界面，<code>SwipeBackActivityHelper</code> 在 Activity onCreate 时就将当前 Window 设置为透明背景。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mActivity.getWindow().setBackgroundDrawable(<span class="keyword">new</span> ColorDrawable(Color.TRANSPARENT));</div><div class="line">mActivity.getWindow().getDecorView().setBackgroundDrawable(<span class="keyword">null</span>);</div></pre></td></tr></table></figure>
+<p>而单单设置为透明背景并不足以显示上一个 Activity。为了解决这个问题，<code>SwipeBackActivityHelper</code> 在接收到 <code>SwipeListener</code> 的 <code>onEdgeTouch</code> 回调后调用 <code>Utils.convertActivityToTranslucent(mActivity)</code> 来让前一个 Activity 显示出来。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEdgeTouch</span><span class="params">(<span class="keyword">int</span> edgeFlag)</span> </span>&#123;</div><div class="line">    Utils.convertActivityToTranslucent(mActivity);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中 <code>onEdgeTouch</code> 是在 <code>ViewDragCallback</code> 的 <code>tryCaptureView</code> 回调中被调用的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryCaptureView</span><span class="params">(View view, <span class="keyword">int</span> i)</span> </span>&#123;</div><div class="line">    <span class="keyword">boolean</span> ret = mDragHelper.isEdgeTouched(mEdgeFlag, i);</div><div class="line">    <span class="keyword">if</span> (ret) &#123;</div><div class="line">        <span class="keyword">if</span> (mDragHelper.isEdgeTouched(EDGE_LEFT, i)) &#123;</div><div class="line">            mTrackingEdge = EDGE_LEFT;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mDragHelper.isEdgeTouched(EDGE_RIGHT, i)) &#123;</div><div class="line">            mTrackingEdge = EDGE_RIGHT;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mDragHelper.isEdgeTouched(EDGE_BOTTOM, i)) &#123;</div><div class="line">            mTrackingEdge = EDGE_BOTTOM;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (mListeners != <span class="keyword">null</span> &amp;&amp; !mListeners.isEmpty()) &#123;</div><div class="line">            <span class="keyword">for</span> (SwipeListener listener : mListeners) &#123;</div><div class="line">                <span class="comment">// 可触发滑动的边缘区域接收到触摸事件</span></div><div class="line">                listener.onEdgeTouch(mTrackingEdge);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        mIsScrollOverValid = <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>那么为什么 <code>Utils.convertActivityToTranslucent(mActivity)</code> 可以让前一个 Activity 显示呢？我们来看一下相关的逻辑：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">convertActivityToTranslucent</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">   <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.LOLLIPOP) &#123;</div><div class="line">       convertActivityToTranslucentAfterL(activity);</div><div class="line">   &#125; <span class="keyword">else</span> &#123;</div><div class="line">       convertActivityToTranslucentBeforeL(activity);</div><div class="line">   &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">convertActivityToTranslucentBeforeL</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">   <span class="keyword">try</span> &#123;</div><div class="line">       Class&lt;?&gt;[] classes = Activity.class.getDeclaredClasses();</div><div class="line">       Class&lt;?&gt; translucentConversionListenerClazz = <span class="keyword">null</span>;</div><div class="line">       <span class="keyword">for</span> (Class clazz : classes) &#123;</div><div class="line">           <span class="keyword">if</span> (clazz.getSimpleName().contains(<span class="string">"TranslucentConversionListener"</span>)) &#123;</div><div class="line">               translucentConversionListenerClazz = clazz;</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">       Method method = Activity.class.getDeclaredMethod(<span class="string">"convertToTranslucent"</span>,</div><div class="line">               translucentConversionListenerClazz);</div><div class="line">       method.setAccessible(<span class="keyword">true</span>);</div><div class="line">       method.invoke(activity, <span class="keyword">new</span> Object[] &#123;</div><div class="line">           <span class="keyword">null</span></div><div class="line">       &#125;);</div><div class="line">   &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">   &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">convertActivityToTranslucentAfterL</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">   <span class="keyword">try</span> &#123;</div><div class="line">       Method getActivityOptions = Activity.class.getDeclaredMethod(<span class="string">"getActivityOptions"</span>);</div><div class="line">       getActivityOptions.setAccessible(<span class="keyword">true</span>);</div><div class="line">       Object options = getActivityOptions.invoke(activity);</div><div class="line"></div><div class="line">       Class&lt;?&gt;[] classes = Activity.class.getDeclaredClasses();</div><div class="line">       Class&lt;?&gt; translucentConversionListenerClazz = <span class="keyword">null</span>;</div><div class="line">       <span class="keyword">for</span> (Class clazz : classes) &#123;</div><div class="line">           <span class="keyword">if</span> (clazz.getSimpleName().contains(<span class="string">"TranslucentConversionListener"</span>)) &#123;</div><div class="line">               translucentConversionListenerClazz = clazz;</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">       Method convertToTranslucent = Activity.class.getDeclaredMethod(<span class="string">"convertToTranslucent"</span>,</div><div class="line">               translucentConversionListenerClazz, ActivityOptions.class);</div><div class="line">       convertToTranslucent.setAccessible(<span class="keyword">true</span>);</div><div class="line">       convertToTranslucent.invoke(activity, <span class="keyword">null</span>, options);</div><div class="line">   &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中反射调用的 <code>convertToTranslucent</code> 方法的 Android 官方注释中写到 <strong>“Calling this allows the Activity behind this one to be seen again”</strong> 。所以，由于  <code>convertActivityToTranslucent</code> 通过反射调用 Activity 的 <code>convertToTranslucent</code> 方法将 Activity 转为 Translucent（相当于 windowIsTranslucent 值为 true），配合之前的透明背景，那么前一个 Activity 也就能显示出来了。</p>
+<p>以上即为 <code>SwipeBackLayout</code> 库为了显示上一界面所做的操作，然而这种方法有其弊端。由于被设为透明背景的 Activity 的前一个 Activity 无法进入 onStop()，从而导致 Activity 的 Window 不能释放部分资源。一旦多个透明背景的 Activity 叠加会出现明显的卡顿现象（毕竟这么多 View 需要绘制）。</p>
+<h2 id="and-swipeback"><a href="#and-swipeback" class="headerlink" title="and_swipeback"></a><a href="https://github.com/XBeats/and_swipeback" target="_blank" rel="external">and_swipeback</a></h2><p><strong>and_swipeback</strong> 与 <strong>SwipeBackLayout</strong> 一样提供了自定义的 Activity 让用户直接继承以集成滑动返回功能。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SwipeBackActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> <span class="keyword">implements</span> <span class="title">SwipeBackHelper</span>.<span class="title">SlideBackManager</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> SwipeBackHelper mSwipeBackHelper;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">dispatchTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mSwipeBackHelper == <span class="keyword">null</span>) &#123;</div><div class="line">            mSwipeBackHelper = <span class="keyword">new</span> SwipeBackHelper(<span class="keyword">this</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> mSwipeBackHelper.processTouchEvent(ev) || <span class="keyword">super</span>.dispatchTouchEvent(ev);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">finish</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mSwipeBackHelper != <span class="keyword">null</span>) &#123;</div><div class="line">            mSwipeBackHelper.finishSwipeImmediately();</div><div class="line">            mSwipeBackHelper = <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">super</span>.finish();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到 <code>SwipeBackActivity</code> 先将触摸事件转发给 <code>SwipeBackHelper</code> 处理，如未被消费再交由自身处理。</p>
+<h3 id="滑动处理-1"><a href="#滑动处理-1" class="headerlink" title="滑动处理"></a>滑动处理</h3><p>在触摸事件处理上 <strong>and_swipeback</strong> 并没有使用 <code>ViewDragHelper</code>，而是让 <code>SwipeBackHelper</code> 直接消费触摸事件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SwipeBackHelper</span> <span class="keyword">extends</span> <span class="title">Handler</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">processTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (!mIsSupportSlideBack) &#123; <span class="comment">//不支持滑动返回，则手势事件交给View处理</span></div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    </div><div class="line">        <span class="keyword">if</span> (mIsSlideAnimPlaying) &#123;  <span class="comment">//正在滑动动画播放中，直接消费手势事件</span></div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">    </div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> action = ev.getAction() &amp; MotionEvent.ACTION_MASK;</div><div class="line">        <span class="keyword">if</span> (action == MotionEvent.ACTION_DOWN) &#123;</div><div class="line">            mLastPointX = ev.getRawX();</div><div class="line">            mIsInThresholdArea = mLastPointX &gt;= <span class="number">0</span> &amp;&amp; mLastPointX &lt;= mEdgeSize;</div><div class="line">        &#125;</div><div class="line">    </div><div class="line">        <span class="keyword">if</span> (!mIsInThresholdArea) &#123;  <span class="comment">//不满足滑动区域，不做处理</span></div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    </div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> actionIndex = ev.getActionIndex();</div><div class="line">        <span class="keyword">switch</span> (action) &#123;</div><div class="line">            <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</div><div class="line">                sendEmptyMessage(MSG_ACTION_DOWN);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">    </div><div class="line">            <span class="keyword">case</span> MotionEvent.ACTION_POINTER_DOWN:</div><div class="line">                <span class="keyword">if</span> (mIsSliding) &#123;  <span class="comment">//有第二个手势事件加入，而且正在滑动事件中，则直接消费事件</span></div><div class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">    </div><div class="line">            <span class="keyword">case</span> MotionEvent.ACTION_MOVE:</div><div class="line">                <span class="comment">//一旦触发滑动机制，拦截所有其他手指的滑动事件</span></div><div class="line">                <span class="keyword">if</span> (actionIndex != <span class="number">0</span>) &#123;</div><div class="line">                    <span class="keyword">return</span> mIsSliding;</div><div class="line">                &#125;</div><div class="line">    </div><div class="line">                <span class="keyword">final</span> <span class="keyword">float</span> curPointX = ev.getRawX();</div><div class="line">    </div><div class="line">                <span class="keyword">boolean</span> isSliding = mIsSliding;</div><div class="line">                <span class="keyword">if</span> (!isSliding) &#123;</div><div class="line">                    <span class="keyword">if</span> (Math.abs(curPointX - mLastPointX) &lt; mTouchSlop) &#123; <span class="comment">//判断是否满足滑动</span></div><div class="line">                        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">                    &#125; <span class="keyword">else</span> &#123;</div><div class="line">                        mIsSliding = <span class="keyword">true</span>;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">    </div><div class="line">                Bundle bundle = <span class="keyword">new</span> Bundle();</div><div class="line">                bundle.putFloat(CURRENT_POINT_X, curPointX);</div><div class="line">                Message message = obtainMessage();</div><div class="line">                message.what = MSG_ACTION_MOVE;</div><div class="line">                message.setData(bundle);</div><div class="line">                sendMessage(message);</div><div class="line">    </div><div class="line">                <span class="keyword">if</span> (isSliding == mIsSliding) &#123;</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    MotionEvent cancelEvent = MotionEvent.obtain(ev); <span class="comment">//首次判定为滑动需要修正事件：手动修改事件为 ACTION_CANCEL，并通知底层View</span></div><div class="line">                    cancelEvent.setAction(MotionEvent.ACTION_CANCEL);</div><div class="line">                    mActivity.getWindow().superDispatchTouchEvent(cancelEvent);</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">                &#125;</div><div class="line">    </div><div class="line">            <span class="keyword">case</span> MotionEvent.ACTION_UP:</div><div class="line">            <span class="keyword">case</span> MotionEvent.ACTION_CANCEL:</div><div class="line">            <span class="keyword">case</span> MotionEvent.ACTION_POINTER_UP:</div><div class="line">            <span class="keyword">case</span> MotionEvent.ACTION_OUTSIDE:</div><div class="line">                <span class="keyword">if</span> (mDistanceX == <span class="number">0</span>) &#123; <span class="comment">//没有进行滑动</span></div><div class="line">                    mIsSliding = <span class="keyword">false</span>;</div><div class="line">                    sendEmptyMessage(MSG_ACTION_UP);</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">                &#125;</div><div class="line">    </div><div class="line">                <span class="keyword">if</span> (mIsSliding &amp;&amp; actionIndex == <span class="number">0</span>) &#123; <span class="comment">// 取消滑动 或 手势抬起 ，而且手势事件是第一手势，开始滑动动画</span></div><div class="line">                    mIsSliding = <span class="keyword">false</span>;</div><div class="line">                    sendEmptyMessage(MSG_ACTION_UP);</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mIsSliding &amp;&amp; actionIndex != <span class="number">0</span>) &#123;</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">default</span>:</div><div class="line">                mIsSliding = <span class="keyword">false</span>;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当 <code>processTouchEvent</code> 判定当前的触摸事件为滑动事件时，<code>SwipeBackHelper</code> 对自身发送了一个 <code>MSG_ACTION_MOVE</code> 的 Message。接收到该 Message 后，<code>SwipeBackHelper</code> 调用了 <code>onSliding</code> 方法以执行滑动动画。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">    <span class="keyword">switch</span> (msg.what) &#123;</div><div class="line">        ...</div><div class="line">        <span class="keyword">case</span> MSG_ACTION_MOVE:</div><div class="line">            <span class="keyword">final</span> <span class="keyword">float</span> curPointX = msg.getData().getFloat(CURRENT_POINT_X);</div><div class="line">            onSliding(curPointX);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">       ...</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">onSliding</span><span class="params">(<span class="keyword">float</span> curPointX)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> width = mActivity.getResources().getDisplayMetrics().widthPixels;</div><div class="line">    View previewActivityContentView = mViewManager.mPreviousContentView;</div><div class="line">    View shadowView = mViewManager.mShadowView;</div><div class="line">    View currentActivityContentView = mViewManager.getDisplayView();</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (previewActivityContentView == <span class="keyword">null</span> || currentActivityContentView == <span class="keyword">null</span> || shadowView == <span class="keyword">null</span>) &#123;</div><div class="line">        sendEmptyMessage(MSG_SLIDE_CANCELED);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">final</span> <span class="keyword">float</span> distanceX = curPointX - mLastPointX;</div><div class="line">    mLastPointX = curPointX;</div><div class="line">    mDistanceX = mDistanceX + distanceX;</div><div class="line">    <span class="keyword">if</span> (mDistanceX &lt; <span class="number">0</span>) &#123;</div><div class="line">        mDistanceX = <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    previewActivityContentView.setX(-width / <span class="number">3</span> + mDistanceX / <span class="number">3</span>);</div><div class="line">    shadowView.setX(mDistanceX - SHADOW_WIDTH);</div><div class="line">    currentActivityContentView.setX(mDistanceX);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>与 <code>ViewDragHelper</code> 不同的是，<code>SwipeBackHelper</code> 通过调用 View 的 <code>setX</code> 方法来显示位移效果。最后，当手势结束时，<code>SwipeBackHelper</code> 在滑动距离不足时会执行回弹动画，在滑动距离充足时则会一直滑到尽头再结束当前页面，此处逻辑比较简单，不贴出代码。</p>
+<h3 id="显示前一个页面-1"><a href="#显示前一个页面-1" class="headerlink" title="显示前一个页面"></a>显示前一个页面</h3><p><strong>and_swipeback</strong> 对前一个界面的管理主要放在 <code>SwipeBackHelper.ViewManager</code> 中，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewManager</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> Activity mPreviousActivity;</div><div class="line">    <span class="keyword">private</span> View mPreviousContentView;</div><div class="line">    <span class="keyword">private</span> View mShadowView;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">addViewFromPreviousActivity</span><span class="params">()</span> </span>&#123;</div><div class="line">        ...</div><div class="line">        mPreviousActivity = ActivityLifecycleHelper.getPreviousActivity();</div><div class="line">        ...</div><div class="line"></div><div class="line">        ViewGroup previousActivityContainer = getContentView(mPreviousActivity);</div><div class="line">        ...</div><div class="line"></div><div class="line">        mPreviousContentView = previousActivityContainer.getChildAt(<span class="number">0</span>);</div><div class="line">        previousActivityContainer.removeView(mPreviousContentView);</div><div class="line">        mCurrentContentView.addView(mPreviousContentView, <span class="number">0</span>);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">resetPreviousView</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mPreviousContentView == <span class="keyword">null</span>)</div><div class="line">            <span class="keyword">return</span>;</div><div class="line"></div><div class="line">        View view = mPreviousContentView;</div><div class="line">        FrameLayout contentView = mCurrentContentView;</div><div class="line">        view.setX(<span class="number">0</span>);</div><div class="line">        contentView.removeView(view);</div><div class="line">        mPreviousContentView = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (mPreviousActivity == <span class="keyword">null</span> || mPreviousActivity.isFinishing())</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        Activity preActivity = mPreviousActivity;</div><div class="line">        <span class="keyword">final</span> ViewGroup previewContentView = getContentView(preActivity);</div><div class="line">        previewContentView.addView(view);</div><div class="line">        mPreviousActivity = <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ...</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addCacheView</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">final</span> FrameLayout contentView = mCurrentContentView;</div><div class="line">        <span class="keyword">final</span> View previousView = mPreviousContentView;</div><div class="line">        PreviousPageView previousPageView = <span class="keyword">new</span> PreviousPageView(mActivity);</div><div class="line">        contentView.addView(previousPageView, <span class="number">0</span>);</div><div class="line">        previousPageView.cacheView(previousView);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当调用 <code>addViewFromPreviousActivity</code> 时，<code>ViewManager</code> 从 <code>ActivityLifecycleHelper</code> 中获得上一个 Activity 的实例（其中 <code>ActivityLifecycleHelper</code> 实现了 <code>Application.ActivityLifecycleCallbacks</code> 并需在 Application 中注册监听，从而在 Activity 栈发生变化时能够获取到每个 Activity 的实例），并将该 Activity 的 ContentView 添加到当前 Activity 的底部。当滑动时，通过移开上层的 View 则可看到底部的 Previous ContentView。</p>
+<p>相比 <strong>SwipeBackLayout</strong>，<strong>and_swipeback</strong> 避免了过多透明背景页面时所造成的卡顿感。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在滑动处理上，两个库的能力其实都一样，也不存在与滑动控件冲突的情况。在显示前一个页面的方案上，从性能角度自然是 <strong>and_swipeback</strong> 更好，但实现逻辑上显然更加复杂。</p>
+<p>在选择滑动返回库时，如果所需滑动返回的 Activity 叠加数量并不多，使用 <strong>SwipeBackLayout</strong> 或 <strong>and_swipeback</strong> 都差不多。而当带滑动返回功能的 Activity 数量较多时，如之前所述，透明背景会造成明显的卡顿感，此时应当使用 <strong>and_swipeback</strong>。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/08/The-knowledge-of-the-PinView/" rel="next" title="PinView 的一些知识点">
+                <i class="fa fa-chevron-left"></i> PinView 的一些知识点
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Chaos Leong" />
+          <p class="site-author-name" itemprop="name">Chaos Leong</p>
+           
+              <p class="site-description motion-element" itemprop="description">个人博客，技术分享</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SwipeBackLayout"><span class="nav-number">1.</span> <span class="nav-text">SwipeBackLayout</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#滑动处理"><span class="nav-number">1.1.</span> <span class="nav-text">滑动处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显示前一个页面"><span class="nav-number">1.2.</span> <span class="nav-text">显示前一个页面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#and-swipeback"><span class="nav-number">2.</span> <span class="nav-text">and_swipeback</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#滑动处理-1"><span class="nav-number">2.1.</span> <span class="nav-text">滑动处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显示前一个页面-1"><span class="nav-number">2.2.</span> <span class="nav-text">显示前一个页面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chaos Leong</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://chaosleongs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://chaosleong.github.io/2017/05/03/Comparison-of-Android-swipe-back-libraries/';
+          this.page.identifier = '2017/05/03/Comparison-of-Android-swipe-back-libraries/';
+          this.page.title = 'Android 平台滑动返回库对比';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://chaosleongs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
