@@ -1,0 +1,826 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="AOSP,Nexus," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ChaosLeong's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近终于将了解 AOSP 提到日程上。在折腾了两晚后总算给吃了很久灰的 Nexus 3 刷了自己编译出来的 4.3 系统，本文仅为记录这一过程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Building AOSP for Nexus 3 (maguro)">
+<meta property="og:url" content="http://chaosleong.github.io/2017/05/09/Building-AOSP-for-Nexus-3-maguro/index.html">
+<meta property="og:site_name" content="ChaosLeong's Blog">
+<meta property="og:description" content="最近终于将了解 AOSP 提到日程上。在折腾了两晚后总算给吃了很久灰的 Nexus 3 刷了自己编译出来的 4.3 系统，本文仅为记录这一过程。">
+<meta property="og:updated_time" content="2017-05-09T16:51:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Building AOSP for Nexus 3 (maguro)">
+<meta name="twitter:description" content="最近终于将了解 AOSP 提到日程上。在折腾了两晚后总算给吃了很久灰的 Nexus 3 刷了自己编译出来的 4.3 系统，本文仅为记录这一过程。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://chaosleong.github.io/2017/05/09/Building-AOSP-for-Nexus-3-maguro/"/>
+
+
+
+
+
+  <title> Building AOSP for Nexus 3 (maguro) | ChaosLeong's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ChaosLeong's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">边迷茫边努力，迷茫也不忘前进</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2017/05/09/Building-AOSP-for-Nexus-3-maguro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chaos Leong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ChaosLeong's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Building AOSP for Nexus 3 (maguro)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-09T22:56:15+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/09/Building-AOSP-for-Nexus-3-maguro/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/05/09/Building-AOSP-for-Nexus-3-maguro/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近终于将了解 AOSP 提到日程上。在折腾了两晚后总算给吃了很久灰的 Nexus 3 刷了自己编译出来的 4.3 系统，本文仅为记录这一过程。</p>
+<a id="more"></a>
+<h2 id="设备"><a href="#设备" class="headerlink" title="设备"></a>设备</h2><p>编译机： Ubuntu LTS 14.04<br>手机： Galaxy Nexus (maguro)<br>目标系统： Android 4.3 (Jelly Bean)</p>
+<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><p>按照官方流程，从开始到最终将系统运行于手机上，主要分四个流程：</p>
+<ol>
+<li>配置编译环境</li>
+<li>下载源码</li>
+<li>编译源码</li>
+<li>刷机并运行</li>
+</ol>
+<p>下文亦依照该流程进行描述。</p>
+<h2 id="配置编译环境"><a href="#配置编译环境" class="headerlink" title="配置编译环境"></a>配置编译环境</h2><h3 id="选择分支"><a href="#选择分支" class="headerlink" title="选择分支"></a>选择分支</h3><p>首先是选择我们的设备支持的最高版本，通过 <a href="https://source.android.com/" target="_blank" rel="external">Build Numbers</a> 中可以查到官方对 Galaxy Nexus 的支持最高只到 4.3，对应的最新分支为 <code>android-4.3_r1.1</code>。</p>
+<h3 id="安装-JDK"><a href="#安装-JDK" class="headerlink" title="安装 JDK"></a>安装 JDK</h3><p>确定了 Android 版本为 4.3 后，在 <a href="https://source.android.com/source/requirements#jdk" target="_blank" rel="external">JDK Requirements</a> 中了解到编译 4.3 系统需要 JDK 6。</p>
+<p>由于相关许可问题，Ubuntu 已经不能直接安装 Oracle JDK 6。然而 <a href="https://launchpad.net/~webupd8team" target="_blank" rel="external">Webupd8 Team</a> 为我们提供了相关的脚本下载 JDK。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo add-apt-repository ppa:webupd8team/java</div><div class="line">sudo apt-get update</div><div class="line">sudo apt-get install oracle-java6-installer</div></pre></td></tr></table></figure>
+<p>如果需要自动配置 Java 环境变量，可以使用下列命令：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install oracle-java6-set-default</div></pre></td></tr></table></figure>
+<h3 id="安装编译所需的包"><a href="#安装编译所需的包" class="headerlink" title="安装编译所需的包"></a>安装编译所需的包</h3><p>由于使用的是 Ubuntu 14.04，根据官方文档，我们还需下载下列包：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install git-core gnupg flex bison gperf build-essential \</div><div class="line">  zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 \</div><div class="line">  lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache \</div><div class="line">  libgl1-mesa-dev libxml2-utils xsltproc unzip</div></pre></td></tr></table></figure>
+<p>然而只有这部分包编译 4.3 的时候会出现 <code>Can&#39;t locate Switch.pm in @INC (you may need to install the Switch module)</code><br>错误，解决办法是安装 perl 的 switch 库（参照<a href="http://blog.csdn.net/michaelpp/article/details/22801953" target="_blank" rel="external">此文</a>）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install libswitch-perl</div></pre></td></tr></table></figure>
+<h3 id="优化编译环境（可选）"><a href="#优化编译环境（可选）" class="headerlink" title="优化编译环境（可选）"></a>优化编译环境（可选）</h3><p>使用 ccache 能够加快 C/C++ 的编译速度，可以在 <code>.bashrc</code> 中添加以下配置打开 ccache：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">export USE_CCACHE=1</div><div class="line">export CCACHE_DIR=/&lt;path_of_your_choice&gt;/.ccache</div></pre></td></tr></table></figure>
+<p>并在源码根目录中指定 ccache 的大小（建议 50-100G）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">prebuilts/misc/linux-x86/ccache/ccache -M 50G</div></pre></td></tr></table></figure>
+<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><h3 id="安装-repo"><a href="#安装-repo" class="headerlink" title="安装 repo"></a>安装 repo</h3><p>由于某些因素，Google 已“不可以”访问，这里我们改用<a href="https://mirrors.tuna.tsinghua.edu.cn" target="_blank" rel="external">清华源</a>的 repo：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">mkdir ~/bin</div><div class="line">PATH=~/bin:<span class="variable">$PATH</span></div><div class="line">curl https://mirrors.tuna.tsinghua.edu.cn/git/git-repo -o ~/bin/repo</div><div class="line">chmod +x ~/bin/repo</div></pre></td></tr></table></figure>
+<p>并且，为了避免 repo 更新时访问 Google 官方的 git 源，将下列内容添加到 <code>.bashrc</code> 中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export REPO_URL=&apos;https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/&apos;</div></pre></td></tr></table></figure>
+<h3 id="配置-Git"><a href="#配置-Git" class="headerlink" title="配置 Git"></a>配置 Git</h3><p>在开始下载源码前，确保已经安装 git 并已经配置 <code>user.name</code> 及 <code>user.email</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install git-core</div><div class="line">git config --global user.name <span class="string">"Your Name"</span></div><div class="line">git config --global user.email <span class="string">"you@example.com"</span></div></pre></td></tr></table></figure>
+<h3 id="下载源码-1"><a href="#下载源码-1" class="headerlink" title="下载源码"></a>下载源码</h3><p>在真正下载代码前，我们还需要根据前面确定的分支初始化 repo。同样的，改为清华源：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-4.3_r1.1</div></pre></td></tr></table></figure>
+<p>初始化完毕后，使用下列代码下载代码：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">repo sync</div></pre></td></tr></table></figure>
+<p>接下来就是漫长的等待……</p>
+<h2 id="编译源码"><a href="#编译源码" class="headerlink" title="编译源码"></a>编译源码</h2><h3 id="初始化编译环境变量"><a href="#初始化编译环境变量" class="headerlink" title="初始化编译环境变量"></a>初始化编译环境变量</h3><p>在开始编译前，我们需要初始化编译的环境变量：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">source</span> build/envsetup.sh</div></pre></td></tr></table></figure>
+<h3 id="下载设备相关-so"><a href="#下载设备相关-so" class="headerlink" title="下载设备相关 so"></a>下载设备相关 so</h3><p>由于设备的正确运行还需要相关硬件驱动支持，所以我们还需要下载手机各硬件的供应商提供的 so 库并添加到 AOSP 中。</p>
+<p>下载完 <a href="https://developers.google.com/android/drivers#magurojwr66y" target="_blank" rel="external">Galaxy Nexus for Android 4.3 相关包</a>后，解压并将所有脚本移至源码根目录下执行，并同意所有的条款。</p>
+<p>当执行完所有的脚本后，相关的 so 会添加到 <code>vendor/</code> 目录下。 </p>
+<h3 id="选择编译目标"><a href="#选择编译目标" class="headerlink" title="选择编译目标"></a>选择编译目标</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">lunch full_maguro-userdebug</div></pre></td></tr></table></figure>
+<p>或直接执行 <code>lunch</code> 后选择对应的设备</p>
+<h3 id="开始编译"><a href="#开始编译" class="headerlink" title="开始编译"></a>开始编译</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">make -j8</div></pre></td></tr></table></figure>
+<p>其中 <code>-j8</code> 意思为指定使用 8 条线程同时编译，主要看 cpu 支持的并发数量。</p>
+<p>接着又是漫长的等待~</p>
+<h2 id="刷机并运行"><a href="#刷机并运行" class="headerlink" title="刷机并运行"></a>刷机并运行</h2><p>先将手机切换至 bootloader 模式并解锁：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">adb reboot bootloader</div><div class="line">fastboot oem unlock</div></pre></td></tr></table></figure>
+<p>接着在源码根目录中执行：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">fastboot flashall -w</div></pre></td></tr></table></figure>
+<p>当命令执行完后，手机会自动重启，此时只需等待手机完成初始化，之后便可以看到编译的系统以及准确运行在设备上。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>至此，我们就已经完成了一次简单的 AOSP 编译及运行流程，顺着官方文档的说明做下来其实蛮简单的。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AOSP/" rel="tag"># AOSP</a>
+          
+            <a href="/tags/Nexus/" rel="tag"># Nexus</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/03/Comparison-of-Android-swipe-back-libraries/" rel="next" title="Android 平台滑动返回库对比">
+                <i class="fa fa-chevron-left"></i> Android 平台滑动返回库对比
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Chaos Leong" />
+          <p class="site-author-name" itemprop="name">Chaos Leong</p>
+           
+              <p class="site-description motion-element" itemprop="description">个人博客，技术分享</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#设备"><span class="nav-number">1.</span> <span class="nav-text">设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程"><span class="nav-number">2.</span> <span class="nav-text">流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置编译环境"><span class="nav-number">3.</span> <span class="nav-text">配置编译环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#选择分支"><span class="nav-number">3.1.</span> <span class="nav-text">选择分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-JDK"><span class="nav-number">3.2.</span> <span class="nav-text">安装 JDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装编译所需的包"><span class="nav-number">3.3.</span> <span class="nav-text">安装编译所需的包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化编译环境（可选）"><span class="nav-number">3.4.</span> <span class="nav-text">优化编译环境（可选）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载源码"><span class="nav-number">4.</span> <span class="nav-text">下载源码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-repo"><span class="nav-number">4.1.</span> <span class="nav-text">安装 repo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-Git"><span class="nav-number">4.2.</span> <span class="nav-text">配置 Git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载源码-1"><span class="nav-number">4.3.</span> <span class="nav-text">下载源码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译源码"><span class="nav-number">5.</span> <span class="nav-text">编译源码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化编译环境变量"><span class="nav-number">5.1.</span> <span class="nav-text">初始化编译环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载设备相关-so"><span class="nav-number">5.2.</span> <span class="nav-text">下载设备相关 so</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择编译目标"><span class="nav-number">5.3.</span> <span class="nav-text">选择编译目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始编译"><span class="nav-number">5.4.</span> <span class="nav-text">开始编译</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#刷机并运行"><span class="nav-number">6.</span> <span class="nav-text">刷机并运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">7.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Chaos Leong</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://chaosleongs-blog.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://chaosleong.github.io/2017/05/09/Building-AOSP-for-Nexus-3-maguro/';
+          this.page.identifier = '2017/05/09/Building-AOSP-for-Nexus-3-maguro/';
+          this.page.title = 'Building AOSP for Nexus 3 (maguro)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://chaosleongs-blog.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
