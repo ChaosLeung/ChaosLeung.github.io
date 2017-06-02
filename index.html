@@ -382,9 +382,9 @@
       
         
           <blockquote>
-<p>注：本文所有代码基于 android.arch.lifecycle 1.0.0-alpha1<br>另外，为了避免混淆，Fragment、Activity 等组件自身的生命周期直用 “生命周期” 一词，而由 <strong>Lifecycle</strong> 提供的生命周期则称为 “Lifecyle”</p>
+<p>注：本文所有代码基于 android.arch.lifecycle 1.0.0-alpha1<br>另外，为了避免混淆，Fragment、Activity 等组件自身的生命周期直用 “生命周期” 一词，而由 <strong>Lifecycle</strong> 框架提供的生命周期则称为 “Lifecyle”</p>
 </blockquote>
-<p>最近看到不少人讨论 Google 推的 <a href="https://developer.android.com/topic/libraries/architecture/index.html">Android Architecture Components</a>，其中 <a href="https://developer.android.com/topic/libraries/architecture/lifecycle.html">Handling Lifecycles</a> 一章展现了如何利用 <code>android.arch.lifecycle</code> 包提供的类来控制数据、监听器等的 Lifecycle。同时，<a href="https://developer.android.com/topic/libraries/architecture/livedata.html">LiveData</a> 与 <a href="https://developer.android.com/topic/libraries/architecture/viewmodel.html">ViewModel</a> 的 Lifecycle 也依赖于 <strong>Lifecycle</strong> 框架，所以分析 <strong>Lifecyle</strong> 显然是有必要的。</p>
+<p>最近看到不少人讨论 Google 推的 <a href="https://developer.android.com/topic/libraries/architecture/index.html">Android Architecture Components</a>，其中 <a href="https://developer.android.com/topic/libraries/architecture/lifecycle.html">Handling Lifecycles</a> 一章展现了如何利用 <code>android.arch.lifecycle</code> 包提供的类来控制数据、监听器等的 Lifecycle。同时，<a href="https://developer.android.com/topic/libraries/architecture/livedata.html">LiveData</a> 与 <a href="https://developer.android.com/topic/libraries/architecture/viewmodel.html">ViewModel</a> 的 Lifecycle 也依赖于 <strong>Lifecycle</strong> 框架，所以分析 <strong>Lifecycle</strong> 显然是有必要的。</p>
 <p><strong>Lifecycle</strong> 到底是通过怎样的方式来绑定 Android 组件的生命周期以及如何通知 <strong>LifecycleObserver</strong> 状态变化的呢？本文将会围绕这两个问题深入分析 <strong>Lifecycle</strong> 源码。</p>
           <!--noindex-->
           <div class="post-button text-center">
