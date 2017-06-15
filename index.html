@@ -272,6 +272,194 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2017/06/14/How-LiveData-actually-works/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chaos Leong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ChaosLeong's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/06/14/How-LiveData-actually-works/" itemprop="url">
+                  LiveData 源码分析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-14T13:58:02+08:00">
+                2017-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/14/How-LiveData-actually-works/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/06/14/How-LiveData-actually-works/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>注：本文所有代码基于 android.arch.lifecycle 1.0.0-alpha1</p>
+</blockquote>
+<p>在 <a href="https://chaosleong.github.io/2017/05/27/How-Lifecycle-aware-Components-actually-works">Lifecycle-aware Components 源码分析</a> 一文中，我们已经分析了 <strong>Lifecycle</strong> 框架中所有的 lifecyle 事件产生流程以及分发流程。本文将会基于这部分知识来分析 <strong>Lifecycle</strong> 框架中的 <strong>LiveData</strong> 组件。</p>
+<h2 id="提出问题"><a href="#提出问题" class="headerlink" title="提出问题"></a>提出问题</h2><p>结合 <a href="https://developer.android.com/reference/android/arch/lifecycle/LiveData.html" target="_blank" rel="external">LiveData javadoc</a>, <a href="https://developer.android.com/topic/libraries/architecture/livedata.html" target="_blank" rel="external">LiveData</a> 文档，我们可以了解到 <strong>LiveData</strong> 主要作用是数据发生变化时通知 <strong>Observer</strong>，那么 <strong>LiveData</strong> 是如何实现这部分内容的呢？</p>
+<h2 id="LiveData"><a href="#LiveData" class="headerlink" title="LiveData"></a>LiveData</h2><p>有监听得先有注册，先来看 <code>observe</code> 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@MainThread</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">observe</span><span class="params">(LifecycleOwner owner, Observer&lt;T&gt; observer)</span> </span>&#123;</div><div class="line">   <span class="keyword">if</span> (owner.getLifecycle().getCurrentState() == DESTROYED) &#123;</div><div class="line">       <span class="comment">// ignore</span></div><div class="line">       <span class="keyword">return</span>;</div><div class="line">   &#125;</div><div class="line">   LifecycleBoundObserver wrapper = <span class="keyword">new</span> LifecycleBoundObserver(owner, observer);</div><div class="line">   LifecycleBoundObserver existing = mObservers.putIfAbsent(observer, wrapper);</div><div class="line">   <span class="keyword">if</span> (existing != <span class="keyword">null</span> &amp;&amp; existing.owner != wrapper.owner) &#123;</div><div class="line">       <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Cannot add the same observer"</span></div><div class="line">               + <span class="string">" with different lifecycles"</span>);</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">if</span> (existing != <span class="keyword">null</span>) &#123;</div><div class="line">       <span class="keyword">return</span>;</div><div class="line">   &#125;</div><div class="line">   owner.getLifecycle().addObserver(wrapper);</div><div class="line">   wrapper.activeStateChanged(isActiveState(owner.getLifecycle().getCurrentState()));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>observe</code> 方法需运行在主线程中，执行时会将 <strong>Observer</strong> 传入 <strong>LifecycleBoundObserver</strong>，并将 <strong>LifecycleBoundObserver</strong> 通过 <code>addObserver</code> 注册至 <strong>Lifecycle</strong>，紧接着调用了 <strong>LifecycleBoundObserver</strong> 的 <code>activeStateChanged</code> 方法。</p>
+<p>接着看 <strong>LifecycleBoundObserver</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LifecycleBoundObserver</span> <span class="keyword">implements</span> <span class="title">LifecycleObserver</span> </span>&#123;</div><div class="line">   <span class="keyword">public</span> <span class="keyword">final</span> LifecycleOwner owner;</div><div class="line">   <span class="keyword">public</span> <span class="keyword">final</span> Observer&lt;T&gt; observer;</div><div class="line">   <span class="keyword">public</span> <span class="keyword">boolean</span> active;</div><div class="line">   <span class="keyword">public</span> <span class="keyword">int</span> lastVersion = START_VERSION;</div><div class="line"></div><div class="line">   LifecycleBoundObserver(LifecycleOwner owner, Observer&lt;T&gt; observer) &#123;</div><div class="line">       <span class="keyword">this</span>.owner = owner;</div><div class="line">       <span class="keyword">this</span>.observer = observer;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="meta">@SuppressWarnings</span>(<span class="string">"unused"</span>)</div><div class="line">   <span class="meta">@OnLifecycleEvent</span>(Lifecycle.Event.ON_ANY)</div><div class="line">   <span class="function"><span class="keyword">void</span> <span class="title">onStateChange</span><span class="params">()</span> </span>&#123;</div><div class="line">       <span class="keyword">if</span> (owner.getLifecycle().getCurrentState() == DESTROYED) &#123;</div><div class="line">           removeObserver(observer);</div><div class="line">           <span class="keyword">return</span>;</div><div class="line">       &#125;</div><div class="line">       <span class="comment">// immediately set active state, so we'd never dispatch anything to inactive</span></div><div class="line">       <span class="comment">// owner</span></div><div class="line">       activeStateChanged(isActiveState(owner.getLifecycle().getCurrentState()));</div><div class="line"></div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="function"><span class="keyword">void</span> <span class="title">activeStateChanged</span><span class="params">(<span class="keyword">boolean</span> newActive)</span> </span>&#123;</div><div class="line">       <span class="keyword">if</span> (newActive == active) &#123;</div><div class="line">           <span class="keyword">return</span>;</div><div class="line">       &#125;</div><div class="line">       active = newActive;</div><div class="line">       <span class="keyword">boolean</span> wasInactive = LiveData.<span class="keyword">this</span>.mActiveCount == <span class="number">0</span>;</div><div class="line">       LiveData.<span class="keyword">this</span>.mActiveCount += active ? <span class="number">1</span> : -<span class="number">1</span>;</div><div class="line">       <span class="keyword">if</span> (wasInactive &amp;&amp; active) &#123;</div><div class="line">           onActive();</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">if</span> (LiveData.<span class="keyword">this</span>.mActiveCount == <span class="number">0</span> &amp;&amp; !active) &#123;</div><div class="line">           onInactive();</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">if</span> (active) &#123;</div><div class="line">           dispatchingValue(<span class="keyword">this</span>);</div><div class="line">       &#125;</div><div class="line">   &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isActiveState</span><span class="params">(State state)</span> </span>&#123;</div><div class="line">   <span class="keyword">return</span> state.isAtLeast(STARTED);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>不难看出 <code>onStateChange</code> 会接收所有的 lifecycle 事件。当 <strong>LifecycleOwner</strong> 的状态处于 <code>STARTED</code> 或 <code>RESUMED</code> 时，传入 <code>activeStateChanged</code> 的值为 true，即 <strong>LifecycleBoundObserver</strong> 会被标记为激活状态，同时会增加 <strong>LiveData</strong> 的 <code>mActiveCount</code> 计数。接着可以看到，<code>onActive</code> 会在 <code>mActiveCount</code> 为 1 时触发，<code>onInactive</code> 方法则只会在 <code>mActiveCount</code> 为 0 时触发。这里就与 <a href="https://developer.android.com/reference/android/arch/lifecycle/LiveData.html" target="_blank" rel="external">LiveData javadoc</a> 所描述的完全吻合（In addition, LiveData has onActive() and onInactive() methods to get notified when number of active Observers change between 0 and 1. This allows LiveData to release any heavy resources when it does not have any Observers that are actively observing.）。</p>
+<p>此后，如果 <strong>LifecycleBoundObserver</strong> 处于激活状态，则会调用 <code>dispatchingValue</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dispatchingValue</span><span class="params">(@Nullable LifecycleBoundObserver initiator)</span> </span>&#123;</div><div class="line">   <span class="keyword">if</span> (mDispatchingValue) &#123;</div><div class="line">       mDispatchInvalidated = <span class="keyword">true</span>;</div><div class="line">       <span class="keyword">return</span>;</div><div class="line">   &#125;</div><div class="line">   mDispatchingValue = <span class="keyword">true</span>;</div><div class="line">   do &#123;</div><div class="line">       mDispatchInvalidated = <span class="keyword">false</span>;</div><div class="line">       <span class="keyword">if</span> (initiator != <span class="keyword">null</span>) &#123;</div><div class="line">           considerNotify(initiator);</div><div class="line">           initiator = <span class="keyword">null</span>;</div><div class="line">       &#125; <span class="keyword">else</span> &#123;</div><div class="line">           <span class="keyword">for</span> (Iterator&lt;Map.Entry&lt;Observer&lt;T&gt;, LifecycleBoundObserver&gt;&gt; iterator =</div><div class="line">                   mObservers.iteratorWithAdditions(); iterator.hasNext(); ) &#123;</div><div class="line">               considerNotify(iterator.next().getValue());</div><div class="line">               <span class="keyword">if</span> (mDispatchInvalidated) &#123;</div><div class="line">                   <span class="keyword">break</span>;</div><div class="line">               &#125;</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">   &#125; <span class="keyword">while</span> (mDispatchInvalidated);</div><div class="line">   mDispatchingValue = <span class="keyword">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中 <code>mDispatchingValue</code>, <code>mDispatchInvalidated</code> 只在 <code>dispatchingValue</code> 方法中使用，显然这两个变量是为了防止重复分发相同的内容。接下来，无论哪个路径都会调用 <code>considerNotify</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">considerNotify</span><span class="params">(LifecycleBoundObserver observer)</span> </span>&#123;</div><div class="line">   <span class="keyword">if</span> (!observer.active) &#123;</div><div class="line">       <span class="keyword">return</span>;</div><div class="line">   &#125;</div><div class="line">   <span class="comment">// Check latest state b4 dispatch. Maybe it changed state but we didn't get the event yet.</span></div><div class="line">   <span class="comment">//</span></div><div class="line">   <span class="comment">// we still first check observer.active to keep it as the entrance for events. So even if</span></div><div class="line">   <span class="comment">// the observer moved to an active state, if we've not received that event, we better not</span></div><div class="line">   <span class="comment">// notify for a more predictable notification order.</span></div><div class="line">   <span class="keyword">if</span> (!isActiveState(observer.owner.getLifecycle().getCurrentState())) &#123;</div><div class="line">       <span class="keyword">return</span>;</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">if</span> (observer.lastVersion &gt;= mVersion) &#123;</div><div class="line">       <span class="comment">// 数据已经是最新</span></div><div class="line">       <span class="keyword">return</span>;</div><div class="line">   &#125;</div><div class="line">   observer.lastVersion = mVersion;</div><div class="line">   <span class="comment">//noinspection unchecked</span></div><div class="line">   observer.observer.onChanged((T) mData);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>注：<code>mVersion</code> 代表的是数据变化的次数，下文会补充说明。</p>
+</blockquote>
+<p>显然 <code>considerNotify</code> 的作用就是通知处于激活状态且数据未更新的 <strong>Observer</strong> 数据已发生变化。</p>
+<p>其中 <code>mData</code> 即是 <strong>LiveData</strong> 当前的数据，默认是一个全局 Object：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object NOT_SET = <span class="keyword">new</span> Object();</div><div class="line"><span class="keyword">private</span> Object mData = NOT_SET;</div></pre></td></tr></table></figure>
+<p>可能会有人担心当 <strong>LiveData</strong> 的 <code>mData</code> 未发生变更时，第一次调用 <code>observe</code> 会将 <code>NOT_SET</code> 传递到 <strong>Observer</strong> 中。事实上并不会，因为 <strong>LiveData</strong> 的 <code>mVersion</code> 和 <strong>LifecycleBoundObserver</strong> 的 <code>lastVersion</code> 的默认值均为 <code>START_VERSION</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">LiveData</span>&lt;<span class="title">T</span>&gt; </span>&#123;</div><div class="line">    ...</div><div class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> START_VERSION = -<span class="number">1</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mVersion = START_VERSION;</div><div class="line">    ...</div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">LifecycleBoundObserver</span> <span class="keyword">implements</span> <span class="title">LifecycleObserver</span> </span>&#123;</div><div class="line">        ...</div><div class="line">        <span class="keyword">public</span> <span class="keyword">int</span> lastVersion = START_VERSION;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在 <code>observer.lastVersion &gt;= mVersion</code> 判断时就会直接返回而不执行 <code>observer.observer.onChanged((T) mData)</code>。</p>
+<p>再来看 <code>setValue</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@MainThread</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(T value)</span> </span>&#123;</div><div class="line">   assertMainThread(<span class="string">"setValue"</span>);</div><div class="line">   mVersion++;</div><div class="line">   mData = value;</div><div class="line">   dispatchingValue(<span class="keyword">null</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>setValue</code> 与 <code>observe</code> 方法一样均需要在主线程上执行，当 <code>setValue</code> 的时候 <code>mVersion</code> 的值会自增，并通知 <strong>Observer</strong> 数据发生变化。</p>
+<p><code>setValue</code> 还有另一个替代的方法 <code>postValue</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">postValue</span><span class="params">(T value)</span> </span>&#123;</div><div class="line">   <span class="keyword">boolean</span> postTask;</div><div class="line">   <span class="keyword">synchronized</span> (mDataLock) &#123;</div><div class="line">       postTask = mPendingData == NOT_SET;</div><div class="line">       mPendingData = value;</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">if</span> (!postTask) &#123;</div><div class="line">       <span class="keyword">return</span>;</div><div class="line">   &#125;</div><div class="line">   AppToolkitTaskExecutor.getInstance().postToMainThread(mPostValueRunnable);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Runnable mPostValueRunnable = <span class="keyword">new</span> Runnable() &#123;</div><div class="line">   <span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">       Object newValue;</div><div class="line">       <span class="keyword">synchronized</span> (mDataLock) &#123;</div><div class="line">           newValue = mPendingData;</div><div class="line">           mPendingData = NOT_SET;</div><div class="line">       &#125;</div><div class="line">       <span class="comment">//noinspection unchecked</span></div><div class="line">       setValue((T) newValue);</div><div class="line">   &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>其中 <strong>AppToolkitTaskExecutor</strong> 是通过一个以 Main Looper 作为 Looper 的 Handler 将 <code>mPostValueRunnable</code> 运行在主线程上，所以 <code>postValue</code> 可以运行在任意线程上，而 <strong>Observer</strong> 的 <code>OnChange</code> 回调会执行在主线程上。</p>
+<p>最后再看下 <code>observeForever</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@MainThread</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">observeForever</span><span class="params">(Observer&lt;T&gt; observer)</span> </span>&#123;</div><div class="line">   observe(ALWAYS_ON, observer);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> LifecycleOwner ALWAYS_ON = <span class="keyword">new</span> LifecycleOwner() &#123;</div><div class="line"></div><div class="line">   <span class="keyword">private</span> LifecycleRegistry mRegistry = init();</div><div class="line"></div><div class="line">   <span class="function"><span class="keyword">private</span> LifecycleRegistry <span class="title">init</span><span class="params">()</span> </span>&#123;</div><div class="line">       LifecycleRegistry registry = <span class="keyword">new</span> LifecycleRegistry(<span class="keyword">this</span>);</div><div class="line">       registry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);</div><div class="line">       registry.handleLifecycleEvent(Lifecycle.Event.ON_START);</div><div class="line">       registry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);</div><div class="line">       <span class="keyword">return</span> registry;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> Lifecycle <span class="title">getLifecycle</span><span class="params">()</span> </span>&#123;</div><div class="line">       <span class="keyword">return</span> mRegistry;</div><div class="line">   &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>可以看到，<code>observeForever</code> 将 <strong>Observer</strong> 注册了在一个永远处于 <code>RESUMED</code> 的 LifecycleOwner 中，所以通过 <code>observeForever</code> 注册的 <strong>Observer</strong> 需要通过 <code>removeObserver</code> 来取消数据变化的监听。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>至此，我们已经明白 <strong>LiveData</strong> 主要是通过 <strong>LifecycleBoundObserver</strong> 与 <strong>Lifecycle</strong> 结合来控制数据的分发。</p>
+<p><strong>LiveData</strong> 的代码比 <strong>Lifecycle</strong> 要简单得多，主要是有了 <strong>Lifecycle</strong> 部分的分析作为基础，看起来很轻松。因为简单，所以文章记录的时候流水账比较严重，本来不打算发的 <code>_(:з」∠)_</code> 不过写都写了，扔出来占个位置吧。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2017/05/27/How-Lifecycle-aware-Components-actually-works/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1674,168 +1862,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Chaos Leong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ChaosLeong's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/" itemprop="url">
-                  [译] 使用 ColorFilter 快速地主题化
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-16T09:44:55+08:00">
-                2016-11-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/11/16/Fast-Android-asset-theming-with-ColorFilter/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <blockquote>
-<p>原文地址：<a href="http://blog.danlew.net/2014/08/18/fast-android-asset-theming-with-colorfilter/">Fast Android asset theming with ColorFilter</a></p>
-</blockquote>
-<p>从 Android L 开始，<a href="2">Material Theme</a> 能够借助某些属性主题化 APP（图标及其他） </p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"AppTheme"</span> <span class="attr">parent</span>=<span class="string">"android:Theme.Material"</span>&gt;</span><span class="xml"></div><div class="line">  <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:colorPrimary"</span>&gt;</span>@color/primary<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:colorPrimaryDark"</span>&gt;</span>@color/primary_dark<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:colorAccent"</span>&gt;</span>@color/accent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/11/16/Fast-Android-asset-theming-with-ColorFilter/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1885,7 +1911,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
