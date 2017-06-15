@@ -89,25 +89,22 @@
 
 
 
-<meta name="description" content="注：本文所有代码基于 android.arch.lifecycle 1.0.0-alpha1
+<meta name="description" content="注：本文所有代码基于 android.arch.lifecycle 1.0.0-alpha1_(:з」∠)_ 流水账一篇
 
-在 Lifecycle-aware Components 源码分析 一文中，我们已经分析了 Lifecycle 框架中所有的 lifecyle 事件产生流程以及分发流程。本文将会基于这部分知识来分析 Lifecycle 框架中的 LiveData 组件。
-提出问题结合 LiveData javadoc">
+在 Lifecycle-aware Components 源码分析 一文中，我们已经分析了 Lifecycle 框架中所有的 lifecyle 事件产生流程以及分发流程。本文将会基于这部分知识来分析 Lifecycle 框架中的 LiveData 组件。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LiveData 源码分析">
 <meta property="og:url" content="http://chaosleong.github.io/2017/06/14/How-LiveData-actually-works/index.html">
 <meta property="og:site_name" content="ChaosLeong's Blog">
-<meta property="og:description" content="注：本文所有代码基于 android.arch.lifecycle 1.0.0-alpha1
+<meta property="og:description" content="注：本文所有代码基于 android.arch.lifecycle 1.0.0-alpha1_(:з」∠)_ 流水账一篇
 
-在 Lifecycle-aware Components 源码分析 一文中，我们已经分析了 Lifecycle 框架中所有的 lifecyle 事件产生流程以及分发流程。本文将会基于这部分知识来分析 Lifecycle 框架中的 LiveData 组件。
-提出问题结合 LiveData javadoc">
-<meta property="og:updated_time" content="2017-06-15T08:34:16.000Z">
+在 Lifecycle-aware Components 源码分析 一文中，我们已经分析了 Lifecycle 框架中所有的 lifecyle 事件产生流程以及分发流程。本文将会基于这部分知识来分析 Lifecycle 框架中的 LiveData 组件。">
+<meta property="og:updated_time" content="2017-06-15T08:46:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LiveData 源码分析">
-<meta name="twitter:description" content="注：本文所有代码基于 android.arch.lifecycle 1.0.0-alpha1
+<meta name="twitter:description" content="注：本文所有代码基于 android.arch.lifecycle 1.0.0-alpha1_(:з」∠)_ 流水账一篇
 
-在 Lifecycle-aware Components 源码分析 一文中，我们已经分析了 Lifecycle 框架中所有的 lifecyle 事件产生流程以及分发流程。本文将会基于这部分知识来分析 Lifecycle 框架中的 LiveData 组件。
-提出问题结合 LiveData javadoc">
+在 Lifecycle-aware Components 源码分析 一文中，我们已经分析了 Lifecycle 框架中所有的 lifecyle 事件产生流程以及分发流程。本文将会基于这部分知识来分析 Lifecycle 框架中的 LiveData 组件。">
 
 
 
@@ -386,9 +383,10 @@
 
       
         <blockquote>
-<p>注：本文所有代码基于 android.arch.lifecycle 1.0.0-alpha1</p>
+<p>注：本文所有代码基于 android.arch.lifecycle 1.0.0-alpha1<br><code>_(:з」∠)_</code> 流水账一篇</p>
 </blockquote>
 <p>在 <a href="https://chaosleong.github.io/2017/05/27/How-Lifecycle-aware-Components-actually-works">Lifecycle-aware Components 源码分析</a> 一文中，我们已经分析了 <strong>Lifecycle</strong> 框架中所有的 lifecyle 事件产生流程以及分发流程。本文将会基于这部分知识来分析 <strong>Lifecycle</strong> 框架中的 <strong>LiveData</strong> 组件。</p>
+<a id="more"></a>
 <h2 id="提出问题"><a href="#提出问题" class="headerlink" title="提出问题"></a>提出问题</h2><p>结合 <a href="https://developer.android.com/reference/android/arch/lifecycle/LiveData.html" target="_blank" rel="external">LiveData javadoc</a>, <a href="https://developer.android.com/topic/libraries/architecture/livedata.html" target="_blank" rel="external">LiveData</a> 文档，我们可以了解到 <strong>LiveData</strong> 主要作用是数据发生变化时通知 <strong>Observer</strong>，那么 <strong>LiveData</strong> 是如何实现这部分内容的呢？</p>
 <h2 id="LiveData"><a href="#LiveData" class="headerlink" title="LiveData"></a>LiveData</h2><p>有监听得先有注册，先来看 <code>observe</code> 方法：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@MainThread</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">observe</span><span class="params">(LifecycleOwner owner, Observer&lt;T&gt; observer)</span> </span>&#123;</div><div class="line">   <span class="keyword">if</span> (owner.getLifecycle().getCurrentState() == DESTROYED) &#123;</div><div class="line">       <span class="comment">// ignore</span></div><div class="line">       <span class="keyword">return</span>;</div><div class="line">   &#125;</div><div class="line">   LifecycleBoundObserver wrapper = <span class="keyword">new</span> LifecycleBoundObserver(owner, observer);</div><div class="line">   LifecycleBoundObserver existing = mObservers.putIfAbsent(observer, wrapper);</div><div class="line">   <span class="keyword">if</span> (existing != <span class="keyword">null</span> &amp;&amp; existing.owner != wrapper.owner) &#123;</div><div class="line">       <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Cannot add the same observer"</span></div><div class="line">               + <span class="string">" with different lifecycles"</span>);</div><div class="line">   &#125;</div><div class="line">   <span class="keyword">if</span> (existing != <span class="keyword">null</span>) &#123;</div><div class="line">       <span class="keyword">return</span>;</div><div class="line">   &#125;</div><div class="line">   owner.getLifecycle().addObserver(wrapper);</div><div class="line">   wrapper.activeStateChanged(isActiveState(owner.getLifecycle().getCurrentState()));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
