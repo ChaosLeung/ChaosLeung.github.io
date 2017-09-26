@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="技巧," />
+  <meta name="keywords" content="Gradle,AspectJ," />
 
 
 
@@ -89,18 +89,18 @@
 
 
 
-<meta name="description" content="今天下午的时候有人问到，AS 哪里能配置 build.gradle 的模板，从而达到每次新建 module 时默认的 compileSdkVersion 用指定的值而不是取最新 SDK 的 api-string。">
-<meta name="keywords" content="技巧">
+<meta name="description" content="配置根据 Gradle 官方给出来的 AspectJ 配置，需要在 build.config 添加如下代码： 123456789101112buildscript &amp;#123;  repositories &amp;#123;    maven &amp;#123;      url &quot;https://plugins.gradle.org/m2/&quot;    &amp;#125;  &amp;#125;  dependencies">
+<meta name="keywords" content="Gradle,AspectJ">
 <meta property="og:type" content="article">
-<meta property="og:title" content="修改 Android Studio 创建 module 时默认的 compileSdkVersion">
-<meta property="og:url" content="http://chaosleong.github.io/2016/11/23/Change-default-compile-sdk-version-of-Android-Studio/index.html">
+<meta property="og:title" content="在 Gradle 项目中配置 AspectJ">
+<meta property="og:url" content="http://chaosleong.github.io/2017/09/22/Configure-AspectJ-in-Gradle-project/index.html">
 <meta property="og:site_name" content="ChaosLeong&#39;s Blog">
-<meta property="og:description" content="今天下午的时候有人问到，AS 哪里能配置 build.gradle 的模板，从而达到每次新建 module 时默认的 compileSdkVersion 用指定的值而不是取最新 SDK 的 api-string。">
+<meta property="og:description" content="配置根据 Gradle 官方给出来的 AspectJ 配置，需要在 build.config 添加如下代码： 123456789101112buildscript &amp;#123;  repositories &amp;#123;    maven &amp;#123;      url &quot;https://plugins.gradle.org/m2/&quot;    &amp;#125;  &amp;#125;  dependencies">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2016-11-23T15:32:35.000Z">
+<meta property="og:updated_time" content="2017-09-22T08:49:28.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="修改 Android Studio 创建 module 时默认的 compileSdkVersion">
-<meta name="twitter:description" content="今天下午的时候有人问到，AS 哪里能配置 build.gradle 的模板，从而达到每次新建 module 时默认的 compileSdkVersion 用指定的值而不是取最新 SDK 的 api-string。">
+<meta name="twitter:title" content="在 Gradle 项目中配置 AspectJ">
+<meta name="twitter:description" content="配置根据 Gradle 官方给出来的 AspectJ 配置，需要在 build.config 添加如下代码： 123456789101112buildscript &amp;#123;  repositories &amp;#123;    maven &amp;#123;      url &quot;https://plugins.gradle.org/m2/&quot;    &amp;#125;  &amp;#125;  dependencies">
 
 
 
@@ -128,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="http://chaosleong.github.io/2016/11/23/Change-default-compile-sdk-version-of-Android-Studio/"/>
+  <link rel="canonical" href="http://chaosleong.github.io/2017/09/22/Configure-AspectJ-in-Gradle-project/"/>
 
 
 
 
 
-  <title> 修改 Android Studio 创建 module 时默认的 compileSdkVersion | ChaosLeong's Blog </title>
+  <title> 在 Gradle 项目中配置 AspectJ | ChaosLeong's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -273,7 +273,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2016/11/23/Change-default-compile-sdk-version-of-Android-Studio/">
+    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2017/09/22/Configure-AspectJ-in-Gradle-project/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Chaos Leong">
@@ -294,7 +294,7 @@
             
             
               
-                修改 Android Studio 创建 module 时默认的 compileSdkVersion
+                在 Gradle 项目中配置 AspectJ
               
             
           </h1>
@@ -309,8 +309,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-23T22:52:33+08:00">
-                2016-11-23
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-22T16:00:05+08:00">
+                2017-09-22
               </time>
             
 
@@ -332,8 +332,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
                   </a>
                 </span>
 
@@ -350,9 +350,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/11/23/Change-default-compile-sdk-version-of-Android-Studio/#comments" itemprop="discussionUrl">
+                <a href="/2017/09/22/Configure-AspectJ-in-Gradle-project/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/11/23/Change-default-compile-sdk-version-of-Android-Studio/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2017/09/22/Configure-AspectJ-in-Gradle-project/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -378,23 +378,23 @@
       
 
       
-        <p>今天下午的时候有人问到，AS 哪里能配置 <code>build.gradle</code> 的模板，从而达到每次新建 module 时默认的 <code>compileSdkVersion</code> 用指定的值而不是取最新 SDK 的 api-string。</p>
-<a id="more"></a>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>先看了 Preferences，并没相关的 template 能修改 <code>build.gradle</code>，再 Google 了一会，只有<a href="http://stackoverflow.com/questions/29253595/how-to-make-android-studio-use-my-build-gradle-template-for-a-new-project" target="_blank" rel="external">该帖子</a>提及到 <code>build.gradle</code> 的模板文件的位置。</p>
-<p>按照给出的路径 <code>&lt;android-studio&gt;/plugins/android/lib/templates/gradle-projects/NewAndroidProject/root/build.gradle.ftl</code>（Mac 上 &lt;android-studio&gt; 即为 /Applications/Android\ Studio.app/Contents）找到模板文件。</p>
-<p>直接找到 <code>compileSdkVersion</code> 一行</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compileSdkVersion &lt;#if buildApiString?matches("^\\d+$")&gt;$&#123;buildApiString&#125;&lt;#else&gt;'$&#123;buildApiString&#125;'&lt;/#if&gt;</div></pre></td></tr></table></figure>
-<p>改为</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compileSdkVersion <span class="number">24</span></div></pre></td></tr></table></figure>
-<p>这样就算是完成了。</p>
-<h2 id="额外的小问题"><a href="#额外的小问题" class="headerlink" title="额外的小问题"></a>额外的小问题</h2><p>我们知道，AS 新建 Phone module 时都会添加 support appcompat 包。由于 appcompat 包的大版本如果跟 compileSdkVersion 不一样也会出现 error 提示，所以也需要修改 appcompat 的默认版本。</p>
-<p>但 appcompat 对应的模板文件并不在 <code>build.gradle.ftl</code> 中，而是在 <code>&lt;android-studio&gt;/plugins/android/lib/templates/gradle-projects/NewAndroidProject/recipe.xml.ftl</code> 中。</p>
-<p>对应的代码为</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">#if</span> <span class="attr">backwardsCompatibility</span>!<span class="attr">true</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">dependency</span> <span class="attr">mavenUrl</span>=<span class="string">"com.android.support:appcompat-v7:$&#123;buildApi&#125;.+"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">#if</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>直接修改为</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span> <span class="attr">mavenUrl</span>=<span class="string">"com.android.support:appcompat-v7:24.+"</span>/&gt;</span></div></pre></td></tr></table></figure>
-<p>大功告成~</p>
-<h2 id="吐槽"><a href="#吐槽" class="headerlink" title="吐槽"></a>吐槽</h2><p>一般也不会有这种奇葩需求，要是遇到了……好吧，暂时只有这解决方案。需要注意的就是 AS 更新的时候有可能会发生冲突并且用新的模板文件覆盖修改过后的文件，所以又得重新处理一次，略麻烦。</p>
+        <a id="more"></a>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>根据 Gradle 官方给出来的 AspectJ 配置，需要在 <code>build.config</code> 添加如下代码：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">  repositories &#123;</div><div class="line">    maven &#123;</div><div class="line">      url <span class="string">"https://plugins.gradle.org/m2/"</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  dependencies &#123;</div><div class="line">    classpath <span class="string">"gradle.plugin.aspectj:gradle-aspectj:0.1.6"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">apply <span class="string">plugin:</span> <span class="string">"aspectj.gradle"</span></div></pre></td></tr></table></figure>
+<p>然而直接执行 <code>gradle build</code> 会出现以下错误提示：</p>
+<blockquote>
+<p>You must set the property ‘aspectjVersion’ before applying the aspectj plugin</p>
+</blockquote>
+<p>按照提示为环境添加以下配置（需注意下面代码要放置在 <code>apply plugin: &quot;aspectj.gradle&quot;</code> 之前）：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">project.ext &#123;</div><div class="line">    aspectjVersion = <span class="string">'1.8.10'</span></div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>再执行 <code>gradle build</code>，正常运行~</p>
+<h2 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h2><ol>
+<li>每次编译都需要 gradle clean 一次，不然 AspectJ 生成的代码是不会更新的（估计是插件的 BUG）</li>
+<li>编译失败时会在根目录生成 log（但不是 100% 生成，后面全删了就没遇到过）</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a href="https://plugins.gradle.org/plugin/aspectj.gradle" target="_blank" rel="external">https://plugins.gradle.org/plugin/aspectj.gradle</a></li>
+</ol>
 
       
     </div>
@@ -424,7 +424,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/技巧/" rel="tag"># 技巧</a>
+            <a href="/tags/Gradle/" rel="tag"># Gradle</a>
+          
+            <a href="/tags/AspectJ/" rel="tag"># AspectJ</a>
           
         </div>
       
@@ -437,8 +439,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/11/18/Forking-a-Repository/" rel="next" title="Forking a Repository">
-                <i class="fa fa-chevron-left"></i> Forking a Repository
+              <a href="/2017/06/14/How-LiveData-actually-works/" rel="next" title="LiveData 源码分析">
+                <i class="fa fa-chevron-left"></i> LiveData 源码分析
               </a>
             
           </div>
@@ -446,10 +448,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/01/23/okhttp-interceptor-server-mock/" rel="prev" title="利用 OkHttp Interceptor 模拟数据">
-                利用 OkHttp Interceptor 模拟数据 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -592,7 +590,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">1.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#额外的小问题"><span class="nav-number">2.</span> <span class="nav-text">额外的小问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#吐槽"><span class="nav-number">3.</span> <span class="nav-text">吐槽</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">1.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他问题"><span class="nav-number">2.</span> <span class="nav-text">其他问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
@@ -736,9 +734,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://chaosleong.github.io/2016/11/23/Change-default-compile-sdk-version-of-Android-Studio/';
-          this.page.identifier = '2016/11/23/Change-default-compile-sdk-version-of-Android-Studio/';
-          this.page.title = '修改 Android Studio 创建 module 时默认的 compileSdkVersion';
+          this.page.url = 'http://chaosleong.github.io/2017/09/22/Configure-AspectJ-in-Gradle-project/';
+          this.page.identifier = '2017/09/22/Configure-AspectJ-in-Gradle-project/';
+          this.page.title = '在 Gradle 项目中配置 AspectJ';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://chaosleongs-blog.disqus.com/embed.js';

@@ -91,12 +91,13 @@
 
 <meta name="description" content="个人博客，技术分享">
 <meta property="og:type" content="website">
-<meta property="og:title" content="ChaosLeong's Blog">
+<meta property="og:title" content="ChaosLeong&#39;s Blog">
 <meta property="og:url" content="http://chaosleong.github.io/index.html">
-<meta property="og:site_name" content="ChaosLeong's Blog">
+<meta property="og:site_name" content="ChaosLeong&#39;s Blog">
 <meta property="og:description" content="个人博客，技术分享">
+<meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ChaosLeong's Blog">
+<meta name="twitter:title" content="ChaosLeong&#39;s Blog">
 <meta name="twitter:description" content="个人博客，技术分享">
 
 
@@ -262,6 +263,176 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2017/09/22/Configure-AspectJ-in-Gradle-project/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chaos Leong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ChaosLeong's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/09/22/Configure-AspectJ-in-Gradle-project/" itemprop="url">
+                  在 Gradle 项目中配置 AspectJ
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-22T16:00:05+08:00">
+                2017-09-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/22/Configure-AspectJ-in-Gradle-project/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/09/22/Configure-AspectJ-in-Gradle-project/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>根据 Gradle 官方给出来的 AspectJ 配置，需要在 <code>build.config</code> 添加如下代码：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">  repositories &#123;</div><div class="line">    maven &#123;</div><div class="line">      url <span class="string">"https://plugins.gradle.org/m2/"</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  dependencies &#123;</div><div class="line">    classpath <span class="string">"gradle.plugin.aspectj:gradle-aspectj:0.1.6"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">apply <span class="string">plugin:</span> <span class="string">"aspectj.gradle"</span></div></pre></td></tr></table></figure>
+<p>然而直接执行 <code>gradle build</code> 会出现以下错误提示：</p>
+<blockquote>
+<p>You must set the property ‘aspectjVersion’ before applying the aspectj plugin</p>
+</blockquote>
+<p>按照提示为环境添加以下配置（需注意下面代码要放置在 <code>apply plugin: &quot;aspectj.gradle&quot;</code> 之前）：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">project.ext &#123;</div><div class="line">    aspectjVersion = <span class="string">'1.8.10'</span></div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>再执行 <code>gradle build</code>，正常运行~</p>
+<h2 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h2><ol>
+<li>每次编译都需要 gradle clean 一次，不然 AspectJ 生成的代码是不会更新的（估计是插件的 BUG）</li>
+<li>编译失败时会在根目录生成 log（但不是 100% 生成，后面全删了就没遇到过）</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a href="https://plugins.gradle.org/plugin/aspectj.gradle" target="_blank" rel="external">https://plugins.gradle.org/plugin/aspectj.gradle</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
     
       
 
@@ -545,7 +716,7 @@
           <blockquote>
 <p>注：本文所有代码基于 android.arch.lifecycle 1.0.0-alpha1<br>另外，为了避免混淆，Fragment、Activity 等组件自身的生命周期直用 “生命周期” 一词，而由 <strong>Lifecycle</strong> 框架提供的生命周期则称为 “lifecyle”</p>
 </blockquote>
-<p>最近看到不少人讨论 Google 推的 <a href="https://developer.android.com/topic/libraries/architecture/index.html">Android Architecture Components</a>，其中 <a href="https://developer.android.com/topic/libraries/architecture/lifecycle.html">Handling Lifecycles</a> 一章展现了如何利用 <code>android.arch.lifecycle</code> 包提供的类来控制数据、监听器等的 lifecycle。同时，<a href="https://developer.android.com/topic/libraries/architecture/livedata.html">LiveData</a> 与 <a href="https://developer.android.com/topic/libraries/architecture/viewmodel.html">ViewModel</a> 的 lifecycle 也依赖于 <strong>Lifecycle</strong> 框架，所以分析 <strong>Lifecycle</strong> 显然是有必要的。</p>
+<p>最近看到不少人讨论 Google 推的 <a href="https://developer.android.com/topic/libraries/architecture/index.html" target="_blank" rel="external">Android Architecture Components</a>，其中 <a href="https://developer.android.com/topic/libraries/architecture/lifecycle.html" target="_blank" rel="external">Handling Lifecycles</a> 一章展现了如何利用 <code>android.arch.lifecycle</code> 包提供的类来控制数据、监听器等的 lifecycle。同时，<a href="https://developer.android.com/topic/libraries/architecture/livedata.html" target="_blank" rel="external">LiveData</a> 与 <a href="https://developer.android.com/topic/libraries/architecture/viewmodel.html" target="_blank" rel="external">ViewModel</a> 的 lifecycle 也依赖于 <strong>Lifecycle</strong> 框架，所以分析 <strong>Lifecycle</strong> 显然是有必要的。</p>
 <p><strong>Lifecycle</strong> 到底是通过怎样的方式来绑定 Android 组件的生命周期以及如何通知 <strong>LifecycleObserver</strong> 状态变化的呢？本文将会围绕这两个问题深入分析 <strong>Lifecycle</strong> 源码。</p>
           <!--noindex-->
           <div class="post-button text-center">
@@ -862,7 +1033,7 @@
 
       
         
-          <p>Github 上滑动返回库比较多，由于实现思路甚至代码一部分库都差不多，所以只挑选了两个实现思路比较不同的库作为研究，分别是 <strong><a href="https://github.com/ikew0ng/SwipeBackLayout">SwipeBackLayout</a></strong> 和 <strong><a href="https://github.com/XBeats/and_swipeback">and_swipeback</a></strong>。</p>
+          <p>Github 上滑动返回库比较多，由于实现思路甚至代码一部分库都差不多，所以只挑选了两个实现思路比较不同的库作为研究，分别是 <strong><a href="https://github.com/ikew0ng/SwipeBackLayout" target="_blank" rel="external">SwipeBackLayout</a></strong> 和 <strong><a href="https://github.com/XBeats/and_swipeback" target="_blank" rel="external">and_swipeback</a></strong>。</p>
 <p>除滑动返回功能外，本文还会围绕滑动过程中呈现前一个界面的方案对上述两个库展开分析，其他部分源码细节不予分析。</p>
           <!--noindex-->
           <div class="post-button text-center">
@@ -1022,8 +1193,8 @@
       
         
           <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近因为某个项目需要添加“验证码”功能，设计上区别于原生 EditText，需要将四个数字分离（类似于微信、支付宝支付密码输入框）。在 Github 上查找了一遍，发现大多数现有的控件都比较 dirty —— 使用多个 EditText 达到字符分离的效果。</p>
-<p>唯一一个比较有意思的项目是 <a href="https://github.com/EthanCo/PasswordInput">PasswordInput</a>，该控件直接继承于 EditText，通过重写 onDraw 来实现每个文本对应一个方框，并通过重写 onTextChanged 方法监听文本变化以绘制对应的圆点。</p>
-<p>然而，某些情况下我们需要直接显示输入的验证码（PIN 码、短信验证码等），但 <a href="https://github.com/EthanCo/PasswordInput">PasswordInput</a> 并没有提供相应的方法达到这种效果。于是抽空根据 <a href="https://github.com/EthanCo/PasswordInput">PasswordInput</a> 的思路实现了 <a href="https://github.com/ChaosLeong/PinView">PinView</a> 并开源于 Github。</p>
+<p>唯一一个比较有意思的项目是 <a href="https://github.com/EthanCo/PasswordInput" target="_blank" rel="external">PasswordInput</a>，该控件直接继承于 EditText，通过重写 onDraw 来实现每个文本对应一个方框，并通过重写 onTextChanged 方法监听文本变化以绘制对应的圆点。</p>
+<p>然而，某些情况下我们需要直接显示输入的验证码（PIN 码、短信验证码等），但 <a href="https://github.com/EthanCo/PasswordInput" target="_blank" rel="external">PasswordInput</a> 并没有提供相应的方法达到这种效果。于是抽空根据 <a href="https://github.com/EthanCo/PasswordInput" target="_blank" rel="external">PasswordInput</a> 的思路实现了 <a href="https://github.com/ChaosLeong/PinView" target="_blank" rel="external">PinView</a> 并开源于 Github。</p>
 <p>此文主要为记录编码过程中的一些思路以及所遇到的一些问题与对应的解决方案。</p>
           <!--noindex-->
           <div class="post-button text-center">
@@ -1183,7 +1354,7 @@
       
         
           <blockquote>
-<p>原文地址：<a href="http://www.techyourchance.com/activities-android/">Why Activities in Android are not UI Elements</a><br>已获得原作者授权，译文有删减</p>
+<p>原文地址：<a href="http://www.techyourchance.com/activities-android/" target="_blank" rel="external">Why Activities in Android are not UI Elements</a><br>已获得原作者授权，译文有删减</p>
 </blockquote>
 <p>这篇文章中我们将通过面向对象设计中的单一职责原则来观察 Activity，并试图了解如何更好地在 Activity 中实施单一职责原则。</p>
           <!--noindex-->
@@ -1677,164 +1848,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2016/11/18/Forking-a-Repository/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Chaos Leong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ChaosLeong's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/18/Forking-a-Repository/" itemprop="url">
-                  Forking a Repository
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-18T10:45:19+08:00">
-                2016-11-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Git/" itemprop="url" rel="index">
-                    <span itemprop="name">Git</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/11/18/Forking-a-Repository/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/11/18/Forking-a-Repository/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>某些场景下，我们需要基于某个仓库的 <code>tag</code>、<code>branch</code> 或者 <code>commit</code> 来进行二次开发。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/11/18/Forking-a-Repository/" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1884,7 +1897,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1895,7 +1908,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1906,7 +1919,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

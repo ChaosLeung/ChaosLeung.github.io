@@ -89,19 +89,18 @@
 
 
 
-<meta name="description" content="最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。
-在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。">
+<meta name="description" content="最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。 在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。">
+<meta name="keywords" content="技巧,Gradle">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android Gradle 获取 APK 签名状态及对齐状态">
 <meta property="og:url" content="http://chaosleong.github.io/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/index.html">
-<meta property="og:site_name" content="ChaosLeong's Blog">
-<meta property="og:description" content="最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。
-在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。">
+<meta property="og:site_name" content="ChaosLeong&#39;s Blog">
+<meta property="og:description" content="最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。 在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2016-08-29T11:19:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Gradle 获取 APK 签名状态及对齐状态">
-<meta name="twitter:description" content="最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。
-在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。">
+<meta name="twitter:description" content="最近由于公司 CI 对所有项目做规范化处理，现有项目都需要按照规范修改 APK 的文件名。 由于 CI 只需要已签名并已对齐的 APK，所以需要获取 APK 的签名状态及资源对齐状态。 在 StackOverflow 及 Google 上搜索了一番只找到 zipAlign 的代码，没办法只能去看 ApplicationVariant 的代码。费了些时间才找到获取签名状态的 API，遂记录之。">
 
 
 
@@ -511,7 +510,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -522,7 +521,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -533,7 +532,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
