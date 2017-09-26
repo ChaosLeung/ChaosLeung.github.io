@@ -382,9 +382,7 @@
 
       
         
-          
-            <a id="more"></a>
-<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>根据 Gradle 官方给出来的 AspectJ 配置，需要在 <code>build.config</code> 添加如下代码：</p>
+          <h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>根据 Gradle 官方给出来的 AspectJ 配置，需要在 <code>build.config</code> 添加如下代码：</p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">  repositories &#123;</div><div class="line">    maven &#123;</div><div class="line">      url <span class="string">"https://plugins.gradle.org/m2/"</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  dependencies &#123;</div><div class="line">    classpath <span class="string">"gradle.plugin.aspectj:gradle-aspectj:0.1.6"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">apply <span class="string">plugin:</span> <span class="string">"aspectj.gradle"</span></div></pre></td></tr></table></figure>
 <p>然而直接执行 <code>gradle build</code> 会出现以下错误提示：</p>
 <blockquote>
@@ -393,15 +391,13 @@
 <p>按照提示为环境添加以下配置（需注意下面代码要放置在 <code>apply plugin: &quot;aspectj.gradle&quot;</code> 之前）：</p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">project.ext &#123;</div><div class="line">    aspectjVersion = <span class="string">'1.8.10'</span></div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>再执行 <code>gradle build</code>，正常运行~</p>
-<h2 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h2><ol>
-<li>每次编译都需要 gradle clean 一次，不然 AspectJ 生成的代码是不会更新的（估计是插件的 BUG）</li>
-<li>编译失败时会在根目录生成 log（但不是 100% 生成，后面全删了就没遇到过）</li>
-</ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
-<li><a href="https://plugins.gradle.org/plugin/aspectj.gradle" target="_blank" rel="external">https://plugins.gradle.org/plugin/aspectj.gradle</a></li>
-</ol>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/09/22/Configure-AspectJ-in-Gradle-project/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
