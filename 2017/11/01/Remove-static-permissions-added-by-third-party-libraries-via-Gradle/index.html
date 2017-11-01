@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="小知识," />
+  <meta name="keywords" content="Gradle," />
 
 
 
@@ -89,18 +89,18 @@
 
 
 
-<meta name="description" content="某些场景下（如内存不足），系统销毁 Activity 时会调用 onSaveInstanceState()，而 Fragment 也会在此方法中保存自身的状态。之后用户重新打开对应的 Activity 时，系统则会通过 onCreate(Bundle) 或者 onRestoreInstanceState(Bundle) 恢复 Activity 的状态，而 Fragment 的状态会在 onCrea">
-<meta name="keywords" content="小知识">
+<meta name="description" content="今天在群里有小伙伴提到自己的应用被其他第三方库添加了部分额外权限，好奇而研究了一番，发觉可以通过 Gradle 达到移除静态权限。">
+<meta name="keywords" content="Gradle">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Activity 数据恢复时移除 Fragment 数据">
-<meta property="og:url" content="http://chaosleong.github.io/2016/05/14/Activity-数据恢复时移除-Fragment-数据/index.html">
+<meta property="og:title" content="利用 Gradle 移除第三方引入的静态权限">
+<meta property="og:url" content="http://chaosleong.github.io/2017/11/01/Remove-static-permissions-added-by-third-party-libraries-via-Gradle/index.html">
 <meta property="og:site_name" content="ChaosLeong&#39;s Blog">
-<meta property="og:description" content="某些场景下（如内存不足），系统销毁 Activity 时会调用 onSaveInstanceState()，而 Fragment 也会在此方法中保存自身的状态。之后用户重新打开对应的 Activity 时，系统则会通过 onCreate(Bundle) 或者 onRestoreInstanceState(Bundle) 恢复 Activity 的状态，而 Fragment 的状态会在 onCrea">
+<meta property="og:description" content="今天在群里有小伙伴提到自己的应用被其他第三方库添加了部分额外权限，好奇而研究了一番，发觉可以通过 Gradle 达到移除静态权限。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2016-08-29T11:19:00.000Z">
+<meta property="og:updated_time" content="2017-11-01T09:28:59.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Activity 数据恢复时移除 Fragment 数据">
-<meta name="twitter:description" content="某些场景下（如内存不足），系统销毁 Activity 时会调用 onSaveInstanceState()，而 Fragment 也会在此方法中保存自身的状态。之后用户重新打开对应的 Activity 时，系统则会通过 onCreate(Bundle) 或者 onRestoreInstanceState(Bundle) 恢复 Activity 的状态，而 Fragment 的状态会在 onCrea">
+<meta name="twitter:title" content="利用 Gradle 移除第三方引入的静态权限">
+<meta name="twitter:description" content="今天在群里有小伙伴提到自己的应用被其他第三方库添加了部分额外权限，好奇而研究了一番，发觉可以通过 Gradle 达到移除静态权限。">
 
 
 
@@ -128,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="http://chaosleong.github.io/2016/05/14/Activity-数据恢复时移除-Fragment-数据/"/>
+  <link rel="canonical" href="http://chaosleong.github.io/2017/11/01/Remove-static-permissions-added-by-third-party-libraries-via-Gradle/"/>
 
 
 
 
 
-  <title> Activity 数据恢复时移除 Fragment 数据 | ChaosLeong's Blog </title>
+  <title> 利用 Gradle 移除第三方引入的静态权限 | ChaosLeong's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -273,7 +273,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2016/05/14/Activity-数据恢复时移除-Fragment-数据/">
+    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2017/11/01/Remove-static-permissions-added-by-third-party-libraries-via-Gradle/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Chaos Leong">
@@ -294,7 +294,7 @@
             
             
               
-                Activity 数据恢复时移除 Fragment 数据
+                利用 Gradle 移除第三方引入的静态权限
               
             
           </h1>
@@ -309,8 +309,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-14T21:55:53+08:00">
-                2016-05-14
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-01T17:11:34+08:00">
+                2017-11-01
               </time>
             
 
@@ -350,9 +350,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/05/14/Activity-数据恢复时移除-Fragment-数据/#comments" itemprop="discussionUrl">
+                <a href="/2017/11/01/Remove-static-permissions-added-by-third-party-libraries-via-Gradle/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/05/14/Activity-数据恢复时移除-Fragment-数据/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2017/11/01/Remove-static-permissions-added-by-third-party-libraries-via-Gradle/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -378,17 +378,14 @@
       
 
       
-        <p>某些场景下（如内存不足），系统销毁 Activity 时会调用 <strong>onSaveInstanceState()</strong>，而 Fragment 也会在此方法中保存自身的状态。之后用户重新打开对应的 Activity 时，系统则会通过 <strong>onCreate(Bundle)</strong> 或者 <strong>onRestoreInstanceState(Bundle)</strong> 恢复 Activity 的状态，而 Fragment 的状态会在 <strong>onCreate(Bundle)</strong> 中恢复。</p>
-<p>某些特殊需求下，我们并不需要 Fragment 恢复之前的状态，那么就需要在 Fragment 数据恢复前移除 Fragment 的数据。首先我们来看一下 Activity 中是如何恢复 Fragment 数据的：<a id="more"></a></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> String FRAGMENTS_TAG = <span class="string">"android:fragments"</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">    ...</div><div class="line">    <span class="keyword">if</span> (savedInstanceState != <span class="keyword">null</span>) &#123;</div><div class="line">        Parcelable p = savedInstanceState.getParcelable(FRAGMENTS_TAG);</div><div class="line">        mFragments.restoreAllState(p, mLastNonConfigurationInstances != <span class="keyword">null</span></div><div class="line">                ? mLastNonConfigurationInstances.fragments : <span class="keyword">null</span>);</div><div class="line">    &#125;</div><div class="line">    mFragments.dispatchCreate();</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>从代码中可以看到，Activity 通过读取 <strong>savedInstanceState</strong> 中对应 key 为 <strong>FRAGMENTS_TAG</strong> 的 Parcelable 对象的值来恢复 Fragment 的状态。</p>
-<p>所以我们可以通过这点入手来阻止 Fragment 状态恢复，代码如下：</p>
-<p>原生：</p>
-<figure class="highlight java"><figcaption><span>原生 Fragment</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">savedInstanceState.remove(<span class="string">"android:fragments"</span>);</div></pre></td></tr></table></figure>
-<p>Support 包：</p>
-<figure class="highlight java"><figcaption><span>Support 包的 Fragment</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">savedInstanceState.remove(<span class="string">"android:support:fragments"</span>);</div></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>实际环境下这种方法用的不多，只要不是奇葩需求的情况下，一般都希望恢复 Fragment 的状态。假设某个 Activity 中有两个 Fragment，B Fragment 显示时覆盖 A。如果某个时刻显示的是 B，并且此时 Activity 因为内存不足被销毁，恢复的时候我们当然也希望显示的仍是 B。<br>但如果真遇到恢复数据时需要移除 Fragment 数据的场景，上面的方法比较实用。</p>
-<p>最后，衷心祝福正在看这篇文章你永远不会遇到这样的需求。</p>
+        <p>今天在群里有小伙伴提到自己的应用被其他第三方库添加了部分额外权限，好奇而研究了一番，发觉可以通过 Gradle 达到移除静态权限。</p>
+<a id="more"></a>
+<p>针对 Gradle 4.1（对应 Android Plugin 3.0.0）的代码是想起新版<a href="1">动态修改 <code>versionCode</code></a> 的方式而突发奇想试验的，结果证明可行。至于 Gradle 3.3 (对应 Android Plugin 2.3.3) 的代码则是阅读 Android Plugin 的版代码（<a href="2">MergeManifests.groovy</a>, <a href="3">ManifestProcessorTask.groovy</a>）了解到的。</p>
+<blockquote>
+<p>注：由于移除静态权限可能会导致不必要的异常，在正式发布之前记得全面测试，不要因小失大</p>
+</blockquote>
+<p>代码如下：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">android.applicationVariants.all &#123; variant -&gt;</div><div class="line">    variant.outputs.forEach &#123; output -&gt;</div><div class="line">        output.processManifest.doLast &#123;</div><div class="line">            <span class="keyword">def</span> (majorVersion, minorVersion, patchVersion) = gradle.gradleVersion.tokenize(<span class="string">'.'</span>)*.toInteger()</div><div class="line">            <span class="keyword">def</span> manifestPath</div><div class="line">            <span class="comment">// gradle version great or equal than 4.1</span></div><div class="line">            <span class="keyword">if</span> (majorVersion &gt; <span class="number">4</span> || (majorVersion == <span class="number">4</span> &amp;&amp; minorVersion &gt;= <span class="number">1</span>)) &#123;</div><div class="line">                manifestPath = <span class="string">"$manifestOutputDirectory/AndroidManifest.xml"</span></div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                manifestPath = manifestOutputFile.absolutePath</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">def</span> manifestContent = file(manifestPath).getText()</div><div class="line">            manifestContent = manifestContent.replace(<span class="string">'&lt;uses-permission android:name="android.permission.INTERNET" /&gt;'</span>, <span class="string">''</span>)</div><div class="line">            file(manifestPath).write(manifestContent)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -418,7 +415,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/小知识/" rel="tag"># 小知识</a>
+            <a href="/tags/Gradle/" rel="tag"># Gradle</a>
           
         </div>
       
@@ -431,8 +428,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/08/Android-Gradle-获取-APK-签名状态及对齐状态/" rel="next" title="Android Gradle 获取 APK 签名状态及对齐状态">
-                <i class="fa fa-chevron-left"></i> Android Gradle 获取 APK 签名状态及对齐状态
+              <a href="/2017/09/22/Configure-AspectJ-in-Gradle-project/" rel="next" title="在 Gradle 项目中配置 AspectJ">
+                <i class="fa fa-chevron-left"></i> 在 Gradle 项目中配置 AspectJ
               </a>
             
           </div>
@@ -440,10 +437,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/07/25/Loader-Simple-Analysis/" rel="prev" title="Loader 浅析">
-                Loader 浅析 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -497,17 +490,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -576,22 +560,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">1.</span> <span class="nav-text">总结</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -730,9 +698,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://chaosleong.github.io/2016/05/14/Activity-数据恢复时移除-Fragment-数据/';
-          this.page.identifier = '2016/05/14/Activity-数据恢复时移除-Fragment-数据/';
-          this.page.title = 'Activity 数据恢复时移除 Fragment 数据';
+          this.page.url = 'http://chaosleong.github.io/2017/11/01/Remove-static-permissions-added-by-third-party-libraries-via-Gradle/';
+          this.page.identifier = '2017/11/01/Remove-static-permissions-added-by-third-party-libraries-via-Gradle/';
+          this.page.title = '利用 Gradle 移除第三方引入的静态权限';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://chaosleongs-blog.disqus.com/embed.js';

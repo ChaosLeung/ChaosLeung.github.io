@@ -273,6 +273,173 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2015/08/02/android-studio-shi-yong-gradle-da-bao-jar/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chaos Leong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ChaosLeong's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/08/02/android-studio-shi-yong-gradle-da-bao-jar/" itemprop="url">
+                  Android Studio 使用 Gradle 打包 Jar
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-02T23:04:24+08:00">
+                2015-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/08/02/android-studio-shi-yong-gradle-da-bao-jar/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015/08/02/android-studio-shi-yong-gradle-da-bao-jar/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <blockquote>
+<p><strong>注：</strong>该文章只适用于对 Application Plugin 的 module 进行打包 Jar 或 Library 析出的 Jar 有多余的 class</p>
+</blockquote>
+<p>Android Studio 打 Jar 包一直是一个麻烦的事，按照网上现有的教程，打包一个混淆的 jar 需要完成下列步骤：</p>
+<ol>
+<li>将 plugin 修改为 <code>library</code>（有指定 applicationId 情况下还需要注释对应代码），运行命令 <code>gradle bundleRelease</code>，等待完成</li>
+<li>找到对应 module 的 <code>build/intermediates/bundles/debug or release/classes.jar</code>（感谢 <a href="http://weibo.com/xiezefan" target="_blank" rel="external">@ZefanXie</a> 指出）</li>
+<li>使用 jarjar 等工具剔除多余的 class</li>
+</ol>
+<p>这一个过程要改的东西比较多，于是花了些时间研究了下 Gradle 打 Jar 包。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/08/02/android-studio-shi-yong-gradle-da-bao-jar/" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://chaosleong.github.io/2015/06/04/applicationid-yu-packagename/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -950,7 +1117,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
